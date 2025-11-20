@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maverlang - Apréndelo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+        /* --- ESTILOS BASE DE LANDING PAGE (de noticias.html) --- */
+        :root {
+            --bg-light: #f4f4f5; --text-light: #18181b; --border-light: #e4e4e7;
+            --bg-dark: #0A0A0A; --text-dark: #f9fafb; --border-dark: #27272a;
+            /* --bg-stars: #000000; (ELIMINADO) */
+            --accent-blue: #3b82f6;
+            --accent-red: #ef4444;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --bg-active-theme-light: #e4e4e7;
+            --bg-active-theme-dark: #27272a;
+            --particle-color-1: rgba(59, 130, 246, 0.9);
+            --particle-color-2: rgba(96, 165, 250, 0.7);
+            --particle-color-3: rgba(255, 255, 255, 0.8);
+            /* Color de acento para esta página (unificado a azul) */
+            --accent-color: var(--accent-blue); /* Azul unificado */
+            --accent-color-rgb: 59, 130, 246;
+        }
+        html.dark {
+            --bg-main: var(--bg-dark); --text-main: var(--text-dark); --border-main: var(--border-dark);
+        }
+        html:not(.dark) {
+            --bg-main: var(--bg-light); --text-main: var(--text-light); --border-main: var(--border-light);
+        }
+        /* html.stars-theme (ELIMINADO) */
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-y: auto;
+        }
+        section.hero-section {
+            /* Padding inferior reducido para una transición más rápida */
+            padding-bottom: 3rem; /* Ajustado */
+            position: relative;
+            z-index: 10;
+        }
+
+        /* #starfield (ELIMINADO) */
+
+        .background-logo-text {
+            font-size: clamp(8rem, 25vw, 22rem); font-weight: 800; letter-spacing: -0.05em;
+            color: rgba(120, 120, 120, 0.05); position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); z-index: 1; pointer-events: none;
+        }
+
+        .countdown-box, .form-container {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 1rem;
+        }
+        html.dark .countdown-box, html.dark .form-container {
+            background: rgba(30, 30, 30, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        html:not(.dark) .countdown-box, html:not(.dark) .form-container {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--border-light);
+        }
+
+        .theme-main-btn, .theme-dropdown-btn {
+            padding: 0.5rem;
+            border-radius: 9999px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .theme-main-btn i, .theme-dropdown-btn i { width: 1.25rem; height: 1.25rem; }
+        .theme-main-btn:hover, .theme-dropdown-btn:hover { background-color: rgba(120, 120, 120, 0.1); }
+        .theme-dropdown-btn.active { background-color: var(--bg-active-theme-light); color: var(--text-main); }
+        html.dark .theme-dropdown-btn.active { background-color: var(--bg-active-theme-dark); }
+
+        .countdown-number { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 600; line-height: 1; color: var(--text-main); }
+        .countdown-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-main); opacity: 0.6; }
+
+        #fomo-counter { font-size: 1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: -1rem; opacity: 0; transition: opacity 0.5s ease; }
+        #fomo-counter.visible { opacity: 1; }
+        #whitelist-count { display: inline-block; color: var(--accent-blue); font-weight: 700; padding: 0 0.25rem; min-width: 1em; }
+
+        .modal-content, .feature-card {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 1rem;
+        }
+        html.dark .modal-content, html.dark .feature-card {
+            background: rgba(30, 30, 30, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        html:not(.dark) .modal-content, html:not(.dark) .feature-card {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--border-light);
+        }
+
+        #whitelist-modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
+        #whitelist-modal .modal-content { transition: transform 0.3s ease; }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 12px rgba(var(--accent-color-rgb), 0.4); transform: scale(1); }
+            50% { box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.8); transform: scale(1.03); }
+        }
+        /* Botón de acceso prioritario usa el color de acento de la página */
+        .animated-whitelist-btn { 
+            animation: pulse-glow 2.5s infinite ease-in-out; 
+            background-color: var(--accent-color);
+        }
+        /* Color especial para el botón del header */
+        #header-whitelist-btn {
+            background-color: var(--accent-blue); /* Mantenemos el azul del header */
+            animation: none; /* Quitamos la animación de pulso del header */
+            box-shadow: none;
+        }
+         #header-whitelist-btn:hover {
+             background-color: #2563eb;
+         }
+
+        .nav-dropdown-menu, .theme-dropdown-menu { position: absolute; top: calc(100% + 1rem); left: 0; width: 220px; padding: 0.5rem; border-radius: 1rem; z-index: 100; transition: all 0.2s ease-out; transform-origin: top left; background-color: var(--bg-main); }
+        .theme-dropdown-menu { width: auto; min-width: 50px; left: auto; right: 0; transform-origin: top right; display: flex; flex-direction: column; gap: 0.25rem; }
+        html.dark .nav-dropdown-menu, html.dark .theme-dropdown-menu { border: 1px solid var(--border-dark); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        html:not(.dark) .nav-dropdown-menu, html:not(.dark) .theme-dropdown-menu { border: 1px solid var(--border-light); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .nav-dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 500; border-radius: 0.5rem; transition: background-color 0.2s ease; cursor: pointer; }
+        .nav-dropdown-item:hover { background-color: rgba(120,120,120,0.1); }
+        .nav-dropdown-item i { opacity: 0.7; }
+        /* Estilo para link activo 'Aprendelo' */
+        .nav-dropdown-item.active { 
+            color: var(--accent-color); 
+            font-weight: 600; 
+            background-color: rgba(var(--accent-color-rgb), 0.1);
+        } 
+
+        #nav-portafolio-ai-link { position: relative; overflow: visible; padding: 0.25rem 0.5rem; cursor: pointer; }
+        #nav-portafolio-ai-link span { position: relative; z-index: 1; display: inline-block; animation: text-color-slow-pulse 5s ease-in-out infinite; }
+        .particles-container { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+        .particle { position: absolute; bottom: 2px; left: 50%; width: 3px; height: 3px; border-radius: 50%; opacity: 0; animation: particle-fall 2.5s ease-out infinite; animation-delay: calc(var(--particle-delay) * 1s); background-color: var(--particle-color); }
+        @keyframes text-color-slow-pulse { 0%, 100% { color: inherit; } 40% { color: var(--accent-blue); } 60% { color: var(--accent-blue); } }
+        @keyframes particle-fall { 0% { opacity: 0; transform: translate(-50%, 0) scale(0.3); } 50% { opacity: 1; transform: translate(calc(-50% + var(--particle-x)), calc(var(--particle-y) - 5px)) scale(1); } 100% { opacity: 0; transform: translate(calc(-50% + var(--particle-x) * 1.2), calc(var(--particle-y) - 15px)) scale(0); } }
+
+        .feature-grid-card {
+            display: flex; flex-direction: column;
+            gap: 0.75rem;
+            padding: 1.5rem;
+            height: 100%;
+        }
+        .feature-grid-card .icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px; height: 48px;
+            border-radius: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        /* Iconos de features con el color de acento de la página */
+        .icon-challenge { background-color: rgba(var(--accent-color-rgb), 0.1); color: var(--accent-color); }
+        .icon-courses { background-color: rgba(var(--accent-color-rgb), 0.1); color: var(--accent-color); }
+        .icon-exams { background-color: rgba(var(--accent-color-rgb), 0.1); color: var(--accent-color); }
+        
+        /* --- ESTILOS PARA MOCKUPS (de aprendelo.html) --- */
+
+        /* Estilos para Mockup de Ruta de Desafío */
+        .challenge-path-container-mockup {
+            position: relative; width: 100%; max-width: 250px; margin: 0 auto;
+            padding: 20px 0;
+            max-height: 400px;
+            overflow: hidden;
+            mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
+        }
+        .level-node-wrapper-mockup {
+            position: relative; z-index: 2; display: flex; justify-content: center;
+            width: 100%; height: 90px; /* Reducido */
+            align-items: center;
+        }
+        .level-node-mockup {
+            position: relative; width: 60px; height: 60px; /* Reducido */
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; border: 4px solid; /* Reducido */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease;
+        }
+        .level-node-mockup.status-locked { background-color: #9ca3af; border-color: #e5e7eb; }
+        .level-node-mockup.status-completed { background-color: var(--success-color); border-color: #a7f3d0; }
+        .level-node-mockup.status-unlocked { background-color: var(--accent-color); border-color: #c7d2fe; animation: pulse-node-mockup 1.5s infinite; }
+        
+        /* Movimiento sinusoidal reducido */
+        .level-node-wrapper-mockup:nth-child(6n)   .level-node-mockup { transform: translateX(40px); }
+        .level-node-wrapper-mockup:nth-child(6n+1) .level-node-mockup { transform: translateX(20px); }
+        .level-node-wrapper-mockup:nth-child(6n+2) .level-node-mockup { transform: translateX(-30px); }
+        .level-node-wrapper-mockup:nth-child(6n+3) .level-node-mockup { transform: translateX(-10px); }
+        .level-node-wrapper-mockup:nth-child(6n+4) .level-node-mockup { transform: translateX(35px); }
+        .level-node-wrapper-mockup:nth-child(6n+5) .level-node-mockup { transform: translateX(0px); }
+
+        @keyframes pulse-node-mockup { 
+            0% { box-shadow: 0 0 0 0 rgba(var(--accent-color-rgb), 0.7); } 
+            70% { box-shadow: 0 0 0 10px rgba(var(--accent-color-rgb), 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(var(--accent-color-rgb), 0); } 
+        }
+
+        /* Estilos para Mockup de Tarjetas de Curso */
+        .course-card-mockup {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-main);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border-radius: 1rem;
+        }
+        .course-card-mockup:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            html.dark & { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -2px rgba(0,0,0,0.1); }
+        }
+        .course-card-mockup .course-image-container { position: relative; background-color: var(--border-light); }
+        html.dark .course-card-mockup .course-image-container { background-color: var(--border-dark); }
+        .course-card-mockup .course-image { width: 100%; height: 120px; object-fit: cover; }
+        .course-card-mockup .course-tag {
+            position: absolute; top: 0.5rem; left: 0.5rem; background-color: rgba(255, 255, 255, 0.95);
+            color: #1f2937; font-size: 0.7rem; font-weight: 600; padding: 0.15rem 0.5rem;
+            border-radius: 9999px; border: 1px solid var(--border-light);
+        }
+        .course-card-mockup .course-content { padding: 0.75rem; }
+        .course-card-mockup .course-provider { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .course-card-mockup .course-provider img { height: 16px; width: 16px; object-fit: contain; }
+        .course-card-mockup .course-provider-name { font-size: 0.75rem; opacity: 0.7; }
+        .course-card-mockup .course-title { font-size: 1rem; font-weight: 700; color: var(--text-main); line-height: 1.3; }
+        .course-card-mockup .course-footer-text { font-size: 0.75rem; color: var(--accent-color); font-weight: 500; margin-top: 0.5rem; }
+
+        /* Estilos para Mockup de Certificado */
+        .certificate-mockup {
+            background-color: #f9fafb; /* Fondo claro para el certificado */
+            color: #1f2937; /* Texto oscuro */
+            border: 10px solid #dbeafe; /* Borde tipo diploma (azul claro) */
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            max-width: 450px;
+            margin: 0 auto;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        html.dark .certificate-mockup {
+            background-color: #1f2937; /* Fondo oscuro para el certificado */
+            color: #f9fafb; /* Texto claro */
+            border-color: #1e3a8a; /* Borde oscuro (azul oscuro) */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .certificate-mockup .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+        .certificate-mockup .header-text {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+        .certificate-mockup .certifies-that {
+            font-size: 0.875rem;
+            opacity: 0.7;
+        }
+        .certificate-mockup .student-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin: 0.5rem 0;
+            border-bottom: 2px solid var(--border-light);
+            display: inline-block;
+            padding-bottom: 0.25rem;
+        }
+        html.dark .certificate-mockup .student-name { border-color: var(--border-dark); }
+        .certificate-mockup .course-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        .certificate-mockup .course-description {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+        .certificate-mockup .signature {
+            font-family: 'cursive', 'Brush Script MT', sans-serif; /* Fuente cursiva */
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-top: 1rem;
+        }
+        .certificate-mockup .signature-title {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            border-top: 1px solid #d1d5db;
+            padding-top: 0.25rem;
+            margin-top: -0.5rem;
+        }
+        html.dark .certificate-mockup .signature-title { border-color: #4b5563; }
+
+        /* --- (NUEVO) ESTILOS PARA LA SECCIÓN DE TABS DE APRÉNDELO --- */
+        
+        /* Contenedor de la barra de pestañas */
+        #aprendelo-tabs-nav {
+            position: sticky;
+            /* 88px = ~72px del header + 16px de margen */
+            top: 88px; 
+            z-index: 30;
+            background-color: var(--bg-main);
+            border-bottom: 1px solid var(--border-main);
+            /* Sombra suave para separar del contenido */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); 
+        }
+        html.dark #aprendelo-tabs-nav {
+             background-color: rgba(10, 10, 10, 0.8); /* Fondo oscuro translúcido */
+             backdrop-filter: blur(12px);
+             -webkit-backdrop-filter: blur(12px);
+             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
+        }
+
+        /* (NUEVO) Contenedor de pestañas con scroll móvil */
+        #aprendelo-tabs-triggers {
+            display: flex; /* Base para móvil */
+            overflow-x: auto; /* Scroll en móvil */
+            -webkit-overflow-scrolling: touch;
+            padding-left: 1rem; /* Espacio al inicio en móvil */
+            padding-right: 1rem; /* Espacio al final en móvil */
+        }
+        #aprendelo-tabs-triggers::-webkit-scrollbar { display: none; }
+        #aprendelo-tabs-triggers { scrollbar-width: none; } /* Firefox */
+
+        @media (min-width: 768px) { /* md: */
+            #aprendelo-tabs-triggers {
+                display: grid; /* Vuelve a ser grid en desktop */
+                grid-template-columns: repeat(3, 1fr);
+                overflow-x: visible; /* Sin scroll en desktop */
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+
+        /* Botón de la pestaña */
+        .aprendelo-tab-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem; /* 12px */
+            padding: 1rem 0.5rem; /* 16px padding vertical */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            text-align: center;
+            border-bottom: 3px solid transparent; /* Borde inferior para estado activo */
+            color: var(--text-main);
+            opacity: 0.7;
+            flex-shrink: 0; /* (NUEVO) No encoger en móvil */
+            min-width: 180px; /* (NUEVO) Ancho mínimo en móvil */
+        }
+        @media (min-width: 768px) {
+             .aprendelo-tab-trigger {
+                min-width: auto; /* Reset en desktop */
+             }
+        }
+
+        .aprendelo-tab-trigger:hover {
+            opacity: 1;
+            background-color: rgba(var(--accent-color-rgb), 0.05);
+        }
+        
+        /* Estilo del botón de pestaña activo */
+        .aprendelo-tab-trigger.active {
+            opacity: 1;
+            font-weight: 600;
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+        
+        .aprendelo-tab-trigger .icon {
+            flex-shrink: 0;
+            width: 1.5rem; /* 24px */
+            height: 1.5rem; /* 24px */
+            color: var(--accent-color);
+        }
+        .aprendelo-tab-trigger h3 {
+            font-size: 1rem; /* 16px */
+            font-weight: 600;
+            color: inherit; /* Hereda el color del padre (para estado activo) */
+        }
+       
+        /* Panel de contenido de la pestaña */
+        .aprendelo-content-panel {
+            /* Oculto por defecto */
+            display: none; 
+            padding: 4rem 0; /* Espaciado superior e inferior */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .aprendelo-content-panel.active {
+            /* Se muestra */
+            display: block; 
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* (NUEVO) Tarjeta de característica para sub-secciones */
+        .sub-feature-card {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-main);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            height: 100%;
+        }
+        .sub-feature-card .icon {
+             display: inline-flex;
+             padding: 0.75rem;
+             border-radius: 9999px;
+             background-color: rgba(var(--accent-color-rgb), 0.1);
+             color: var(--accent-color);
+             margin-bottom: 1rem;
+        }
+        .sub-feature-card h3 {
+             font-size: 1.125rem;
+             font-weight: 600;
+             margin-bottom: 0.5rem;
+        }
+        .sub-feature-card p {
+             font-size: 0.875rem;
+             opacity: 0.7;
+             line-height: 1.5;
+        }
+        
+        /* (NUEVO) Estilos para la lista de temas del curso */
+        .topic-tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+        .topic-tag {
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-main);
+            transition: all 0.2s ease;
+        }
+        .topic-tag:hover {
+            background-color: rgba(var(--accent-color-rgb), 0.1);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        /* (NUEVO) Estilos para el Mockup del Lector de Cursos */
+        .course-player-mockup {
+            display: grid;
+            grid-template-columns: 1fr; /* Stacked on mobile */
+            gap: 1rem;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-main);
+            border-radius: 1rem;
+            padding: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @media (min-width: 1024px) { /* lg: */
+            /* Cambiado de md: a lg: y de 3fr 1fr a 3fr 2fr */
+            .course-player-mockup.grid-cols-5 {
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+            }
+            .course-player-mockup .col-span-3 {
+                grid-column: span 3 / span 3;
+            }
+             .course-player-mockup .col-span-2 {
+                grid-column: span 2 / span 2;
+            }
+        }
+        html.dark .course-player-mockup { box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); }
+
+        .video-placeholder {
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            position: relative;
+            background-color: #333;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .video-placeholder i {
+            width: 64px;
+            height: 64px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .ai-chat-mockup {
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            overflow-y: hidden;
+        }
+        @media (min-width: 1024px) { /* lg: */
+            .ai-chat-mockup {
+                height: 100%; /* Full height on desktop */
+                min-height: 300px; /* Asegurar altura mínima */
+            }
+        }
+        .ai-chat-bubble {
+            font-size: 0.875rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            line-height: 1.4;
+        }
+        .ai-bubble-user {
+            background-color: var(--accent-color);
+            color: white;
+            align-self: flex-end;
+        }
+        .ai-bubble-bot {
+            background-color: var(--border-light);
+            color: var(--text-main);
+            align-self: flex-start;
+        }
+        html.dark .ai-bubble-bot { background-color: var(--border-dark); }
+        .ai-chat-input-mockup {
+            margin-top: auto;
+            font-size: 0.875rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-main);
+            opacity: 0.6;
+        }
+
+        /* (NUEVO) Estilos para Misiones Prácticas */
+        .mission-card-mockup {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-main);
+            border-left: 4px solid var(--warning-color); /* Acento Naranja */
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 4px 10px -2px rgba(0,0,0,0.05);
+        }
+        html.dark .mission-card-mockup { box-shadow: 0 4px 10px -2px rgba(0,0,0,0.2); }
+        .mission-card-mockup .icon {
+            flex-shrink: 0;
+            color: var(--warning-color);
+        }
+        .mission-card-mockup h4 {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .mission-card-mockup p {
+            font-size: 0.875rem;
+            opacity: 0.7;
+        }
+
+        /* (NUEVO) ESTILOS PARA EL MENÚ MÓVIL */
+        #mobile-menu-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-main);
+            z-index: 100;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            padding-top: 5rem; /* Espacio para el header */
+        }
+        #mobile-menu-panel.open {
+            transform: translateX(0);
+        }
+        .mobile-nav-link {
+            font-size: 1.5rem; /* 24px */
+            font-weight: 600;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease;
+        }
+        .mobile-nav-link:hover {
+            background-color: rgba(120, 120, 120, 0.1);
+        }
+        .mobile-nav-link.active {
+            color: var(--accent-blue);
+        }
+        /* (FIN) ESTILOS PARA EL MENÚ MÓVIL */
+</style>
+</head>
+<body class="overflow-y-auto">
+    <!-- <canvas id="starfield"></canvas> (ELIMINADO) -->
+    <div id="page-wrapper" class="overflow-x-hidden">
+        <div id="main-content">
+
+            <header class="fixed top-0 left-0 right-0 z-[60] p-4 transition-colors duration-300">
+                 <div class="container mx-auto flex justify-between items-center bg-white/30 dark:bg-black/30 backdrop-blur-md p-3 rounded-full border border-white/10 shadow-sm">
+                     <a href="index.html" class="text-xl font-bold tracking-wider ml-2 flex-shrink-0">MAVERLANG</a>
+                     <div class="flex items-center gap-4 lg:gap-6 mx-4">
+                         <!-- (CORREGIDO) Navegación oculta en móvil -->
+                         <nav class="hidden md:flex items-center gap-4 lg:gap-6">
+                             <a href="index.html" class="font-semibold text-sm hover:opacity-70 transition-opacity">Inicio</a> 
+                             <a href="noticias.html" class="font-semibold text-sm hover:opacity-70 transition-opacity">Noticias</a> 
+                             <a href="mercados.html" class="font-semibold text-sm hover:opacity-70 transition-opacity">Mercados</a> 
+                             <a href="portafolioAI.html" id="nav-portafolio-ai-link" class="font-semibold text-sm transition-opacity relative"> 
+                                 <span>Portafolio AI</span> <div class="particles-container"></div>
+                             </a>
+                             <div class="relative" id="nav-funciones-dropdown">
+                                 <button id="nav-funciones-btn" class="flex items-center gap-1 font-semibold text-sm hover:opacity-70 transition-opacity">
+                                     <span>Funciones</span> <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                                 </button>
+                                 <div id="nav-funciones-menu" class="nav-dropdown-menu invisible opacity-0 scale-95">
+                                     <a href="seguimiento.html" class="nav-dropdown-item"><i data-lucide="activity" class="w-4 h-4"></i><span>Seguimiento</span></a> 
+                                     <!-- Link de Apréndelo Activo -->
+                                     <a href="aprendelo.html" class="nav-dropdown-item active"><i data-lucide="book-open-check" class="w-4 h-4"></i><span>Apréndelo</span></a> 
+                                     <a href="portafolio.html" class="nav-dropdown-item"><i data-lucide="briefcase" class="w-4 h-4"></i><span>Portafolio Virtual</span></a> 
+                                     <a href="chats.html" class="nav-dropdown-item"><i data-lucide="message-square" class="w-4 h-4"></i><span>Chats</span></a> 
+                                     <a href="mercados.html" class="nav-dropdown-item"><i data-lucide="line-chart" class="w-4 h-4"></i><span>Mercados</span></a> 
+                                 </div>
+                             </div>
+                         </nav>
+                         <!-- (CORREGIDO) Botón de acceso oculto en móvil -->
+                         <button id="header-whitelist-btn" class="bg-blue-600 text-white font-semibold rounded-full px-4 py-2 text-sm transition-transform hover:scale-105 whitespace-nowrap hidden md:block">
+                             Acceso Prioritario
+                         </button>
+                         <div class="relative" id="theme-selector">
+                             <button id="theme-main-btn" class="theme-main-btn p-1.5 rounded-full border" style="border-color: var(--border-main);"><i data-lucide="sun"></i></button>
+                             <div id="theme-dropdown-menu" class="theme-dropdown-menu invisible opacity-0 scale-95 p-1 border" style="border-color: var(--border-main);">
+                                  <button data-theme="light" title="Tema Claro" class="theme-dropdown-btn"><i data-lucide="sun"></i></button>
+                                  <button data-theme="dark" title="Tema Oscuro" class="theme-dropdown-btn"><i data-lucide="moon"></i></button>
+                                  <!-- (ELIMINADO) Botón de tema estrellado -->
+                             </div>
+                         </div>
+                         <!-- (NUEVO) Botón de Menú Móvil -->
+                         <button id="mobile-menu-btn" class="p-1.5 rounded-full border md:hidden" style="border-color: var(--border-main);">
+                             <i data-lucide="menu" class="w-6 h-6"></i>
+                         </button>
+                     </div>
+                 </div>
+            </header>
+
+            <!-- (NUEVO) Panel de Menú Móvil -->
+            <div id="mobile-menu-panel" class="z-[55]">
+                <nav class="flex flex-col gap-2">
+                    <a href="index.html" class="mobile-nav-link">Inicio</a>
+                    <a href="noticias.html" class="mobile-nav-link">Noticias</a>
+                    <a href="mercados.html" class="mobile-nav-link">Mercados</a>
+                    <a href="portafolioAI.html" class="mobile-nav-link">Portafolio AI</a>
+                    <hr class="my-2" style="border-color: var(--border-main);" />
+                    <a href="seguimiento.html" class="mobile-nav-link">Seguimiento</a>
+                    <a href="aprendelo.html" class="mobile-nav-link active">Apréndelo</a>
+                    <a href="portafolio.html" class="mobile-nav-link">Portafolio Virtual</a>
+                    <a href="chats.html" class="mobile-nav-link">Chats</a>
+                </nav>
+                <div class="mt-auto pt-6">
+                    <button id="mobile-whitelist-btn" class="modal-trigger-btn w-full bg-blue-600 text-white font-semibold rounded-full px-6 py-4 text-lg transition-transform hover:scale-105 whitespace-nowrap">
+                        Acceso Prioritario
+                    </button>
+                </div>
+            </div>
+
+            <main class="relative z-10">
+
+                <section class="hero-section relative flex flex-col items-center justify-center text-center p-4 overflow-hidden">
+                    <div class="background-logo-text opacity-50" style="color: rgba(59, 130, 246, 0.05);">LEARN</div>
+                    <div class="relative z-10 pt-[18vh]">
+                        <div class="z-10 text-center max-w-6xl">
+                            <span class="font-bold uppercase tracking-wider text-base" style="color: var(--accent-blue);">El Conocimiento es tu Mejor Activo</span>
+                            <h1 class="text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mt-2">
+                                Domina el Mercado.
+                            </h1>
+                             <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">
+                                Aprende a tu Ritmo.
+                             </h2>
+                            <p class="mt-6 text-xl md:text-2xl opacity-80 max-w-3xl mx-auto">
+                                Conviértete en un experto con nuestros tres pilares de aprendizaje: <strong>Desafíos Diarios</strong> gamificados, <strong>Cursos Profesionales</strong> y <strong>Exámenes de Certificación</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 
+                  ============================================================
+                  (SECCIÓN DE PESTAÑAS STICKY)
+                  ============================================================
+                -->
+                <section id="aprendelo-tabs-nav">
+                    <!-- (NUEVO) Contenedor para scroll móvil -->
+                    <div class="container mx-auto max-w-screen-xl px-0 md:px-4">
+                        <div id="aprendelo-tabs-triggers" class="flex overflow-x-auto md:grid md:grid-cols-3">
+                            <!-- Trigger 1: Desafío -->
+                            <button class="aprendelo-tab-trigger active" data-tab="desafio">
+                                <i data-lucide="flame" class="icon"></i>
+                                <h3>Desafío Diario</h3>
+                            </button>
+                            <!-- Trigger 2: Cursos -->
+                            <button class="aprendelo-tab-trigger" data-tab="cursos">
+                                <i data-lucide="book-open-check" class="icon"></i>
+                                <h3>Cursos Profesionales</h3>
+                            </button>
+                            <!-- Trigger 3: Exámenes -->
+                            <button class="aprendelo-tab-trigger" data-tab="examenes">
+                                <i data-lucide="file-check-2" class="icon"></i>
+                                <h3>Certificaciones</h3>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 
+                  ============================================================
+                  (ÁREA DE CONTENIDO DE PESTAÑAS)
+                  ============================================================
+                -->
+                <div id="aprendelo-main-content">
+                
+                    <!-- 
+                      PANEL 1: DESAFÍO DIARIO
+                    -->
+                    <section id="content-desafio" class="aprendelo-content-panel active">
+                        <div class="container mx-auto max-w-screen-xl px-4">
+                        
+                            <!-- Sección Principal (existente) -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                                <!-- Columna de Texto -->
+                                <div>
+                                     <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+                                        El Camino del Inversor
+                                     </h2>
+                                     <p class="text-lg opacity-80 mb-6">
+                                         Olvídate de estudiar pasivamente. Nuestro <strong>Desafío Diario</strong> convierte el aprendizaje financiero en un juego adictivo, inspirado en las plataformas que ya amas.
+                                     </p>
+                                     <ul class="space-y-3">
+                                         <li class="flex items-start">
+                                             <i data-lucide="route" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                             <div><h3 class="font-semibold text-md">Ruta de Aprendizaje Clara</h3><p class="opacity-70 text-sm">Avanza nivel por nivel, desbloqueando lecciones de "Inversión en Bolsa 101" hasta "Análisis Técnico Avanzado".</p></div>
+                                         </li>
+                                         <li class="flex items-start">
+                                             <i data-lucide="flame" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                             <div><h3 class="font-semibold text-md">Mantén tu Racha</h3><p class="opacity-70 text-sm">Completa una lección cada día para construir tu racha de conocimiento y ganar recompensas.</p></div>
+                                         </li>
+                                         <li class="flex items-start">
+                                             <i data-lucide="swords" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                             <div><h3 class="font-semibold text-md">Desafíos Constantes</h3><p class="opacity-70 text-sm">Pon a prueba tus habilidades con preguntas rápidas, ejercicios de gráficos y escenarios del mundo real.</p></div>
+                                         </li>
+                                     </ul>
+                                </div>
+                                <!-- Columna Visual: Mockup del Path -->
+                                <div class="flex items-center justify-center p-6 feature-card" style="background-color: var(--bg-main);">
+                                    <div class="challenge-path-container-mockup" style="max-height: 450px;">
+                                        <div class="level-node-wrapper-mockup"><div class="level-node-mockup status-completed"><i data-lucide="check" class="w-8 h-8 z-10"></i></div></div>
+                                        <div class="level-node-wrapper-mockup"><div class="level-node-mockup status-completed"><i data-lucide="check" class="w-8 h-8 z-10"></i></div></div>
+                                        <div class="level-node-wrapper-mockup"><div class="level-node-mockup status-unlocked"><i data-lucide="play" class="w-8 h-8 z-10"></i></div></div>
+                                        <div class="level-node-wrapper-mockup"><div class="level-node-mockup status-locked"><i data-lucide="lock" class="w-8 h-8 z-10"></i></div></div>
+                                        <div class="level-node-wrapper-mockup"><div class="level-node-mockup status-locked"><i data-lucide="lock" class="w-8 h-8 z-10"></i></div></div>
+                                        <div class="level-node-wrapper-mockup"><div class="level-node-mockup status-locked"><i data-lucide="lock" class="w-8 h-8 z-10"></i></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- (NUEVO) Sub-sección de Prueba de Nivelación -->
+                            <div class="mt-16 md:mt-24 bg-blue-600/5 dark:bg-blue-900/10 py-16 md:py-20 rounded-2xl border border-blue-500/10">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center px-6 md:px-12">
+                                    <div class="md:order-2">
+                                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Empieza en tu Nivel Perfecto</h2>
+                                        <p class="text-lg opacity-80 mt-4 mb-6">
+                                            ¿Ya tienes experiencia? No te obligamos a empezar de cero. Realiza nuestra <strong class="text-main">Prueba de Nivelación</strong> opcional.
+                                        </p>
+                                        <p class="opacity-70 text-sm">
+                                            Nuestra IA evaluará tus conocimientos y te ubicará en el nivel exacto de la ruta de aprendizaje que te corresponde. Ahorra tiempo y aprende solo lo que necesitas.
+                                        </p>
+                                    </div>
+                                    <div class="md:order-1 feature-card p-6">
+                                        <h4 class="font-semibold text-center mb-4">Ejemplo de Pregunta:</h4>
+                                        <p class="font-semibold text-lg mb-4">¿Qué patrón de velas indica una posible reversión alcista?</p>
+                                        <div class="space-y-3">
+                                            <button class="w-full text-left p-3 rounded-lg border border-red-500/50 bg-red-500/10 opacity-70 cursor-not-allowed">A. Hombro-Cabeza-Hombro</button>
+                                            <button class="w-full text-left p-3 rounded-lg border border-green-500/50 bg-green-500/10 opacity-70 cursor-not-allowed">B. Martillo (Hammer)</button>
+                                            <button class="w-full text-left p-3 rounded-lg border border-gray-500/50 opacity-70 cursor-not-allowed">C. Estrella Fugaz</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sub-sección de Características -->
+                            <div class="mt-16 md:mt-24">
+                                <div class="text-center mb-12">
+                                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Domina el Hábito de Aprender</h2>
+                                    <p class="text-lg opacity-80 max-w-2xl mx-auto mt-4">No solo aprendes, juegas a aprender. Cada lección está diseñada para ser rápida, efectiva y gratificante.</p>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                    <!-- Característica 1 -->
+                                    <div class="sub-feature-card">
+                                        <div class="icon"><i data-lucide="heart-pulse" class="w-7 h-7"></i></div>
+                                        <h3>Vidas y Rachas</h3>
+                                        <p>Como en tus juegos favoritos, tienes vidas limitadas para acertar. ¡Cuida tu racha diaria para desbloquear cofres de recompensas!</p>
+                                    </div>
+                                    <!-- Característica 2 -->
+                                    <div class="sub-feature-card">
+                                        <div class="icon"><i data-lucide="sparkles" class="w-7 h-7"></i></div>
+                                        <h3>Repaso Inteligente con IA</h3>
+                                        <p>Nuestra IA detecta los conceptos que más te cuestan y crea sesiones de repaso personalizadas para reforzar tu conocimiento.</p>
+                                    </div>
+                                    <!-- Característica 3 -->
+                                    <div class="sub-feature-card">
+                                        <div class="icon"><i data-lucide="trending-up" class="w-7 h-7"></i></div>
+                                        <h3>XP y Tablas de Posiciones</h3>
+                                        <p>Gana puntos de experiencia (XP) por cada lección. Compite contra tus amigos en ligas semanales y sube en la tabla de posiciones.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </section>
+                    
+                    <!-- 
+                      PANEL 2: CURSOS PROFESIONALES
+                    -->
+                    <section id="content-cursos" class="aprendelo-content-panel hidden">
+                        <div class="container mx-auto max-w-screen-xl px-4">
+                        
+                            <!-- Sección Principal (existente) -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                                <!-- Columna de Texto -->
+                                <div>
+                                     <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+                                        Conviértete en un Experto
+                                     </h2>
+                                     <p class="text-lg opacity-80 mb-6">
+                                         Accede a una biblioteca de cursos completos diseñados para llevarte de principiante a profesional en las áreas más demandadas del análisis financiero.
+                                     </p>
+                                     <ul class="space-y-3">
+                                         <li class="flex items-start">
+                                             <i data-lucide="video" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                             <div><h3 class="font-semibold text-md">Videos de Alta Calidad + IA</h3><p class="opacity-70 text-sm">Aprende con videos producidos por expertos, con un asistente de IA que responde tus dudas en tiempo real.</p></div>
+                                         </li>
+                                         <li class="flex items-start">
+                                             <i data-lucide="clipboard-check" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                             <div><h3 class="font-semibold text-md">Proyectos del Mundo Real</h3><p class="opacity-70 text-sm">Aplica lo aprendido valorando una empresa real o creando una estrategia de trading técnico.</p></div>
+                                         </li>
+                                         <li class="flex items-start">
+                                             <i data-lucide="infinity" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                             <div><h3 class="font-semibold text-md">Acceso de por Vida</h3><p class="opacity-70 text-sm">Inscríbete una vez y ten acceso para siempre a las lecciones y todas las futuras actualizaciones del curso.</p></div>
+                                         </li>
+                                     </ul>
+                                </div>
+                                <!-- Columna Visual: Grid de Cursos -->
+                                <div class="mt-8 md:mt-0">
+                                     <div class="grid grid-cols-2 gap-4">
+                                         <div class="course-card-mockup">
+                                             <div class="course-image-container"><img src="https://images.unsplash.com/photo-1554224155-8d04421cd6a8?q=80&w=600&auto=format&fit=crop" alt="Análisis Fundamental" class="course-image"></div>
+                                             <div class="course-content">
+                                                 <div class="course-provider"><img src="https://placehold.co/40x40/3b82f6/ffffff?text=M&font=inter" alt="M"><span class="course-provider-name">Maverlang Academy</span></div>
+                                                 <h3 class="course-title">Análisis Fundamental</h3>
+                                                 <p class="course-footer-text">Certificado Profesional</p>
+                                             </div>
+                                         </div>
+                                         <div class="course-card-mockup">
+                                             <div class="course-image-container"><img src="https://images.unsplash.com/photo-1640282181223-4557b436aa83?q=80&w=600&auto=format&fit=crop" alt="Análisis Técnico" class="course-image"></div>
+                                             <div class="course-content">
+                                                 <div class="course-provider"><img src="https://placehold.co/40x40/3b82f6/ffffff?text=M&font=inter" alt="M"><span class="course-provider-name">Maverlang Academy</span></div>
+                                                 <h3 class="course-title">Análisis Técnico</h3>
+                                                 <p class="course-footer-text">Certificado Profesional</p>
+                                             </div>
+                                         </div>
+                                         <div class="course-card-mockup">
+                                             <div class="course-image-container"><img src="https://images.unsplash.com/photo-1621418292373-f6f9c0f9f3b1?q=80&w=600&auto=format&fit=crop" alt="Criptomonedas" class="course-image"></div>
+                                             <div class="course-content">
+                                                 <div class="course-provider"><img src="https://placehold.co/40x40/3b82f6/ffffff?text=M&font=inter" alt="M"><span class="course-provider-name">Maverlang Academy</span></div>
+                                                 <h3 class="course-title">Inversión en Criptomonedas</h3>
+                                                 <p class="course-footer-text">Especialización</p>
+                                             </div>
+                                         </div>
+                                         <div class="course-card-mockup">
+                                             <div class="course-image-container"><img src="https://images.unsplash.com/photo-1611974783360-8f6ddc0b731c?q=80&w=600&auto=format&fit=crop" alt="Derivados" class="course-image"></div>
+                                             <div class="course-content">
+                                                 <div class="course-provider"><img src="https://placehold.co/40x40/3b82f6/ffffff?text=M&font=inter" alt="M"><span class="course-provider-name">Maverlang Academy</span></div>
+                                                 <h3 class="course-title">Derivados Financieros</h3>
+                                                 <p class="course-footer-text">Especialización</p>
+                                             </div>
+                                         </div>
+                                     </div>
+                                </div>
+                            </div>
+                            
+                            <!-- (NUEVO) Sub-sección de Lector Interactivo -->
+                            <div class="mt-16 md:mt-24">
+                                <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
+                                    <!-- Columna 1: Mockup del Lector (AJUSTADO) -->
+                                    <div class="lg:col-span-3 course-player-mockup grid-cols-5">
+                                        <div class="video-placeholder col-span-3">
+                                            <i data-lucide="play-circle"></i>
+                                        </div>
+                                        <div class="ai-chat-mockup col-span-2">
+                                            <h4 class="font-semibold text-sm text-center opacity-70">Asistente IA</h4>
+                                            <div class="ai-chat-bubble ai-bubble-user">¿Qué es un ETF?</div>
+                                            <div class="ai-chat-bubble ai-bubble-bot">Un ETF (Fondo Cotizado en Bolsa) es un fondo de inversión...</div>
+                                            <div class="ai-chat-bubble ai-bubble-user">¿Es como una acción?</div>
+                                            <div class="ai-chat-bubble ai-bubble-bot">Similar, pero representa una canasta de activos.</div>
+                                            <div class="ai-chat-input-mockup">Haz una pregunta...</div>
+                                        </div>
+                                    </div>
+                                    <!-- Columna 2: Texto (AJUSTADO) -->
+                                    <div class="lg:col-span-2">
+                                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Plataforma Interactiva</h2>
+                                        <p class="text-lg opacity-80 mt-4 mb-6">
+                                            Nuestros cursos van más allá de simples videos. Es un ecosistema de aprendizaje diseñado para la maestría.
+                                        </p>
+                                        <ul class="space-y-3">
+                                            <li class="flex items-start">
+                                                <i data-lucide="sparkles" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                                <div><h3 class="font-semibold text-md">Asistente de IA Integrado</h3><p class="opacity-70 text-sm">¿Confundido? Pausa el video y pregúntale a nuestra IA. Te dará una explicación simple al instante.</p></div>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <i data-lucide="highlighter" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                                <div><h3 class="font-semibold text-md">Notas y Transcripciones</h3><p class="opacity-70 text-sm">Toma notas directamente en la plataforma, sincronizadas con el video. Todas las clases incluyen transcripciones.</p></div>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <i data-lucide="download" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                                <div><h3 class="font-semibold text-md">Recursos Descargables</h3><p class="opacity-70 text-sm">Accede a plantillas de Excel, checklists de valoración y guías de estudio para complementar tu aprendizaje.</p></div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- (NUEVO) Sub-sección de Temas -->
+                            <div class="mt-16 md:mt-24">
+                                <div class="text-center mb-12">
+                                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Una Biblioteca en Expansión</h2>
+                                    <p class="text-lg opacity-80 max-w-2xl mx-auto mt-4">Desde los fundamentos hasta las estrategias más complejas, tenemos cubierto el espectro completo del conocimiento financiero.</p>
+                                </div>
+                                <div class="topic-tag-list max-w-4xl mx-auto">
+                                    <span class="topic-tag">Inversión en Bolsa</span>
+                                    <span class="topic-tag">Análisis Técnico</span>
+                                    <span class="topic-tag">Análisis Fundamental</span>
+                                    <span class="topic-tag">Valoración de Empresas</span>
+                                    <span class="topic-tag">Criptomonedas y Blockchain</span>
+                                    <span class="topic-tag">Derivados Financieros</span>
+                                    <span class="topic-tag">Opciones y Futuros</span>
+                                    <span class="topic-tag">Macroeconomía</span>
+                                    <span class="topic-tag">Gestión de Portafolio</span>
+                                    <span class="topic-tag">Psicología del Trading</span>
+                                    <span class="topic-tag">Finanzas Personales</span>
+                                    <span class="topic-tag">Inversión Inmobiliaria</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </section>
+                    
+                    <!-- 
+                      PANEL 3: CERTIFICACIONES
+                    -->
+                    <section id="content-examenes" class="aprendelo-content-panel hidden">
+                        <div class="container mx-auto max-w-screen-xl px-4">
+                        
+                            <!-- Sección Principal (existente) -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                                <!-- Columna de Texto -->
+                                <div>
+                                     <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+                                        Exámenes y Certificaciones
+                                     </h2>
+                                     <p class="text-lg opacity-80 mb-6">
+                                         El conocimiento sin aplicación es solo teoría. Demuestra lo que sabes, supera nuestros exámenes y obtén certificaciones que validan tus habilidades ante el mundo.
+                                     </p>
+                                     <ul class="space-y-3">
+                                         <li class="flex items-start">
+                                             <i data-lucide="file-check-2" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                             <div><h3 class="font-semibold text-md">Exámenes Rigurosos</h3><p class="opacity-70 text-sm">Pruebas teóricas y prácticas que simulan escenarios reales del mercado para evaluar tu competencia.</p></div>
+                                         </li>
+                                         <li class="flex items-start">
+                                             <i data-lucide="award" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                             <div><h3 class="font-semibold text-md">Certificados Oficiales de Maverlang</h3><p class="opacity-70 text-sm">Recibe un certificado digital verificable al aprobar cada módulo de especialización.</p></div>
+                                         </li>
+                                         <li class="flex items-start">
+                                             <i data-lucide="linkedin" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                             <div><h3 class="font-semibold text-md">Comparte tu Logro</h3><p class="opacity-70 text-sm">Añade tus certificaciones directamente a tu perfil de LinkedIn y destaca en tu carrera profesional.</p></div>
+                                         </li>
+                                     </ul>
+                                </div>
+                                <!-- Columna Visual: Mockup de Certificado -->
+                                <div class="flex items-center justify-center p-6">
+                                    <div class="certificate-mockup">
+                                        <div class="logo">MAVERLANG</div>
+                                        <div class="header-text">Certificado de Especialización</div>
+                                        <p class="certifies-that">Otorga a</p>
+                                        <h2 class="student-name">[Nombre del Alumno]</h2>
+                                        <p class="course-name mt-4">Por haber completado exitosamente la especialización en</p>
+                                        <h3 class="course-description">[Nombre de la Especialización]</h3>
+                                        <div class="flex justify-between items-end mt-6">
+                                            <div class="text-left">
+                                                <div class="signature">Maverlang Team</div>
+                                                <div class="signature-title">Equipo Académico</div>
+                                            </div>
+                                            <i data-lucide="shield-check" class="w-16 h-16 text-blue-600"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- (NUEVO) Sub-sección de Misiones Prácticas -->
+                            <div class="mt-16 md:mt-24 bg-blue-600/5 dark:bg-blue-900/10 py-16 md:py-20 rounded-2xl border border-blue-500/10">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center px-6 md:px-12">
+                                    <!-- Columna 1: Texto -->
+                                    <div>
+                                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Prepárate para Misiones Prácticas</h2>
+                                        <p class="text-lg opacity-80 mt-4 mb-6">
+                                            Nuestras certificaciones no se basan en memorizar. Se basan en <strong class="text-main">ejecutar</strong>.
+                                        </p>
+                                        <p class="opacity-70 mb-4 text-sm">
+                                            Para certificarte, completarás "Misiones" que simulan el trabajo de un analista real. No te preguntaremos qué es un DCF, te pediremos que construyas uno.
+                                        </p>
+                                        <ul class="space-y-3">
+                                             <li class="flex items-start">
+                                                <i data-lucide="target" class="w-5 h-5 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                                <span class="opacity-90 text-sm">Exámenes basados en escenarios reales.</span>
+                                             </li>
+                                             <li class="flex items-start">
+                                                <i data-lucide="file-spreadsheet" class="w-5 h-5 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                                <span class="opacity-90 text-sm">Análisis de casos de estudio prácticos.</span>
+                                             </li>
+                                             <li class="flex items-start">
+                                                <i data-lucide="bar-chart-3" class="w-5 h-5 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                                <span class="opacity-90 text-sm">Simulaciones de trading y gestión de portafolio.</span>
+                                             </li>
+                                        </ul>
+                                    </div>
+                                    <!-- Columna 2: Mockups de Misiones -->
+                                    <div class="space-y-4">
+                                        <div class="mission-card-mockup">
+                                            <div class="icon"><i data-lucide="briefcase" class="w-7 h-7"></i></div>
+                                            <div>
+                                                <h4>Misión: Valoración de Empresa</h4>
+                                                <p>Calcula el valor intrínseco de [AAPL] usando un modelo DCF con los datos provistos.</p>
+                                            </div>
+                                        </div>
+                                        <div class="mission-card-mockup">
+                                            <div class="icon"><i data-lucide="candlestick-chart" class="w-7 h-7"></i></div>
+                                            <div>
+                                                <h4>Misión: Identificación de Patrón</h4>
+                                                <p>Analiza el gráfico de [BTC/USD] e identifica 3 patrones de reversión alcista en el último mes.</p>
+                                            </div>
+                                        </div>
+                                         <div class="mission-card-mockup">
+                                            <div class="icon"><i data-lucide="archive" class="w-7 h-7"></i></div>
+                                            <div>
+                                                <h4>Misión: Gestión de Portafolio</h4>
+                                                <p>Construye un portafolio simulado con $100k, asignando activos para un perfil de riesgo moderado.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- (NUEVO) Sub-sección de Beneficios -->
+                            <div class="mt-16 md:mt-24">
+                                <div class="text-center mb-12">
+                                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Más que un Diploma</h2>
+                                    <p class="text-lg opacity-80 max-w-2xl mx-auto mt-4">Tu certificación es una llave que abre nuevas oportunidades profesionales y valida tu experiencia.</p>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                    <!-- Beneficio 1 -->
+                                    <div class="sub-feature-card">
+                                        <div class="icon"><i data-lucide="linkedin" class="w-7 h-7"></i></div>
+                                        <h3>Validación para LinkedIn</h3>
+                                        <p>Integra tu logro con un solo clic. Deja que reclutadores y colegas vean tus habilidades verificadas en tu perfil profesional.</p>
+                                    </div>
+                                    <!-- Beneficio 2 -->
+                                    <div class="sub-feature-card">
+                                        <div class="icon"><i data-lucide="users" class="w-7 h-7"></i></div>
+                                        <h3>Comunidad Pro</h3>
+                                        <p>Al certificarte, obtienes acceso a una comunidad exclusiva de exalumnos, mentores y profesionales del sector.</p>
+                                    </div>
+                                    <!-- Beneficio 3 -->
+                                    <div class="sub-feature-card">
+                                        <div class="icon"><i data-lucide="brain" class="w-7 h-7"></i></div>
+                                        <h3>Habilidad Demostrada</h3>
+                                        <p>Nuestros exámenes no son de memoria; son prácticos. Un certificado de Maverlang significa que sabes *aplicar* el conocimiento.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </section>
+                
+                </div>
+                <!-- ============================================================
+                     (FIN DEL ÁREA DE CONTENIDO DE PESTAÑAS)
+                     ============================================================
+                -->
+
+
+                 <section id="final-cta" class="relative z-10 w-full pt-8 md:pt-12 pb-16 md:pb-24 text-center"> <!-- Padding superior e inferior reducidos -->
+                    <div class="container mx-auto max-w-3xl px-4">
+                        <h2 class="text-4xl md:text-5xl font-bold tracking-tight">
+                            El Futuro de tu Educación Financiera.
+                        </h2>
+                        <p class="mt-4 text-lg md:text-xl opacity-80">
+                           Deja de adivinar. Empieza a aprender. Únete a la lista de acceso prioritario y sé el primero en transformar tu conocimiento con Maverlang.
+                        </p>
+                        <button id="footer-whitelist-btn" class="modal-trigger-btn mt-10 text-white font-semibold rounded-full px-8 py-4 text-lg transition-transform hover:scale-105 animated-whitelist-btn whitespace-nowrap">
+                             Obtener Acceso Prioritario
+                        </button>
+                    </div>
+                </section>
+
+            </main>
+
+            <!-- Footer (MODIFICADO) -->
+            <footer class="relative z-10 w-full border-t pt-12" style="border-color: var(--border-main); background-color: var(--bg-main);"> <!-- Padding superior reducido -->
+                <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"> <!-- Padding vertical removido, ahora solo en pt-12 -->
+                    
+                    <div class="mb-12 text-center md:text-left">
+                        <div class="text-xl font-bold tracking-wider inline-block">MAVERLANG</div>
+                        <p class="mt-2 text-md opacity-80 max-w-lg mx-auto md:mx-0">
+                            Potenciando decisiones financieras con inteligencia artificial avanzada.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-12">
+                        <!-- Col 1: Navegación (MODIFICADA) -->
+                        <div>
+                            <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Navegación</h3>
+                            <nav class="flex flex-col gap-3">
+                                <a href="index.html" class="text-sm opacity-70 hover:opacity-100 hover:text-blue-500 transition-all">Inicio</a>
+                                <a href="noticias.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Noticias</a>
+                                <a href="mercados.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Mercados</a>
+                                <a href="aprendelo.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Apréndelo</a>
+                            </nav>
+                        </div>
+                        <!-- Col 2: Plataforma (NUEVA) -->
+                        <div>
+                            <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Plataforma</h3>
+                            <nav class="flex flex-col gap-3">
+                                <a href="portafolioAI.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Portafolio AI</a>
+                                <a href="seguimiento.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Seguimiento</a>
+                                <a href="portafolio.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Portafolio Virtual</a>
+                                <a href="chats.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Chats</a>
+                            </nav>
+                        </div>
+                        <!-- Col 3: Compañía (Sin cambios) -->
+                        <div>
+                            <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Compañía</h3>
+                            <nav class="flex flex-col gap-3">
+                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Sobre Nosotros</a>
+                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Blog</a>
+                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Contacto</a>
+                            </nav>
+                        </div>
+                        <!-- Col 4: Legal (Sin cambios) -->
+                        <div>
+                            <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Legal</h3>
+                            <nav class="flex flex-col gap-3">
+                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Términos de Servicio</a>
+                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Política de Privacidad</a>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-8 pb-12 flex flex-col md:flex-row justify-between items-center gap-6" style="border-color: var(--border-main);"> <!-- Añadido pb-12 -->
+                        <p class="text-sm opacity-70 text-center md:text-left">
+                            &copy; 2025 Maverlang. Todos los derechos reservados.
+                        </p>
+                        <div class="flex gap-6">
+                            <a href="#" aria-label="LinkedIn" class="opacity-70 hover:opacity-100 hover:text-blue-500 transition-all">
+                                <i data-lucide="linkedin" class="w-6 h-6"></i>
+                            </a>
+                            <a href="#" aria-label="Instagram" class="opacity-70 hover:opacity-100 hover:text-pink-500 transition-all">
+                                <i data-lucide="instagram" class="w-6 h-6"></i>
+                            </a>
+                            <a href="#" aria-label="X (Twitter)" class="opacity-70 hover:opacity-100 transition-all">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.06l3.51 4.639L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+                                </svg>
+                            </a>
+                            <a href="#" aria-label="Facebook" class="opacity-70 hover:opacity-100 hover:text-blue-600 transition-all">
+                                <i data-lucide="facebook" class="w-6 h-6"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+    <!-- Modal de Whitelist (HTML es el mismo que en noticias.html) -->
+    <div id="whitelist-modal" class="fixed inset-0 bg-black/60 z-[101] flex items-center justify-center p-4 opacity-0 invisible">
+        <div class="modal-content w-full max-w-md rounded-2xl p-8 text-center scale-95">
+            <button id="close-modal-btn" class="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-500/10"><i data-lucide="x"></i></button>
+            <i data-lucide="rocket" class="w-12 h-12 mx-auto text-blue-500 mb-4"></i>
+            <h2 class="text-2xl font-bold">Únete al Acceso Prioritario</h2>
+            <p class="mt-2 text-main/70">Sé el primero en saber cuándo lanzamos y obtén un <span class="font-bold text-blue-500">20% de descuento</span>.</p>
+            <div id="fomo-counter" class="text-base font-semibold">
+               ¡Únete a <span id="whitelist-count">...</span> analistas en la lista!
+            </div>
+            <div id="modal-countdown-container" class="flex items-center justify-center gap-3 md:gap-4 my-6">
+                <!-- Contenido del countdown -->
+                <div class="countdown-box w-20 h-20 flex flex-col items-center justify-center"><span id="modal-days" class="countdown-number">00</span><span class="countdown-label">Días</span></div>
+                <div class="countdown-box w-20 h-20 flex flex-col items-center justify-center"><span id="modal-hours" class="countdown-number">00</span><span class="countdown-label">Horas</span></div>
+                <div class="countdown-box w-20 h-20 flex flex-col items-center justify-center"><span id="modal-minutes" class="countdown-number">00</span><span class="countdown-label">Minutos</span></div>
+                <div class="countdown-box w-20 h-20 flex flex-col items-center justify-center"><span id="modal-seconds" class="countdown-number">00</span><span class="countdown-label">Segundos</span></div>
+            </div>
+            <form id="whitelist-form-modal">
+                <div class="flex items-center p-2 rounded-full border" style="border-color: var(--border-main);"><input type="email" id="email-input-modal" placeholder="Tu correo electrónico" required class="w-full bg-transparent px-4 py-2 text-main placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none"><button type="submit" id="submit-btn-modal" class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-full flex-shrink-0 hover:bg-blue-700 transition-colors">Anotarme</button></div>
+                <p id="form-message-modal" class="mt-3 text-sm h-5"></p>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Script (Copiado de noticias.html, pero eliminando la lógica de noticias) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp, onSnapshot, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let db, auth;
+        let userId = null;
+        let isAuthReady = false;
+        let whitelistCol;
+        let isClickOutsideListenerAdded = false;
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        let modalShown = false;
+
+        // --- Funciones del Modal ---
+        const openModal = (e) => {
+            if (e) e.preventDefault();
+             // No abrir modal si el enlace tiene un href real (que no sea #)
+            if (e.currentTarget && e.currentTarget.href && !e.currentTarget.href.endsWith('#') && e.currentTarget.target !== '_blank') {
+                return; 
+            }
+            const modal = document.getElementById('whitelist-modal');
+            if (!modal || !modal.classList.contains('invisible')) return;
+            modalShown = true;
+            const modalContent = modal.querySelector('.modal-content');
+            modal.classList.remove('invisible', 'opacity-0');
+            modalContent.classList.remove('scale-95');
+        };
+        const closeModal = () => {
+             const modal = document.getElementById('whitelist-modal');
+            if (!modal) return;
+            const modalContent = modal.querySelector('.modal-content');
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('invisible'), 300);
+        };
+        
+        // --- Inicialización ---
+        async function initApp() {
+            if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+            else { console.warn("Lucide no está listo..."); setTimeout(initApp, 100); return; }
+
+            initTheme();
+            await initFirebase();
+            initWhitelistModal();
+            initWhitelistForms();
+            initAnimations();
+            initCountdown();
+            initHeaderScrollBehavior();
+            initNavigation();
+            generateParticlesSlow();
+            
+            // (NUEVO) Inicializar la lógica de pestañas
+            initAprendeloTabs();
+            
+            if (isAuthReady) { listenToWhitelistCount(); }
+            else { console.warn("Auth no lista. Whitelist count no iniciará."); }
+        }
+
+        // --- Firebase ---
+        async function initFirebase() {
+             if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "TU_API_KEY") {
+                console.warn("Firebase no está configurado."); isAuthReady = false; return;
+            }
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app); auth = getAuth(app); setLogLevel('debug');
+                whitelistCol = collection(db, 'artifacts', appId, 'public', 'data', 'whitelist');
+                await new Promise((resolve, reject) => {
+                    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+                        unsubscribe();
+                        if (user) { userId = user.uid; isAuthReady = true; console.log("Usuario autenticado:", userId); resolve(); }
+                        else {
+                            try {
+                                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                                    await signInWithCustomToken(auth, __initial_auth_token);
+                                } else { await signInAnonymously(auth); }
+                                if (auth.currentUser) { userId = auth.currentUser.uid; isAuthReady = true; console.log("Auth silenciosa OK:", userId); resolve(); }
+                                else { isAuthReady = false; reject(new Error("Fallo en auth silenciosa.")); }
+                            } catch (authError) { isAuthReady = false; console.error("Error auth silenciosa:", authError); reject(authError); }
+                        }
+                    }, (error) => { isAuthReady = false; console.error("Error onAuthStateChanged:", error); reject(error); });
+                });
+            } catch (e) { console.error("Error Firebase:", e.message); isAuthReady = false; }
+        }
+
+        // --- Temas ---
+        function initTheme() {
+            const themeMainBtn = document.getElementById('theme-main-btn');
+            const themeDropdownMenu = document.getElementById('theme-dropdown-menu');
+            const themeDropdownBtns = themeDropdownMenu ? themeDropdownMenu.querySelectorAll('.theme-dropdown-btn') : [];
+            if (!themeMainBtn || !themeDropdownMenu || themeDropdownBtns.length === 0) { console.warn("Elementos tema no encontrados."); return; }
+            const currentTheme = localStorage.getItem('maverlang_theme') || 'light';
+            applyTheme(currentTheme, true); // True para carga inicial
+            themeMainBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isVisible = !themeDropdownMenu.classList.contains('invisible');
+                document.querySelectorAll('.nav-dropdown-menu').forEach(m => m?.classList.add('opacity-0', 'scale-95', 'invisible')); // Cerrar otros
+                if (isVisible) { themeDropdownMenu.classList.add('opacity-0', 'scale-95', 'invisible'); }
+                else { themeDropdownMenu.classList.remove('opacity-0', 'scale-95', 'invisible'); }
+            });
+            themeDropdownBtns.forEach(btn => {
+                btn.addEventListener('click', () => { applyTheme(btn.dataset.theme); themeDropdownMenu.classList.add('opacity-0', 'scale-95', 'invisible'); });
+            });
+        }
+
+        function applyTheme(theme, isInitialLoad = false) {
+             const html = document.documentElement;
+            const themeMainBtn = document.getElementById('theme-main-btn');
+            let iconName = 'sun';
+            html.classList.remove('dark', 'stars-theme');
+            if (theme === 'dark') { html.classList.add('dark'); iconName = 'moon'; }
+            /* (ELIMINADO) else if (theme === 'stars') { ... } */
+            
+            if (!isInitialLoad) {
+                 localStorage.setItem('maverlang_theme', theme);
+            }
+
+            if (themeMainBtn) { themeMainBtn.innerHTML = `<i data-lucide="${iconName}"></i>`; if (typeof lucide !== 'undefined') { lucide.createIcons(); } }
+            document.querySelectorAll('.theme-dropdown-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.theme-dropdown-btn[data-theme="${theme}"]`)?.classList.add('active');
+            initAnimations();
+            updateHeaderBackground();
+        }
+        
+        // --- Lógica de Whitelist ---
+        function initWhitelistModal() {
+             const modal = document.getElementById('whitelist-modal'); if (!modal) return;
+             const closeModalBtn = document.getElementById('close-modal-btn');
+             const triggerButtons = document.querySelectorAll('#header-whitelist-btn, .animated-whitelist-btn, .modal-trigger-btn, #footer-whitelist-btn, #mobile-whitelist-btn');
+             triggerButtons.forEach(btn => { 
+                if (btn && btn.dataset.modalListenerAttached !== 'true') { 
+                    btn.addEventListener('click', (e) => {
+                        if (e.currentTarget.tagName === 'A' && e.currentTarget.href && !e.currentTarget.href.endsWith('#') && e.currentTarget.target !== '_blank') {
+                             return; 
+                        }
+                        openModal(e);
+                    }); 
+                    btn.dataset.modalListenerAttached = 'true'; 
+                } 
+             });
+             if (closeModalBtn && closeModalBtn.dataset.modalListenerAttached !== 'true') { closeModalBtn.addEventListener('click', closeModal); closeModalBtn.dataset.modalListenerAttached = 'true'; }
+             if (modal.dataset.modalListenerAttached !== 'true') { modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); }); modal.dataset.modalListenerAttached = 'true'; }
+        }
+        
+        function listenToWhitelistCount() {
+             if (!db || !whitelistCol || !isAuthReady) { console.warn("listenToWhitelistCount: DB/Auth no listo."); return; }
+             const fomoCounterEl = document.getElementById('fomo-counter'); const countEl = document.getElementById('whitelist-count'); if (!fomoCounterEl || !countEl) { console.error("Contador FOMO no encontrado."); return; }
+             try {
+                 onSnapshot(whitelistCol, (snapshot) => {
+                     const count = snapshot.size; countEl.textContent = count > 0 ? count.toLocaleString('es') : '0'; fomoCounterEl.classList.add('visible');
+                 }, (error) => { console.error("Error onSnapshot:", error); fomoCounterEl.classList.add('visible'); countEl.textContent = 'Error'; });
+             } catch (error) { console.error("Error setup onSnapshot:", error); fomoCounterEl.classList.add('visible'); countEl.textContent = 'Error'; }
+        }
+        
+        function initWhitelistForms() { const modalForm = document.getElementById('whitelist-form-modal'); if (modalForm) modalForm.addEventListener('submit', handleWhitelistSubmit); }
+        
+        async function handleWhitelistSubmit(e) {
+             e.preventDefault(); if (!db || !whitelistCol || !isAuthReady || !auth.currentUser) { setMessage('Error: Auth/DB no lista.', 'error'); return; }
+             const emailInput = document.getElementById('email-input-modal'); const submitBtn = document.getElementById('submit-btn-modal'); const email = emailInput.value.trim(); if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setMessage('Correo inválido.', 'error'); return; }
+             const originalBtnText = submitBtn.textContent; submitBtn.disabled = true; submitBtn.textContent = 'Enviando...'; setMessage('', 'clear');
+             try {
+                 const q = query(whitelistCol, where("email", "==", email)); const querySnapshot = await getDocs(q); if (!querySnapshot.empty) { throw new Error('Correo ya registrado.'); }
+                 await addDoc(whitelistCol, { email: email, timestamp: serverTimestamp(), source: 'modal-aprendelo' }); // Fuente actualizada
+                 setMessage('¡Gracias! Estás en la lista.', 'success'); emailInput.value = ''; setTimeout(closeModal, 2000);
+             } catch (error) { console.error("Error whitelist:", error); setMessage(error.message || 'Error al registrar.', 'error'); }
+             finally { submitBtn.disabled = false; submitBtn.textContent = originalBtnText; }
+        }
+        
+        function setMessage(message, type) { const messageEl = document.getElementById('form-message-modal'); if (!messageEl) return; messageEl.textContent = message; messageEl.style.color = type === 'success' ? 'var(--success-color)' : (type === 'error' ? 'var(--accent-red)' : 'inherit'); }
+        
+        // --- Animaciones y UI ---
+        function initCountdown() {
+             const ids = ['modal']; const labels = ['days', 'hours', 'minutes', 'seconds']; const elements = {};
+             ids.forEach(id => { elements[id] = {}; labels.forEach(l => elements[id][l] = document.getElementById(`${id}-${l}`)); });
+             if (!elements['modal']['days']) return; // Salir si no hay elementos
+             const targetDate = new Date('2025-11-24T00:00:00').getTime();
+             const interval = setInterval(() => {
+                 const distance = targetDate - new Date().getTime(); if (distance < 0) { clearInterval(interval); ids.forEach(id => { const cont = document.getElementById(`${id}-countdown-container`); if(cont) cont.innerHTML = '<p class="text-xl font-bold text-blue-500">¡Lanzamiento iniciado!</p>'; }); return; }
+                 const d=Math.floor(distance/864e5), h=Math.floor((distance%864e5)/36e5), m=Math.floor((distance%36e5)/6e4), s=Math.floor((distance%6e4)/1000);
+                 const times = { days: d, hours: h, minutes: m, seconds: s };
+                 ids.forEach(id => { labels.forEach(l => { if(elements[id]?.[l]) elements[id][l].textContent = String(times[l]).padStart(2, '0'); }); });
+             }, 1000);
+        }
+
+        let starfieldAnimationId = null;
+        function initAnimations(){ 
+            /* (ELIMINADO) Lógica de Starfield */
+        }
+        /* (ELIMINADO) function initStarfield() { ... } */
+        
+        function updateHeaderBackground() { 
+            const header = document.querySelector('header'); if (!header) return; 
+            const headerContent = header.firstElementChild; if (!headerContent) return; 
+            const tabsNav = document.getElementById('aprendelo-tabs-nav');
+            
+            const threshold = 50; 
+            const scrolled = window.scrollY > threshold; 
+            const isDark = document.documentElement.classList.contains('dark');
+            const bgColor = scrolled ? (isDark ? 'rgba(10,10,10,0.8)' : 'rgba(255,255,255,0.8)') : (isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)'); 
+            
+            headerContent.style.backgroundColor = bgColor;
+            
+            // (NUEVO) Ajustar el 'top' de la barra de pestañas sticky
+            if (tabsNav) {
+                const headerHeight = headerContent.offsetHeight + 16; // 16px por el padding 'p-4' del header
+                tabsNav.style.top = `${headerHeight - 1}px`; // -1 para que el borde se solape
+            }
+        }
+        
+        function initHeaderScrollBehavior() { 
+            window.addEventListener('scroll', updateHeaderBackground, { passive: true }); 
+            window.addEventListener('resize', updateHeaderBackground); // (NUEVO) Añadir resize listener
+            updateHeaderBackground(); // Llamada inicial
+        }
+        
+        // --- Navegación ---
+        function initNavigation() {
+            const funcionesBtn = document.getElementById('nav-funciones-btn'); 
+            const funcionesMenu = document.getElementById('nav-funciones-menu');
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenuPanel = document.getElementById('mobile-menu-panel');
+            
+            // Lógica Dropdown Escritorio
+            if (funcionesBtn && funcionesMenu) {
+                const toggleFuncionesDropdown = (e) => { 
+                    e.stopPropagation(); 
+                    const isVisible = !funcionesMenu.classList.contains('invisible'); 
+                    document.getElementById('theme-dropdown-menu')?.classList.add('opacity-0', 'scale-95', 'invisible'); 
+                    if (isVisible) { 
+                        funcionesMenu.classList.add('opacity-0', 'scale-95', 'invisible'); 
+                    } else { 
+                        funcionesMenu.classList.remove('opacity-0', 'scale-95', 'invisible'); 
+                    } 
+                };
+                if (funcionesBtn.dataset.navListenerAttached !== 'true') { 
+                    funcionesBtn.addEventListener('click', toggleFuncionesDropdown); 
+                    funcionesBtn.dataset.navListenerAttached = 'true'; 
+                }
+            } else { console.warn("Dropdown 'Funciones' no encontrado."); }
+
+            // Lógica Menú Móvil
+            if (mobileMenuBtn && mobileMenuPanel) {
+                const openMenu = (e) => {
+                    e.stopPropagation();
+                    mobileMenuPanel.classList.add('open');
+                    mobileMenuBtn.innerHTML = `<i data-lucide="x" class="w-6 h-6"></i>`;
+                    lucide.createIcons();
+                };
+
+                const closeMenu = () => {
+                    mobileMenuPanel.classList.remove('open');
+                    mobileMenuBtn.innerHTML = `<i data-lucide="menu" class="w-6 h-6"></i>`;
+                    lucide.createIcons();
+                };
+                
+                mobileMenuBtn.addEventListener('click', (e) => {
+                    if (mobileMenuPanel.classList.contains('open')) {
+                        closeMenu();
+                    } else {
+                        openMenu(e);
+                    }
+                });
+                
+                // Cerrar al hacer clic en un enlace
+                mobileMenuPanel.querySelectorAll('a, .modal-trigger-btn').forEach(link => {
+                    link.addEventListener('click', () => {
+                        // No cerrar si el enlace es modal (ya que openModal se encarga)
+                        if (!link.classList.contains('modal-trigger-btn')) {
+                            closeMenu();
+                        }
+                    });
+                });
+            }
+
+            if (!isClickOutsideListenerAdded) {
+                document.addEventListener('click', (e) => {
+                    document.querySelectorAll('.nav-dropdown-menu, .theme-dropdown-menu').forEach(menu => {
+                         const btnId = menu.id.replace('-menu', '-btn');
+                         const btn = document.getElementById(btnId);
+                         if (menu && !menu.classList.contains('invisible') && btn && !btn.contains(e.target) && !menu.contains(e.target)) {
+                             menu.classList.add('opacity-0', 'scale-95', 'invisible');
+                         }
+                    });
+
+                    // Cerrar menú móvil si se hace clic fuera de él
+                    if (mobileMenuPanel && mobileMenuPanel.classList.contains('open') && !mobileMenuBtn.contains(e.target) && !mobileMenuPanel.contains(e.target)) {
+                         closeMenu();
+                    }
+                });
+                isClickOutsideListenerAdded = true;
+            }
+
+            if (funcionesMenu) { funcionesMenu.querySelectorAll('a').forEach(item => { if (item.dataset.navItemListener !== 'true') { item.addEventListener('click', (e) => { if (!item.href || item.href.endsWith('#')) { funcionesMenu.classList.add('opacity-0', 'scale-95', 'invisible'); } }); item.dataset.navItemListener = 'true'; } }); }
+        }
+        
+        function generateParticlesSlow() { const container = document.querySelector('#nav-portafolio-ai-link .particles-container'); if (!container) return; const particleCount = 6; const colors = ['var(--particle-color-1)', 'var(--particle-color-2)', 'var(--particle-color-3)']; const totalDuration = 5; const particleAnimationDuration = 2.5; container.innerHTML = ''; for (let i = 0; i < particleCount; i++) { const particle = document.createElement('div'); particle.classList.add('particle'); const baseStartPercentage = 0.45; const randomOffsetPercentage = Math.random() * 0.1; const startDelay = (baseStartPercentage + randomOffsetPercentage); particle.style.setProperty('--particle-delay', startDelay.toFixed(2)); particle.style.setProperty('--particle-x', `${Math.random() * 30 - 15}px`); particle.style.setProperty('--particle-y', `${Math.random() * -5 - 3}px`); particle.style.setProperty('--particle-color', colors[Math.floor(Math.random() * colors.length)]); particle.style.animationDuration = `${particleAnimationDuration}s`; particle.style.animationDelay = `${startDelay * totalDuration}s`; container.appendChild(particle); } }
+
+        // --- (NUEVO) Lógica para las Pestañas de "Apréndelo" ---
+        function initAprendeloTabs() {
+            const triggersContainer = document.getElementById('aprendelo-tabs-triggers');
+            if (!triggersContainer) return; // Salir si el contenedor no existe
+
+            const triggers = triggersContainer.querySelectorAll('.aprendelo-tab-trigger');
+            const contentPanels = document.querySelectorAll('.aprendelo-content-panel');
+
+            triggers.forEach(trigger => {
+                trigger.addEventListener('click', () => {
+                    const tab = trigger.dataset.tab;
+
+                    // 1. Actualizar Triggers
+                    triggers.forEach(t => t.classList.remove('active'));
+                    trigger.classList.add('active');
+
+                    // 2. Actualizar Paneles de Contenido
+                    contentPanels.forEach(panel => {
+                        if (panel.id === `content-${tab}`) {
+                            // (NUEVO) Usar 'hidden' de Tailwind
+                            panel.classList.remove('hidden');
+                            panel.classList.add('active'); // para animación
+                        } else {
+                            panel.classList.add('hidden');
+                            panel.classList.remove('active');
+                        }
+                    });
+                    
+                    // (NUEVO) Hacer scroll al inicio de la sección de contenido
+                    // para que el usuario vea el inicio del nuevo contenido
+                    const tabsNav = document.getElementById('aprendelo-tabs-nav');
+                    if (tabsNav) {
+                        // Scroll suave para que el inicio de la sección de contenido sea visible
+                        window.scrollTo({
+                            top: tabsNav.offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Activar el primero por defecto
+            if (triggers.length > 0 && contentPanels.length > 0) {
+                 document.getElementById('content-desafio').classList.remove('hidden');
+                 document.getElementById('content-desafio').classList.add('active');
+                 triggers[0].classList.add('active');
+            }
+        }
+        // --- (FIN) Lógica de Pestañas ---
+
+        // Funciones vacías de placeholder (de otras páginas)
+        function initTypingAnimation() { /* No aplica aquí */ }
+        function initChatInputBehavior() { /* No aplica aquí */ }
+        function initFauxChatAndLLM() { /* No aplica aquí */ }
+
+        // Iniciar la aplicación
+        initApp();
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,2248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maverlang - La Nueva Era del Análisis Financiero</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- TradingView Widget Script -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
+
+<style>
+        :root {
+            --bg-light: #f4f4f5; --text-light: #18181b; --border-light: #e4e4e7;
+            --bg-dark: #0A0A0A; --text-dark: #f9fafb; --border-dark: #27272a;
+            /* --bg-stars: #000000; (ELIMINADO) */
+            --accent-blue: #3b82f6;
+            --accent-red: #ef4444;
+            --success-color: #22c55e;
+            --success-glow: rgba(34, 197, 94, 0.4);
+            --warning-color: #f59e0b;
+            --bg-active-theme-light: #e4e4e7;
+            --bg-active-theme-dark: #27272a;
+            --particle-color-1: rgba(59, 130, 246, 0.9); /* Azul principal */
+            --particle-color-2: rgba(96, 165, 250, 0.7); /* Azul claro */
+            --particle-color-3: rgba(255, 255, 255, 0.8); /* Blanco */
+        }
+        html.dark {
+            --bg-main: var(--bg-dark); --text-main: var(--text-dark); --border-main: var(--border-dark);
+            --success-glow: rgba(34, 197, 94, 0.5);
+        }
+        html:not(.dark) { --bg-main: var(--bg-light); --text-main: var(--text-light); --border-main: var(--border-light); }
+        /* html.stars-theme { --bg-main: var(--bg-stars); } (ELIMINADO) */
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-y: auto;
+        }
+        main.hero-section {
+            padding-bottom: 4rem;
+        }
+
+        /* #starfield { ... } (ELIMINADO) */
+
+        .background-logo-text {
+            font-size: clamp(8rem, 25vw, 22rem); font-weight: 800; letter-spacing: -0.05em;
+            color: rgba(120, 120, 120, 0.05); position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); z-index: 1; pointer-events: none;
+        }
+        html.dark .background-logo-text {
+            color: rgba(255, 255, 255, 0.03);
+        }
+
+        .chat-input-container {
+            background-color: #1c1c1c; border: 1px solid #333; min-height: 88px; border-radius: 1.5rem;
+        }
+        html:not(.dark) .chat-input-container {
+            background-color: #ffffff; border: 1px solid var(--border-light);
+        }
+
+        #typing-cursor {
+            display: inline-block; width: 3px; height: 1.5em; background-color: var(--accent-blue);
+            animation: blink 1s step-end infinite; vertical-align: bottom;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .countdown-box, .form-container, .llm-card-small {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 1rem;
+        }
+        html.dark .countdown-box, html.dark .form-container, html.dark .llm-card-small {
+            background: rgba(30, 30, 30, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        html:not(.dark) .countdown-box, html:not(.dark) .form-container, html:not(.dark) .llm-card-small {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--border-light);
+        }
+
+        /* Estilos Botones Tema */
+        .theme-main-btn, .theme-dropdown-btn {
+            padding: 0.5rem;
+            border-radius: 9999px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .theme-main-btn i, .theme-dropdown-btn i {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+        .theme-main-btn:hover, .theme-dropdown-btn:hover {
+             background-color: rgba(120, 120, 120, 0.1);
+        }
+        .theme-dropdown-btn.active {
+             background-color: var(--bg-active-theme-light);
+             color: var(--text-main);
+        }
+         html.dark .theme-dropdown-btn.active { background-color: var(--bg-active-theme-dark); }
+
+
+        .countdown-number { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 600; line-height: 1; color: var(--text-main); }
+        .countdown-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-main); opacity: 0.6; }
+
+        #fomo-counter {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: -1rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        #fomo-counter.visible {
+            opacity: 1;
+        }
+        #whitelist-count {
+            display: inline-block;
+            color: var(--accent-blue);
+            font-weight: 700;
+            padding: 0 0.25rem;
+            min-width: 1em;
+        }
+
+        #ai-mode-menu { transition: opacity 0.2s ease, transform 0.2s ease, max-height 0.3s ease-in-out; }
+
+        .llm-card-small { transition: border-color 0.2s ease, box-shadow 0.2s ease; cursor: pointer; }
+        .llm-card-small:hover, .llm-card-small.selected { border-color: var(--accent-blue); box-shadow: 0 0 10px 0 rgba(59, 130, 246, 0.4); }
+
+        .tutor-toggle-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+        .tutor-toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .tutor-toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #4b5563; transition: .4s; border-radius: 22px; }
+        .tutor-toggle-slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .tutor-toggle-slider { background-color: var(--accent-blue); }
+        input:checked + .tutor-toggle-slider:before { transform: translateX(18px); }
+
+        .testimonial-card, .modal-content, .feature-card, .news-visual-card {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 1rem;
+        }
+        html.dark .testimonial-card, html.dark .modal-content, html.dark .feature-card, html.dark .news-visual-card {
+            background: rgba(30, 30, 30, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        html:not(.dark) .testimonial-card, html:not(.dark) .modal-content, html:not(.dark) .feature-card, html:not(.dark) .news-visual-card {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--border-light);
+        }
+
+        /* --- Testimonial Carousel Fix --- */
+        #testimonials-container {
+            padding-left: 10rem;
+            padding-right: 10rem;
+            mask-image: linear-gradient(to right,
+                                        transparent 0%,
+                                        black 15%,
+                                        black 85%,
+                                        transparent 100%);
+            -webkit-mask-image: linear-gradient(to right,
+                                                transparent 0%,
+                                                black 15%,
+                                                black 85%,
+                                                transparent 100%);
+        }
+        /* (NUEVO) Fix de responsividad para testimonios */
+        @media (max-width: 767px) {
+            #testimonials-container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+
+        .testimonial-track {
+            width: calc(350px * 8);
+            animation: scroll 40s linear infinite;
+            margin-left: 0;
+            margin-right: 0;
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+
+        .testimonial-track .testimonial-card {
+            width: 350px;
+            flex-shrink: 0;
+            margin: 0 0.75rem;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .testimonial-track .testimonial-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 15px 0 rgba(59, 130, 246, 0.5);
+            transform: scale(1.02);
+            background-color: var(--bg-main);
+        }
+
+        .testimonial-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        /* --- Fin Testimonial Fix --- */
+
+        #whitelist-modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
+        #whitelist-modal .modal-content { transition: transform 0.3s ease; }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 12px rgba(59, 130, 246, 0.4); transform: scale(1); }
+            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); transform: scale(1.03); }
+        }
+        .animated-whitelist-btn {
+            animation: pulse-glow 2.5s infinite ease-in-out;
+        }
+
+        #tv-widget-container { height: 350px; position: relative; }
+
+
+        .widget-action-btn { opacity: 0.6; cursor: default; }
+
+        /* --- Estilos sección Aprendelo Tabs --- */
+        #aprendelo-tabs-triggers {
+             gap: 1.5rem;
+             max-width: 100%;
+        }
+        .aprendelo-tab-trigger {
+            border: 1px solid var(--border-main);
+            border-radius: 0.75rem;
+            padding: 2rem 1.5rem;
+            text-align: left;
+            transition: all 0.2s ease;
+            background-color: transparent;
+             flex: 1 1 290px;
+             min-width: 290px;
+             display: flex;
+             align-items: center;
+             gap: 1.5rem;
+             cursor: pointer;
+        }
+         @media (min-width: 1280px) {
+             #aprendelo-tabs-triggers { flex-wrap: nowrap; }
+             .aprendelo-tab-trigger { flex-basis: 0; flex-grow: 1; min-width: auto; }
+         }
+         @media (min-width: 768px) and (max-width: 1279px) {
+             .aprendelo-tab-trigger { flex-basis: calc(50% - 0.75rem); min-width: auto; }
+         }
+         /* (NUEVO) Corrección Idea 5: Pestañas deslizables en móvil */
+         @media (max-width: 767px) {
+            #aprendelo-tabs-triggers {
+                display: flex;
+                flex-wrap: nowrap; /* Evita que se apilen */
+                overflow-x: auto;   /* Permite el scroll horizontal */
+                -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+                gap: 0.75rem; /* 12px de espacio */
+                padding-bottom: 0.75rem; /* Espacio para la barra de scroll (si aparece) */
+            }
+            .aprendelo-tab-trigger {
+                flex-shrink: 0;     /* Evita que las pestañas se encojan */
+                min-width: 250px;   /* Dales un ancho mínimo razonable */
+                padding: 1.25rem 1rem;
+            }
+            
+            /* Oculta la barra de scroll visualmente */
+            #aprendelo-tabs-triggers::-webkit-scrollbar {
+                display: none;
+            }
+            #aprendelo-tabs-triggers {
+                scrollbar-width: none; /* Para Firefox */
+            }
+        }
+        .aprendelo-tab-trigger:hover {
+             border-color: var(--accent-blue);
+             background-color: rgba(59, 130, 246, 0.05);
+             transform: translateY(-3px);
+             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+         html.dark .aprendelo-tab-trigger:hover { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
+        .aprendelo-tab-trigger.active {
+             border-color: var(--accent-blue);
+             background-color: rgba(59, 130, 246, 0.25);
+             box-shadow: 0 0 15px 0 rgba(59, 130, 246, 0.4);
+             transform: translateY(-1px);
+        }
+        .aprendelo-tab-trigger .trigger-icon {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            display: inline-flex;
+            flex-shrink: 0;
+        }
+        .aprendelo-tab-trigger[data-content-id="desafio"] .trigger-icon { background-color: rgba(239, 68, 68, 0.1); }
+        .aprendelo-tab-trigger[data-content-id="cursos"] .trigger-icon { background-color: rgba(59, 130, 246, 0.1); }
+        .aprendelo-tab-trigger[data-content-id="examenes"] .trigger-icon { background-color: rgba(34, 197, 94, 0.1); }
+        .aprendelo-tab-trigger[data-content-id="progreso"] .trigger-icon { background-color: rgba(234, 179, 8, 0.1); }
+
+        /* Estilo Contenido Aprendelo */
+        #aprendelo-tab-content-area {
+            transition: padding-top 0.3s ease-out, padding-bottom 0.3s ease-out, margin-top 0.3s ease-out;
+            margin-top: 2.5rem;
+            padding: 3rem 1rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-main);
+            background: rgba(30, 30, 30, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            opacity: 1;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+         html:not(.dark) #aprendelo-tab-content-area {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (min-width: 768px) {
+            #aprendelo-tab-content-area {
+                 grid-template-columns: 1fr 1fr;
+            }
+            #aprendelo-text-content { grid-column: span 1; }
+            #aprendelo-visuals-container { grid-column: span 1; margin-left: auto; margin-right: auto; }
+        }
+        
+        /* Texto Aprendelo con Fade */
+        #aprendelo-text-content {
+             transition: opacity 0.3s ease-in-out;
+             opacity: 0;
+        }
+        #aprendelo-text-content p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* --- Estilos Visuales 'Apréndelo' --- */
+        #aprendelo-visuals-container {
+            position: relative;
+            width: 100%;
+            min-height: 350px;
+        }
+        .aprendelo-visual {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            max-width: 380px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid var(--border-main);
+            border-radius: 0.75rem;
+            background-color: var(--bg-main);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none;
+            display: block;
+        }
+        .aprendelo-visual.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Override max-width para visual-cursos */
+        #visual-cursos.aprendelo-visual {
+            max-width: none;
+            border: none !important;
+            background-color: transparent !important;
+            padding: 0;
+            height: auto;
+        }
+
+        /* Visual Desafío */
+        #visual-desafio { padding: 1.5rem; display: flex; justify-content: center; align-items: center; height: 350px; }
+        .learning-path { position: relative; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; transform: scale(0.9); width: 100px; padding: 1rem 0; }
+        .path-node { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: 4px solid var(--bg-main); box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 2; position: relative; }
+        .path-node.completed { background-color: var(--success-color); }
+        .path-node.unlocked { background-color: var(--accent-blue); animation: pulse-node 1.5s infinite; }
+        .path-node.locked { background-color: #6b7280; opacity: 0.7; }
+        .learning-path::before { content: ''; position: absolute; top: 30px; bottom: 30px; left: 50%; transform: translateX(-50%); width: 5px; background-color: var(--border-main); border-radius: 3px; z-index: 1; }
+        @keyframes pulse-node { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+
+         
+         /* Visual Cursos - Solo Video */
+        .faux-video-player-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background-color: #222;
+        }
+        .faux-video-player-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+         
+
+        /* Visual Exámenes */
+        #visual-examenes { padding: 1.5rem; text-align: center; }
+        #visual-examenes .summary-icon { width: 64px; height: 64px; border-radius: 50%; background-color: rgba(34, 197, 94, 0.1); color: var(--success-color); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+        #visual-examenes h4 { font-size: 1.25rem; font-weight: 700; }
+        #visual-examenes p { opacity: 0.8; }
+        .faux-summary-score { font-size: 1.875rem; font-weight: 800; margin: 0.75rem 0; }
+        .exam-progress-bar { width: 80%; height: 8px; background-color: var(--border-main); border-radius: 4px; margin: 1rem auto; overflow: hidden; }
+        .exam-progress-fill { width: 80%; height: 100%; background-color: var(--success-color); border-radius: 4px; }
+        .faux-summary-btn { width: 100%; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; margin-top: 0.5rem; transition: background-color 0.2s; }
+        .faux-btn-primary { background-color: var(--accent-blue); color: white; }
+        .faux-btn-primary:hover { background-color: #2563eb; }
+        .faux-btn-secondary { background-color: var(--border-main); }
+        .faux-btn-secondary:hover { background-color: #d4d4d8; }
+        html.dark .faux-btn-secondary { background-color: var(--border-dark); }
+        html.dark .faux-btn-secondary:hover { background-color: #3f3f46; }
+
+        /* Visual Progreso */
+        #visual-progreso { padding: 1.5rem; }
+        .achievements-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .achievement-badge { text-align: center; padding: 1rem; border: 1px solid var(--border-main); border-radius: 0.5rem; background-color: var(--bg-main); transition: transform 0.2s, box-shadow 0.2s; }
+        .achievement-badge:hover { transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        html.dark .achievement-badge:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .achievement-badge .badge-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; color: white; }
+        .achievement-badge .badge-title { font-size: 0.875rem; font-weight: 600; }
+        .achievement-badge .badge-desc { font-size: 0.75rem; opacity: 0.7; }
+        /* --- FIN: Estilos Visuales 'Apréndelo' --- */
+
+
+        /* --- Estilos para Sección 'Portafolio' --- */
+        #portafolio-visual-card {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+            padding: 0;
+            overflow: hidden;
+            background-image: linear-gradient(to bottom right, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+        }
+        html:not(.dark) #portafolio-visual-card {
+             background-image: linear-gradient(to bottom right, rgba(0,0,0,0.02), rgba(0,0,0,0.01));
+             border: 1px solid var(--border-light);
+        }
+         html.dark #portafolio-visual-card {
+             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #portafolio-visual-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+         html.dark #portafolio-visual-card:hover { box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+
+        .portfolio-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-main);
+        }
+        .portfolio-header h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        .portfolio-header p {
+            font-size: 0.875rem;
+            opacity: 0.7;
+        }
+        .portfolio-table-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            align-items: center;
+            border-bottom: 1px solid var(--border-main);
+            transition: background-color 0.2s ease;
+        }
+         .portfolio-table-row:hover {
+             background-color: rgba(120,120,120,0.05);
+         }
+        .portfolio-table-row:last-child {
+            border-bottom: none;
+        }
+        .asset-name { font-weight: 600; font-size: 1rem; display: inline-flex; align-items: center; }
+        .asset-type-long, .asset-type-short {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.1rem 0.5rem;
+            border-radius: 99px;
+            margin-left: 0.5rem;
+        }
+        .asset-type-long { background-color: rgba(34, 197, 94, 0.1); color: var(--success-color); }
+        .asset-type-short { background-color: rgba(239, 68, 68, 0.1); color: var(--accent-red); }
+
+        .asset-pl { text-align: right; }
+        .asset-pl .pl-value { font-weight: 600; font-size: 1rem; }
+        .asset-pl .pl-percent { font-size: 0.8rem; }
+        .pl-positive { color: var(--success-color); }
+        .pl-negative { color: var(--accent-red); }
+
+        .portfolio-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            padding: 1.5rem 1.5rem;
+            border-top: 1px solid var(--border-main);
+            margin-top: 0;
+            background-color: rgba(120,120,120,0.03);
+        }
+         html.dark .portfolio-summary { background-color: rgba(0,0,0,0.1); }
+        .summary-item .label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 0.25rem;
+        }
+        .summary-item .value {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        /* --- FIN: Estilos Sección 'Portafolio' --- */
+
+        
+        /* Estilos de Navegación/Dropdown */
+        .nav-dropdown-menu, .theme-dropdown-menu { 
+            position: absolute;
+            top: calc(100% + 1rem); 
+            left: 0;
+            width: 220px;
+            padding: 0.5rem;
+            border-radius: 1rem; 
+            z-index: 100;
+            transition: all 0.2s ease-out;
+            transform-origin: top left;
+             /* Fondo opaco */
+             background-color: var(--bg-main); 
+        }
+        .theme-dropdown-menu { 
+             width: auto; 
+             min-width: 50px; 
+             left: auto; 
+             right: 0; 
+             transform-origin: top right; 
+             display: flex; 
+             flex-direction: column; 
+             gap: 0.25rem; 
+        }
+        html.dark .nav-dropdown-menu, html.dark .theme-dropdown-menu {
+             border: 1px solid var(--border-dark); 
+             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        html:not(.dark) .nav-dropdown-menu, html:not(.dark) .theme-dropdown-menu {
+             border: 1px solid var(--border-light); 
+             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .nav-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+        }
+        .nav-dropdown-item:hover {
+            background-color: rgba(120,120,120,0.1);
+        }
+        .nav-dropdown-item i {
+            opacity: 0.7;
+        }
+        /* --- Fin Estilos Nav --- */
+        
+        /* Animación Portafolio AI - Partículas Lentas */
+        #nav-portafolio-ai-link { 
+            position: relative;
+            overflow: visible; 
+            padding: 0.25rem 0.5rem; 
+            cursor: pointer;
+        }
+         #nav-portafolio-ai-link span { 
+            position: relative;
+             z-index: 1; 
+             display: inline-block; 
+             /* Animación del color del texto más lenta */
+             animation: text-color-slow-pulse 5s ease-in-out infinite; 
+         }
+         
+         .particles-container {
+             position: absolute;
+             inset: 0; 
+             pointer-events: none; 
+             overflow: hidden; 
+        }
+
+        .particle {
+            position: absolute;
+            bottom: 2px; /* Ligeramente más arriba */
+            left: 50%; 
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            opacity: 0;
+            /* Duración más larga y delay ajustado */
+            animation: particle-fall 2.5s ease-out infinite; 
+            animation-delay: calc(var(--particle-delay) * 1s); 
+            background-color: var(--particle-color); 
+        }
+
+        /* Keyframes para el color del texto (más lento) */
+        @keyframes text-color-slow-pulse {
+            0%, 100% { color: inherit; } 
+            40% { color: var(--accent-blue); } /* Cambia de color antes (40% de 5s = 2s) */
+            60% { color: var(--accent-blue); } /* Mantiene el color */
+            /* Vuelve gradualmente al color original */
+        }
+
+        /* Keyframes para las partículas (caída más lenta) */
+        @keyframes particle-fall {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, 0) scale(0.3); 
+            }
+            /* Aparecen un poco después del cambio de color (después del 40% del ciclo total de 5s) */
+            50% { 
+                opacity: 1; 
+                /* Moverse menos hacia arriba */
+                transform: translate(calc(-50% + var(--particle-x)), calc(var(--particle-y) - 5px)) scale(1); 
+            }
+            100% {
+                opacity: 0; 
+                /* Moverse mucho menos hacia arriba y desaparecer más lentamente */
+                transform: translate(calc(-50% + var(--particle-x) * 1.2), calc(var(--particle-y) - 15px)) scale(0); 
+            }
+        }
+
+        /* Estilos Nueva Sección Noticias */
+         .news-sentiment-tag {
+             display: inline-flex;
+             align-items: center;
+             padding: 0.1rem 0.5rem;
+             border-radius: 99px;
+             font-size: 0.7rem; /* Más pequeño */
+             font-weight: 600;
+             margin-right: 0.25rem;
+         }
+         .news-sentiment-positive { background-color: rgba(34, 197, 94, 0.1); color: var(--success-color); }
+         .news-sentiment-negative { background-color: rgba(239, 68, 68, 0.1); color: var(--accent-red); }
+         .news-sentiment-neutral { background-color: rgba(107, 114, 128, 0.1); color: #6b7280; }
+         html.dark .news-sentiment-neutral { color: #9ca3af; }
+
+         .news-entity-tag {
+             display: inline-block;
+             background-color: rgba(59, 130, 246, 0.1);
+             color: var(--accent-blue);
+             padding: 0.1rem 0.5rem;
+             border-radius: 99px;
+             font-size: 0.7rem;
+             font-weight: 600;
+             margin-right: 0.25rem;
+         }
+         html:not(.dark) .news-entity-tag { color: #2563eb; } /* Azul más oscuro en tema claro */
+
+
+        /* (NUEVO) Estilos para Demo de Chat Interactivo (Idea 1) */
+        #chat-response-container { 
+            display: none; /* Oculto por defecto */
+            /* Transición para aparecer suavemente */
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+        }
+        #chat-response-container.visible {
+            display: block;
+            opacity: 1;
+        }
+        #thinking-indicator { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 0.5rem; 
+            padding: 1.5rem; 
+            height: 88px; /* Misma altura que el input de chat */
+        }
+        .dot-flashing { 
+            width: 10px; 
+            height: 10px; 
+            border-radius: 50%; 
+            background-color: var(--accent-blue); 
+            animation: dot-flashing 1.4s infinite linear both; 
+        }
+        .dot-flashing:nth-child(1) { animation-delay: 0s; }
+        .dot-flashing:nth-child(2) { animation-delay: 0.2s; }
+        .dot-flashing:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dot-flashing { 
+            0%, 80%, 100% { opacity: 0; transform: scale(0.8); } 
+            40% { opacity: 1; transform: scale(1.2); } 
+        }
+
+        #ai-response-card {
+            display: none; /* Se muestra con JS */
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-main);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            max-width: 48rem; /* max-w-3xl */
+            margin: 0 auto;
+            text-align: left;
+        }
+        #ai-response-card .highlight {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+        #ai-response-card em {
+            font-style: italic;
+            opacity: 0.8;
+        }
+        #response-cta-button {
+            background-color: var(--accent-blue);
+            color: white;
+            margin-top: 1.5rem;
+            display: inline-block;
+        }
+
+        /* (NUEVO) Estilos para Menú Móvil */
+        #mobile-menu-panel {
+            background-color: var(--bg-main);
+            transition: opacity 0.3s ease-in-out;
+        }
+        #mobile-menu-panel .nav-link {
+            display: block;
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 700;
+            padding: 0.75rem 0; /* py-3 */
+            border-bottom: 1px solid var(--border-main);
+            color: var(--text-main);
+            transition: color 0.2s ease;
+        }
+        #mobile-menu-panel .nav-link:hover {
+            color: var(--accent-blue);
+        }
+        #mobile-menu-panel .nav-link-sub {
+             display: flex;
+             align-items: center;
+             gap: 0.75rem;
+             font-size: 1.125rem; /* text-xl */
+             font-weight: 600;
+             padding: 0.75rem 0;
+             color: var(--text-main);
+             opacity: 0.8;
+             transition: color 0.2s ease;
+        }
+        #mobile-menu-panel .nav-link-sub:hover {
+            color: var(--accent-blue);
+            opacity: 1;
+        }
+        #mobile-menu-panel .nav-link-sub i {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* (NUEVO) Estilos para Banner Inferior Izquierdo */
+        #bottom-left-banner {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-main);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        #bottom-left-banner.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body class="overflow-y-auto">
+    <!-- <canvas id="starfield"></canvas> (ELIMINADO) -->
+
+    <!-- Contenedor de la página --><div id="page-wrapper" class="overflow-x-hidden">
+
+        <!-- Contenido Principal --><div id="main-content">
+
+            <!-- Header con Navegación a la Derecha -->
+            <header class="fixed top-0 left-0 right-0 z-50 p-4 transition-colors duration-300">
+                 <div class="container mx-auto flex justify-between items-center bg-white/30 dark:bg-black/30 backdrop-blur-md p-3 rounded-full border border-white/10 shadow-sm">
+                     <!-- Logo -->
+                     <a href="index.html" class="text-xl font-bold tracking-wider ml-2 flex-shrink-0">MAVERLANG</a>
+                     
+                     <!-- Contenedor Derecha: Navegación, Botón Prioritario, Tema -->
+                     <div class="flex items-center gap-4 lg:gap-6 mx-4">
+                         <!-- Navegación Principal (Oculta en móvil) -->
+                         <nav class="hidden md:flex items-center gap-4 lg:gap-6">
+                             
+                             <!-- Orden Actualizado -->
+                             <a href="index.html" class="font-semibold text-sm text-blue-600 hover:opacity-70 transition-opacity">Inicio</a>
+                             <a href="noticias.html" class="font-semibold text-sm hover:opacity-70 transition-opacity">Noticias</a>
+                             <a href="mercados.html" class="font-semibold text-sm hover:opacity-70 transition-opacity">Mercados</a>
+                             <!-- Portafolio AI con Animación Partículas Lentas -->
+                             <a href="portafolioAI.html" id="nav-portafolio-ai-link" class="font-semibold text-sm transition-opacity relative"> 
+                                 <span>Portafolio AI</span> 
+                                 <div class="particles-container"></div>
+                             </a>
+                             <!-- Dropdown Funciones -->
+                             <div class="relative" id="nav-funciones-dropdown">
+                                 <button id="nav-funciones-btn" class="flex items-center gap-1 font-semibold text-sm hover:opacity-70 transition-opacity">
+                                     <span>Funciones</span>
+                                     <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                                 </button>
+                                 <div id="nav-funciones-menu" class="nav-dropdown-menu invisible opacity-0 scale-95">
+                                     <a href="seguimiento.html" class="nav-dropdown-item"><i data-lucide="activity" class="w-4 h-4"></i><span>Seguimiento</span></a>
+                                     <a href="aprendelo.html" class="nav-dropdown-item"><i data-lucide="book-open-check" class="w-4 h-4"></i><span>Apréndelo</span></a>
+                                     <a href="portafolio.html" class="nav-dropdown-item"><i data-lucide="briefcase" class="w-4 h-4"></i><span>Portafolio Virtual</span></a>
+                                     <a href="chats.html" class="nav-dropdown-item"><i data-lucide="message-square" class="w-4 h-4"></i><span>Chats</span></a>
+                                     <a href="mercados.html" class="nav-dropdown-item"><i data-lucide="line-chart" class="w-4 h-4"></i><span>Mercados</span></a>
+                                 </div>
+                             </div>
+
+                         </nav>
+                         
+                         <!-- Botón Acceso Prioritario (Oculto en móvil) -->
+                         <button id="header-whitelist-btn" class="bg-blue-600 text-white font-semibold rounded-full px-4 py-2 text-sm transition-transform hover:scale-105 animated-whitelist-btn whitespace-nowrap hidden md:flex">
+                             Acceso Prioritario
+                         </button>
+    
+                         <!-- Controles de Tema (Dropdown) -->
+                         <div class="relative" id="theme-selector">
+                             <button id="theme-main-btn" class="theme-main-btn p-1.5 rounded-full border" style="border-color: var(--border-main);">
+                                 <i data-lucide="sun"></i> <!-- Ícono se actualiza con JS -->
+                             </button>
+                             <div id="theme-dropdown-menu" class="theme-dropdown-menu invisible opacity-0 scale-95 p-1 border" style="border-color: var(--border-main);">
+                                  <button data-theme="light" title="Tema Claro" class="theme-dropdown-btn"><i data-lucide="sun"></i></button>
+                                  <button data-theme="dark" title="Tema Oscuro" class="theme-dropdown-btn"><i data-lucide="moon"></i></button>
+                                  <!-- Botón Estrellado (ELIMINADO) -->
+                             </div>
+                         </div>
+
+                         <!-- (NUEVO) Botón de Menú Móvil -->
+                         <button id="mobile-menu-btn" class="p-2 rounded-full md:hidden" style="border-color: var(--border-main);">
+                            <i data-lucide="menu" class="w-6 h-6"></i>
+                         </button>
+                     </div>
+                 </div>
+            </header>
+
+            <!-- (NUEVO) Panel de Menú Móvil -->
+            <div id="mobile-menu-panel" class="fixed inset-0 z-40 flex flex-col p-6 pt-24 md:hidden hidden opacity-0" style="background-color: var(--bg-main);">
+                <button id="mobile-menu-close-btn" class="absolute top-7 right-7 p-2 rounded-full hover:bg-gray-500/10">
+                    <i data-lucide="x" class="w-8 h-8"></i>
+                </button>
+                <nav class="flex flex-col gap-2 mb-8">
+                    <a href="index.html" class="nav-link" style="border-top: 1px solid var(--border-main);">Inicio</a>
+                    <a href="noticias.html" class="nav-link">Noticias</a>
+                    <a href="mercados.html" class="nav-link">Mercados</a>
+                    <a href="portafolioAI.html" class="nav-link">Portafolio AI</a>
+                    
+                    <h4 class="mt-6 mb-2 text-sm font-semibold uppercase text-gray-500">Funciones</h4>
+                    <a href="seguimiento.html" class="nav-link-sub">
+                        <i data-lucide="activity"></i><span>Seguimiento</span>
+                    </a>
+                    <a href="aprendelo.html" class="nav-link-sub">
+                        <i data-lucide="book-open-check"></i><span>Apréndelo</span>
+                    </a>
+                    <a href="portafolio.html" class="nav-link-sub">
+                        <i data-lucide="briefcase"></i><span>Portafolio Virtual</span>
+                    </a>
+                    <a href="chats.html" class="nav-link-sub">
+                        <i data-lucide="message-square"></i><span>Chats</span>
+                    </a>
+                </nav>
+                <div class="mt-auto">
+                    <button id="mobile-whitelist-btn" class="modal-trigger-btn bg-blue-600 text-white font-semibold rounded-full w-full py-4 text-lg animated-whitelist-btn">
+                        Acceso Prioritario
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sección Hero --><main class="hero-section relative flex flex-col items-center justify-center text-center p-4 overflow-hidden">
+                <div class="background-logo-text">MAVERLANG</div>
+
+                <div class="relative z-10 pt-[18vh]">
+                    <div class="z-10 mb-8 text-center max-w-3xl">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight">
+                            La Nueva Era del Análisis Financiero
+                        </h1>
+                        <p class="mt-4 text-lg md:text-xl opacity-80">
+                            Nuestra IA multi-agente te dará una ventaja sin precedentes en los mercados.
+                        </p>
+                    </div>
+
+                    <!-- Simulación de Chat (MODIFICADO Idea 1) -->
+                    <div id="faux-chat-container" class="w-full max-w-3xl z-10 relative">
+                        <div id="chat-input-container" class="chat-input-container flex items-center p-3 transition-shadow duration-200 focus-within:shadow-md">
+                            <button id="ai-mode-btn" title="Ver modos de IA" class="p-2 rounded-full hover:bg-gray-500/10 transition-colors flex-shrink-0"><i data-lucide="plus" class="w-6 h-6 text-gray-500 dark:text-gray-400"></i></button>
+                            <div class="relative flex-1 px-4 text-left text-lg">
+                                <div id="placeholder-container" class="absolute inset-0 flex items-center pointer-events-none transition-opacity duration-300"><span id="typing-text" class="text-gray-400"></span><span id="typing-cursor"></span></div>
+                                <input type="text" id="chat-input" class="w-full h-full bg-transparent text-main focus:outline-none relative z-10" />
+                            </div>
+                            <button id="mic-btn" title="Hablar con IA (Demo)" class="p-2 rounded-full hover:bg-gray-500/10 transition-colors flex-shrink-0"><i data-lucide="mic" class="w-6 h-6 text-gray-500 dark:text-gray-400"></i></button>
+                            <button id="send-btn" title="Enviar (Demo)" class="p-2 rounded-full bg-blue-600 text-white transition-colors flex-shrink-0"><i data-lucide="arrow-up" class="w-6 h-6"></i></button>
+                        </div>
+
+                        <!-- Menú de Modos de IA --><div id="ai-mode-menu" class="absolute bottom-full mb-2 left-0 w-72 p-2 shadow-lg rounded-2xl border origin-bottom-left scale-95 opacity-0 invisible overflow-hidden" style="background: var(--bg-main); border-color: var(--border-main); max-height: 500px;">
+                            <div id="ai-menu-main-view">
+                                <div class="p-2 space-y-3">
+                                    <div id="tutor-toggle-container" class="modal-trigger-btn flex justify-between items-center cursor-pointer p-2 rounded-md hover:bg-gray-500/10"><span class="font-semibold text-sm">Modo Tutor</span><label class="tutor-toggle-switch"><input type="checkbox"><span class="tutor-toggle-slider"></span></label></div>
+                                    <button id="llm-selector-header" class="w-full text-left flex justify-between items-center text-sm font-semibold hover:opacity-80"><span id="llm-selector-label">GPT-5 (Predeterminado)</span><i data-lucide="chevron-right" class="w-4 h-4 transition-transform"></i></button>
+                                </div>
+                                <hr class="my-2" style="border-color: var(--border-main);">
+                                <div class="mt-2 space-y-1">
+                                    <button class="modal-trigger-btn w-full text-left flex items-center space-x-3 text-sm p-2 rounded-md hover:bg-gray-500/10"><i data-lucide="users" class="w-5 h-5"></i><span>Modo Debate</span></button>
+                                    <button class="modal-trigger-btn w-full text-left flex items-center space-x-3 text-sm p-2 rounded-md hover:bg-gray-500/10"><i data-lucide="zap" class="w-5 h-5"></i><span>Modo Rápido</span></button>
+                                    <button class="modal-trigger-btn w-full text-left flex items-center space-x-3 text-sm p-2 rounded-md hover:bg-gray-500/10"><i data-lucide="file-text" class="w-5 h-5"></i><span>Análisis Fundamental</span></button>
+                                    <button class="modal-trigger-btn w-full text-left flex items-center space-x-3 text-sm p-2 rounded-md hover:bg-gray-500/10"><i data-lucide="trending-up" class="w-5 h-5"></i><span>Análisis Técnico</span></button>
+                                </div>
+                            </div>
+                            <div id="llm-options-view" class="hidden">
+                                <button id="llm-back-btn" class="w-full text-left flex items-center space-x-2 text-sm p-2 rounded-md hover:bg-gray-500/10 mb-2">
+                                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                                    <span class="font-semibold">Volver</span>
+                                </button>
+                                <div id="llm-options" class="mt-2 grid grid-cols-2 gap-2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- (NUEVO) Contenedor de Respuesta del Chat (Idea 1) -->
+                    <div id="chat-response-container" class="w-full max-w-3xl z-10 relative mt-4 mb-16 px-4 mx-auto">
+                        <!-- Indicador de "Pensando" -->
+                        <div id="thinking-indicator" class_DEFAULT="h-[88px] w-full" style="display: none;">
+                            <div class="dot-flashing"></div>
+                            <div class="dot-flashing"></div>
+                            <div class="dot-flashing"></div>
+                        </div>
+                        <!-- Tarjeta de Respuesta -->
+                        <div id="ai-response-card" class="feature-card text-center" style="display: none;">
+                            <p class="text-lg">Análisis rápido de <span class="highlight">AAPL</span>: Sentimiento actual: <span class="highlight">Positivo (7.2/10)</span>. Se detectan 3 noticias de alto impacto en las últimas 2h. <em>Análisis completo, alertas 24/7 y modelos predictivos están disponibles para usuarios registrados.</em></p>
+                            <button id="response-cta-button" class="modal-trigger-btn font-semibold rounded-full px-6 py-3 text-base transition-transform hover:scale-105 animated-whitelist-btn">
+                                Obtener Acceso Prioritario
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <!-- (NUEVO) Sección de Confianza (Idea 2) -->
+            <section id="trust-signals" class="relative z-10 w-full pt-16 pb-16 md:pb-24">
+                <div class="container mx-auto max-w-screen-xl px-4">
+                    <div class="text-center mb-12 max-w-3xl mx-auto">
+                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Tu Ventaja Analítica de Nivel Profesional</h2>
+                        <p class="text-lg opacity-80 mt-4">Construido con tecnología en la que puedes confiar.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="text-center p-4">
+                            <i data-lucide="database" class="w-10 h-10 text-blue-500 mx-auto mb-4"></i>
+                            <h3 class="font-semibold text-lg mb-2">Datos en Tiempo Real</h3>
+                            <p class="opacity-70 text-sm">Conectados a más de 5,000 fuentes de noticias, bolsas y reportes financieros globales.</p>
+                        </div>
+                        <div class="text-center p-4">
+                            <i data-lucide="brain-circuit" class="w-10 h-10 text-purple-500 mx-auto mb-4"></i>
+                            <h3 class="font-semibold text-lg mb-2">IA Multi-Agente</h3>
+                            <p class="opacity-70 text-sm">No usamos una sola IA. Usamos un equipo de modelos (GPT-5, Gemini 2.5) que debaten para encontrar la mejor respuesta.</p>
+                        </div>
+                        <div class="text-center p-4">
+                            <i data-lucide="shield-check" class="w-10 h-10 text-green-500 mx-auto mb-4"></i>
+                            <h3 class="font-semibold text-lg mb-2">Seguridad y Privacidad</h3>
+                            <p class="opacity-70 text-sm">Tus estrategias y portafolios son tuyos. Usamos encriptación de nivel bancario para proteger tus datos.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección de Testimonios (RE-ENFOCADA - Idea 3) -->
+            <section id="testimonials" class="relative z-10 w-full pt-6 md:pt-8 pb-8 md:pb-12 overflow-hidden" style="background-color: rgba(120, 120, 120, 0.03);"> 
+                <div class="container mx-auto max-w-7xl text-center px-4">
+                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+                        Conoce a tus Analistas de IA
+                    </h2>
+                    
+                    <p class="text-lg opacity-80 mb-12 max-w-3xl mx-auto">
+                        Cada modelo tiene una "personalidad" única. Elige al analista que mejor se adapte a tu estilo de inversión.
+                    </p>
+
+                </div>
+                <div id="testimonials-container" class="relative w-full overflow-hidden px-16">
+                    <div class="testimonial-track flex py-4" style="margin-left: 0; margin-right: 0;">
+                        <!-- Testimonios RE-ENFOCADOS -->
+                        <div class="testimonial-card p-6 rounded-2xl">
+                            <div class="flex items-center mb-4">
+                                <img src="https://placehold.co/48x48/e0e0e0/333?text=WB" alt="IA de Valor" class="w-12 h-12 rounded-full mr-4 border-2" style="border-color: var(--border-main);">
+                                <div><h3 class="font-semibold">El Inversor de Valor (IA)</h3><p class="text-sm opacity-70">Filosofía: Warren Buffet</p></div>
+                            </div>
+                            <p class="text-main/90 italic">"Mi objetivo es encontrar 'fosos económicos' (moats). Analizo balances y reportes trimestrales para encontrar acciones subvaloradas con potencial a 10 años."</p>
+                        </div>
+                        <div class="testimonial-card p-6 rounded-2xl">
+                            <div class="flex items-center mb-4">
+                                <img src="https://placehold.co/48x48/e0e0e0/333?text=EM" alt="IA Tecnológica" class="w-12 h-12 rounded-full mr-4 border-2" style="border-color: var(--border-main);">
+                                <div><h3 class="font-semibold">El Visionario Tecnológico (IA)</h3><p class="text-sm opacity-70">Filosofía: Disruptiva</p></div>
+                            </div>
+                            <p class="text-main/90 italic">"Busco la próxima revolución. Mi análisis se centra en patentes, innovación tecnológica y potencial de crecimiento exponencial. Pienso en el futuro."</p>
+                        </div>
+                        <div class="testimonial-card p-6 rounded-2xl">
+                             <div class="flex items-center mb-4">
+                                <img src="https://placehold.co/48x48/e0e0e0/333?text=PL" alt="IA Ágil" class="w-12 h-12 rounded-full mr-4 border-2" style="border-color: var(--border-main);">
+                                <div><h3 class="font-semibold">El Gestor Ágil (IA)</h3><p class="text-sm opacity-70">Filosofía: Peter Lynch</p></div>
+                            </div>
+                            <p class="text-main/90 italic">"'Invierte en lo que conoces'. Analizo el sentimiento del consumidor y productos del día a día para encontrar las 'tenbaggers' que otros ignoran."</p>
+                        </div>
+                        <div class="testimonial-card p-6 rounded-2xl">
+                            <div class="flex items-center mb-4">
+                                <img src="https://placehold.co/48x48/e0e0e0/333?text=RD" alt="IA Macro" class="w-12 h-12 rounded-full mr-4 border-2" style="border-color: var(--border-main);">
+                                <div><h3 class="font-semibold">El Analista Macro (IA)</h3><p class="text-sm opacity-70">Filosofía: Ray Dalio</p></div>
+                            </div>
+                            <p class="text-main/90 italic">"Entiendo el panorama general. Analizo ciclos económicos, tasas de interés y geopolítica para construir portafolios 'All-Weather' (Todo Clima)."</p>
+                        </div>
+                        
+                        <!-- Duplicados de los nuevos -->
+                        <div class="testimonial-card p-6 rounded-2xl">
+                            <div class="flex items-center mb-4">
+                                <img src="https://placehold.co/48x48/e0e0e0/333?text=WB" alt="IA de Valor" class="w-12 h-12 rounded-full mr-4 border-2" style="border-color: var(--border-main);">
+                                <div><h3 class="font-semibold">El Inversor de Valor (IA)</h3><p class="text-sm opacity-70">Filosofía: Warren Buffet</p></div>
+                            </div>
+                            <p class="text-main/90 italic">"Mi objetivo es encontrar 'fosos económicos' (moats). Analizo balances y reportes trimestrales para encontrar acciones subvaloradas con potencial a 10 años."</p>
+                        </div>
+                        <div class="testimonial-card p-6 rounded-2xl">
+                            <div class="flex items-center mb-4">
+                                <img src="https://placehold.co/48x48/e0e0e0/333?text=EM" alt="IA Tecnológica" class="w-12 h-12 rounded-full mr-4 border-2" style="border-color: var(--border-main);">
+                                <div><h3 class="font-semibold">El Visionario Tecnológico (IA)</h3><p class="text-sm opacity-70">Filosofía: Disruptiva</p></div>
+                            </div>
+                            <p class="text-main/90 italic">"Busco la próxima revolución. Mi análisis se centra en patentes, innovación tecnológica y potencial de crecimiento exponencial. Pienso en el futuro."</p>
+                        </div>
+                        <div class="testimonial-card p-6 rounded-2xl">
+                             <div class="flex items-center mb-4">
+                                <img src="https://placehold.co/48x48/e0e0e0/333?text=PL" alt="IA Ágil" class="w-12 h-12 rounded-full mr-4 border-2" style="border-color: var(--border-main);">
+                                <div><h3 class="font-semibold">El Gestor Ágil (IA)</h3><p class="text-sm opacity-70">Filosofía: Peter Lynch</p></div>
+                            </div>
+                            <p class="text-main/90 italic">"'Invierte en lo que conoces'. Analizo el sentimiento del consumidor y productos del día a día para encontrar las 'tenbaggers' que otros ignoran."</p>
+                        </div>
+                        <div class="testimonial-card p-6 rounded-2xl">
+                            <div class="flex items-center mb-4">
+                                <img src="https://placehold.co/48x48/e0e0e0/333?text=RD" alt="IA Macro" class="w-12 h-12 rounded-full mr-4 border-2" style="border-color: var(--border-main);">
+                                <div><h3 class="font-semibold">El Analista Macro (IA)</h3><p class="text-sm opacity-70">Filosofía: Ray Dalio</p></div>
+                            </div>
+                            <p class="text-main/90 italic">"Entiendo el panorama general. Analizo ciclos económicos, tasas de interés y geopolítica para construir portafolios 'All-Weather' (Todo Clima)."</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!--
+                ============================================================
+                INICIO: JORNADA DEL INVERSOR (Secciones Reordenadas y Re-tituladas - Idea 4)
+                ============================================================
+            -->
+
+            <!-- (NUEVO) PASO 1: Apréndelo (Copiado de la sección 'Apréndelo' que tenías) -->
+            <section id="aprendelo" class="relative z-10 w-full pt-14 md:pt-16 pb-16 md:pb-24">
+                <div class="container mx-auto max-w-screen-xl px-4">
+                    <div class="text-center mb-16 max-w-3xl mx-auto">
+                         <span class="text-blue-500 font-bold uppercase tracking-wider text-base">Paso 1: Domina los Conceptos</span>
+                         <h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-2 mb-4">
+                             Aprende a Invertir Jugando
+                         </h2>
+                         <p class="text-xl opacity-80">
+                             Nuestra plataforma gamificada convierte la educación financiera en un desafío adictivo. Avanza por niveles, gana XP y domina el mercado.
+                         </p>
+                    </div>
+                    
+                    <div id="aprendelo-tabs-triggers" class="flex flex-wrap justify-center">
+                        <button class="aprendelo-tab-trigger active" data-content-id="desafio">
+                            <div class="trigger-icon"><i data-lucide="flame" class="w-7 h-7 text-red-500"></i></div>
+                            <div><h3 class="text-lg font-semibold">Desafío Diario</h3><p class="text-sm opacity-70">Aprende con lecciones rápidas y rachas.</p></div>
+                        </button>
+                        <button class="aprendelo-tab-trigger" data-content-id="cursos">
+                            <div class="trigger-icon"><i data-lucide="book-open-check" class="w-7 h-7 text-blue-500"></i></div>
+                            <div><h3 class="text-lg font-semibold">Cursos con IA</h3><p class="text-sm opacity-70">Clases magistrales con un tutor IA.</p></div>
+                        </button>
+                        <button class="aprendelo-tab-trigger" data-content-id="examenes">
+                            <div class="trigger-icon"><i data-lucide="file-check-2" class="w-7 h-7 text-green-500"></i></div>
+                            <div><h3 class="text-lg font-semibold">Misiones Prácticas</h3><p class="text-sm opacity-70">Pon a prueba tu habilidad con exámenes reales.</p></div>
+                        </button>
+                    </div>
+    
+                    <div id="aprendelo-tab-content-area" class="feature-card">
+                        <div id="aprendelo-text-content">
+                            <!-- El contenido se inyectará con JS -->
+                        </div>
+                        <div id="aprendelo-visuals-container">
+                            <!-- Visual: Desafío (Default) -->
+                            <div id="visual-desafio" class="aprendelo-visual active">
+                                <div class="learning-path"><div class="path-node completed"><i data-lucide="check" class="w-6 h-6"></i></div><div class="path-node unlocked"><i data-lucide="play" class="w-6 h-6"></i></div><div class="path-node locked"><i data-lucide="lock" class="w-6 h-6"></i></div><div class="path-node locked"><i data-lucide="lock" class="w-6 h-6"></i></div></div>
+                            </div>
+                            <!-- Visual: Cursos -->
+                            <div id="visual-cursos" class="aprendelo-visual">
+                                <div class="faux-video-player-container">
+                                    <iframe src="https://www.youtube.com/embed/g_v11kWG8fE?si=sF8LgUf8pQJ-8aFv&amp;controls=0&amp;autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=g_v11kWG8fE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                            <!-- Visual: Exámenes -->
+                            <div id="visual-examenes" class="aprendelo-visual">
+                                <div class="summary-icon"><i data-lucide="award" class="w-8 h-8"></i></div>
+                                <h4>¡Misión Completada!</h4>
+                                <p>Análisis Fundamental Nivel 1</p>
+                                <div class="faux-summary-score text-green-500">92%</div>
+                                <div class="exam-progress-bar"><div class="exam-progress-fill" style="width: 92%;"></div></div>
+                                <button class="faux-summary-btn faux-btn-primary mt-4">Ver Certificado</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- PASO 2: (Sección Portafolio) -->
+            <section id="portafolio" class="relative z-10 w-full pt-4 md:pt-6 pb-16 md:pb-24">
+                <div class="container mx-auto max-w-screen-2xl px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+
+                    <!-- Columna Izquierda: Visual del Portafolio --><div class="mt-8 md:mt-0 md:order-2">
+                        <div id="portafolio-visual-card" class="shadow-lg">
+                            <!-- Cabecera -->
+                            <div class="portfolio-header">
+                                <h4>Mi Portafolio de Pruebas</h4>
+                                <p>Fondos Disponibles: $82,500.00</p>
+                            </div>
+
+                            <!-- Fila 1: Long (Ganancia) -->
+                            <div class="portfolio-table-row">
+                                <div>
+                                    <span class="asset-name">
+                                        AAPL
+                                        <span class="asset-type-long">
+                                            <i data-lucide="trending-up" class="w-3 h-3"></i>
+                                            LARGO
+                                        </span>
+                                    </span>
+                                    <p class="text-sm opacity-70 mt-1">10.0 Unidades @ $180.00</p>
+                                </div>
+                                <div class="asset-pl">
+                                    <div class="pl-value pl-positive">+$450.00</div>
+                                    <div class="pl-percent pl-positive">(+25.00%)</div>
+                                </div>
+                            </div>
+
+                            <!-- Fila 2: Short (Pérdida) -->
+                            <div class="portfolio-table-row">
+                                <div>
+                                    <span class="asset-name">
+                                        BTC/USD
+                                        <span class="asset-type-short">
+                                            <i data-lucide="trending-down" class="w-3 h-3"></i>
+                                            CORTO
+                                        </span>
+                                    </span>
+                                    <p class="text-sm opacity-70 mt-1">0.05 Unidades @ $60,000</p>
+                                </div>
+                                <div class="asset-pl">
+                                    <div class="pl-value pl-negative">-$150.00</div>
+                                    <div class="pl-percent pl-negative">(-5.00%)</div>
+                                </div>
+                            </div>
+
+                            <!-- Fila 3: Long (Pérdida) -->
+                            <div class="portfolio-table-row">
+                                <div>
+                                     <span class="asset-name">
+                                        SQM
+                                        <span class="asset-type-long">
+                                            <i data-lucide="trending-up" class="w-3 h-3"></i>
+                                            LARGO
+                                        </span>
+                                    </span>
+                                    <p class="text-sm opacity-70 mt-1">50.0 Unidades @ $70.00</p>
+                                </div>
+                                <div class="asset-pl">
+                                    <div class="pl-value pl-negative">-$250.00</div>
+                                    <div class="pl-percent pl-negative">(-7.14%)</div>
+                                </div>
+                            </div>
+
+                            <!-- Resumen/Footer -->
+                            <div class="portfolio-summary">
+                                <div class="summary-item">
+                                    <div class="label">Total Invertido</div>
+                                    <div class="value">$8,550.00</div>
+                                </div>
+                                <div class="summary-item text-right md:text-left">
+                                    <div class="label">G/P Total</div>
+                                    <div class="value pl-positive">+$50.00</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Texto de Marketing -->
+                    <div class="md:order-1">
+                        <span class="text-green-500 font-bold uppercase tracking-wider text-base">Paso 2: Practica sin Riesgo</span>
+                        <h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-2 mb-4">
+                            Prueba tus Estrategias en un Entorno Real
+                        </h2>
+                        <p class="text-xl opacity-80 mb-8">
+                            Te damos <strong>$100,000 virtuales</strong> para que operes con precios de mercado en vivo. Aprende a construir un portafolio, prueba ideas y domina el mercado sin arriesgar tu capital.
+                        </p>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <i data-lucide="trending-up" class="w-7 h-7 text-green-500 mr-3 flex-shrink-0 mt-1"></i>
+                                <div><h3 class="font-semibold text-lg">Opera en Largo (Long)</h3><p class="opacity-70 text-base">Compra acciones o criptos y gana si el precio sube.</p></div>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="trending-down" class="w-7 h-7 text-red-500 mr-3 flex-shrink-0 mt-1"></i>
+                                <div><h3 class="font-semibold text-lg">Domina el Corto (Short)</h3><p class="opacity-70 text-base">Aprende a "vender en corto" y gana si el precio baja. Una función avanzada que debes dominar.</p></div>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="layers" class="w-7 h-7 text-blue-500 mr-3 flex-shrink-0 mt-1"></i>
+                                <div><h3 class="font-semibold text-lg">Acciones y Criptomonedas</h3><p class="opacity-70 text-base">Crea portafolios diversificados. Analizamos y simulamos todos los activos por ti.</p></div>
+                            </li>
+                             <li class="flex items-start">
+                                <i data-lucide="folder-kanban" class="w-7 h-7 text-purple-500 mr-3 flex-shrink-0 mt-1"></i>
+                                <div><h3 class="font-semibold text-lg">Múltiples Portafolios</h3><p class="opacity-70 text-base">Crea diferentes simulaciones para probar estrategias de largo plazo, trading o por sector.</p></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PASO 3 (Sección Noticias) -->
+            <section id="noticias" class="relative z-10 w-full pt-14 md:pt-16 pb-16 md:pb-24" style="background-color: rgba(120, 120, 120, 0.03);">
+                 <div class="container mx-auto max-w-screen-2xl px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                     <!-- Columna Izquierda: Visual Mockup -->
+                     <div class="mt-8 md:mt-0 md:order-2">
+                          <div class="news-visual-card p-4 rounded-2xl shadow-lg relative overflow-hidden">
+                             <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent dark:from-blue-900/20 dark:to-transparent opacity-50 -z-10"></div>
+                             <h3 class="font-semibold mb-3 text-lg px-2 pt-1">Feed de Noticias Inteligente</h3>
+                             <!-- Mockup de Tarjetas de Noticias -->
+                             <div class="space-y-3 max-h-[400px] overflow-hidden relative">
+                                  <div class="p-3 rounded-lg border flex flex-col gap-1.5" style="border-color: var(--border-main); background-color: var(--bg-main);">
+                                     <h4 class="font-semibold text-sm leading-tight">Apple anuncia nuevo evento para Septiembre, se esperan iPhones.</h4>
+                                     <div class="flex flex-wrap items-center gap-2 text-xs opacity-80">
+                                         <span>Bloomberg</span> | <span>Hace 2h</span>
+                                         <span class="news-sentiment-tag news-sentiment-positive"><i data-lucide="trending-up" class="w-3 h-3 mr-1"></i>Positivo</span>
+                                         <span class="news-entity-tag">AAPL</span>
+                                     </div>
+                                 </div>
+                                  <div class="p-3 rounded-lg border flex flex-col gap-1.5" style="border-color: var(--border-main); background-color: var(--bg-main);">
+                                     <h4 class="font-semibold text-sm leading-tight">Reguladores europeos investigan App Store por posibles prácticas anticompetitivas.</h4>
+                                     <div class="flex flex-wrap items-center gap-2 text-xs opacity-80">
+                                         <span>Reuters</span> | <span>Hace 5h</span>
+                                          <span class="news-sentiment-tag news-sentiment-negative"><i data-lucide="trending-down" class="w-3 h-3 mr-1"></i>Negativo</span>
+                                          <span class="news-entity-tag">AAPL</span>
+                                         <span class="news-entity-tag">EU</span>
+                                     </div>
+                                 </div>
+                                  <div class="p-3 rounded-lg border flex flex-col gap-1.5" style="border-color: var(--border-main); background-color: var(--bg-main);">
+                                     <h4 class="font-semibold text-sm leading-tight">Flujo de ETFs de Bitcoin muestra salidas netas por tercer día consecutivo.</h4>
+                                     <div class="flex flex-wrap items-center gap-2 text-xs opacity-80">
+                                         <span>CoinDesk</span> | <span>Hace 1h</span>
+                                         <span class="news-sentiment-tag news-sentiment-negative"><i data-lucide="trending-down" class="w-3 h-3 mr-1"></i>Negativo</span>
+                                          <span class="news-entity-tag">BTC</span>
+                                         <span class="news-entity-tag">ETF</span>
+                                     </div>
+                                 </div>
+                                  <!-- Fade out effect at the bottom -->
+                                 <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[var(--bg-secondary)] to-transparent"></div>
+                             </div>
+                             <p class="text-xs text-center mt-3 opacity-60">Visualización simplificada</de>
+                         </div>
+                     </div>
+                     <!-- Columna Derecha: Texto de Marketing -->
+                     <div class="md:order-1">
+                         <span class="text-indigo-500 font-bold uppercase tracking-wider text-base">Paso 3: Infórmate en Tiempo Real</span>
+                         <h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-2 mb-4">
+                             El Mercado Habla. Nosotros Traducimos.
+                         </h2>
+                         <p class="text-xl opacity-80 mb-8">
+                             No te pierdas ningún movimiento. Nuestro motor de noticias agrega y analiza información de fuentes clave <strong class="text-indigo-400">en tiempo real</strong>, dándote la ventaja que necesitas.
+                         </p>
+                         <ul class="space-y-4">
+                             <li class="flex items-start">
+                                 <i data-lucide="zap" class="w-7 h-7 text-indigo-500 mr-3 flex-shrink-0 mt-1"></i>
+                                 <div><h3 class="font-semibold text-lg">Actualizaciones en Vivo</h3><p class="opacity-70 text-base">Recibe noticias cruciales de Marketaux, Finnhub y más, apenas se publican.</p></div>
+                             </li>
+                             <li class="flex items-start">
+                                 <i data-lucide="scan-face" class="w-7 h-7 text-teal-500 mr-3 flex-shrink-0 mt-1"></i>
+                                 <div><h3 class="font-semibold text-lg">Análisis de Sentimiento IA</h3><p class="opacity-70 text-base">Nuestra IA evalúa el impacto potencial (positivo, negativo, neutral) de cada noticia.</p></div>
+                             </li>
+                              <li class="flex items-start">
+                                 <i data-lucide="tags" class="w-7 h-7 text-rose-500 mr-3 flex-shrink-0 mt-1"></i>
+                                 <div><h3 class="font-semibold text-lg">Detección de Entidades</h3><p class="opacity-70 text-base">Identifica automáticamente las empresas, acciones y criptos mencionadas.</p></div>
+                             </li>
+                         </ul>
+                     </div>
+                 </div>
+            </section>
+
+            <!-- PASO 4: (Sección Features/Seguimiento) -->
+            <section id="features" class="relative z-10 w-full pt-14 md:pt-16 pb-16 md:pb-24">
+                <div class="container mx-auto max-w-screen-2xl px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <span class="text-blue-500 font-bold uppercase tracking-wider text-base">Paso 4: Opera con Superpoderes</span>
+                        <h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-2 mb-4">
+                            Tu Analista de IA, 24/7
+                        </h2>
+                        <p class="text-xl opacity-80 mb-8">
+                            Define tus activos (acciones, criptos, y más) y deja que nuestra IA "Sentinel" los vigile por ti, segundo a segundo.
+                        </p>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <i data-lucide="newspaper" class="w-7 h-7 text-blue-500 mr-3 flex-shrink-0 mt-1"></i>
+                                <div><h3 class="font-semibold text-lg">Escaneo de 5,000+ Fuentes</h3><p class="opacity-70 text-base">Monitoreamos las noticias más importantes en tiempo real.</p></div>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="smile-plus" class="w-7 h-7 text-green-500 mr-3 flex-shrink-0 mt-1"></i>
+                                <div><h3 class="font-semibold text-lg">Análisis de Sentimiento</h3><p class="opacity-70 text-base">Te notificamos si una noticia es positiva o negativa para tu activo.</p></div>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-lucide="bell-ring" class="w-7 h-7 text-red-500 mr-3 flex-shrink-0 mt-1"></i>
+                                <div><h3 class="font-semibold text-lg">Alertas Personalizadas</h3><p class="opacity-70 text-base">Recibe notificaciones por Email, WhatsApp, o App cuando un precio se mueve o una noticia impacta tu portafolio.</p></div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-8 md:mt-0">
+                        <div class="feature-card p-4 rounded-2xl shadow-lg">
+                            <div id="tv-widget-container" class="tradingview-widget-container" style="height: 350px; width: 100%;">
+                                <div id="tv-widget-inner" class="tradingview-widget-container__widget" style="height: 100%; width: 100%;"></div>
+                            </div>
+                            <div class="flex justify-between items-center mt-4 pt-4 border-t" style="border-color: var(--border-main);">
+                                <div class="flex space-x-2">
+                                    <button class="widget-action-btn p-2 rounded-md" disabled><i data-lucide="settings" class="w-5 h-5"></i></button>
+                                    <button class="widget-action-btn p-2 rounded-md" disabled><i data-lucide="trash-2" class="w-5 h-5 text-red-500/80"></i></button>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-sm font-semibold opacity-80">Activo</span>
+                                    <label class="tutor-toggle-switch"><input type="checkbox" checked disabled><span class="tutor-toggle-slider"></span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!--
+                ============================================================
+                FIN: JORNADA DEL INVERSOR
+                ============================================================
+            -->
+        </div> <!-- Fin de #main-content -->
+
+        <!-- Footer -->
+        <footer class="relative z-10 w-full border-t" style="border-color: var(--border-main); background-color: var(--bg-main);">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+                
+                <!-- Sección Superior: Logo y Tagline -->
+                <div class="mb-12 text-center md:text-left">
+                    <div class="text-xl font-bold tracking-wider inline-block">MAVERLANG</div>
+                    <p class="mt-2 text-md opacity-80 max-w-lg mx-auto md:mx-0">
+                        Potenciando decisiones financieras con inteligencia artificial avanzada.
+                    </p>
+                </div>
+
+                <!-- Sección Media: Enlaces (MODIFICADA) -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-12">
+                    <!-- Col 1: Navegación (MODIFICADA) -->
+                    <div>
+                        <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Navegación</h3>
+                        <nav class="flex flex-col gap-3">
+                            <a href="index.html" class="text-sm opacity-70 hover:opacity-100 hover:text-blue-500 transition-all">Inicio</a>
+                            <a href="noticias.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Noticias</a>
+                            <a href="mercados.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Mercados</a>
+                            <a href="aprendelo.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Apréndelo</a>
+                        </nav>
+                    </div>
+                    <!-- Col 2: Plataforma (NUEVA) -->
+                    <div>
+                        <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Plataforma</h3>
+                        <nav class="flex flex-col gap-3">
+                            <a href="portafolioAI.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Portafolio AI</a>
+                            <a href="seguimiento.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Seguimiento</a>
+                            <a href="portafolio.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Portafolio Virtual</a>
+                            <a href="chats.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Chats</a>
+                        </nav>
+                    </div>
+                    <!-- Col 3: Compañía (Sin cambios) -->
+                    <div>
+                        <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Compañía</h3>
+                        <nav class="flex flex-col gap-3">
+                            <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Sobre Nosotros</a>
+                            <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Blog</a>
+                            <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Contacto</a>
+                        </nav>
+                    </div>
+                    <!-- Col 4: Legal (Sin cambios) -->
+                    <div>
+                        <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Legal</h3>
+                        <nav class="flex flex-col gap-3">
+                            <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Términos de Servicio</a>
+                            <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Política de Privacidad</a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Sección Inferior: Copyright y Redes Sociales (MODIFICADA) -->
+                <div class="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-6" style="border-color: var(--border-main);">
+                    <p class="text-sm opacity-70 text-center md:text-left">
+                        &copy; 2025 Maverlang. Todos los derechos reservados.
+                    </p>
+                    <div class="flex gap-6">
+                        <a href="#" aria-label="LinkedIn" class="opacity-70 hover:opacity-100 hover:text-blue-500 transition-all">
+                            <i data-lucide="linkedin" class="w-6 h-6"></i>
+                        </a>
+                        <a href="#" aria-label="Instagram" class="opacity-70 hover:opacity-100 hover:text-pink-500 transition-all">
+                            <i data-lucide="instagram" class="w-6 h-6"></i>
+                        </a>
+                        <a href="#" aria-label="X (Twitter)" class="opacity-70 hover:opacity-100 transition-all">
+                            <!-- SVG para X -->
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.06l3.51 4.639L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="Facebook" class="opacity-70 hover:opacity-100 hover:text-blue-600 transition-all">
+                            <i data-lucide="facebook" class="w-6 h-6"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Fin Footer -->
+
+    </div> <!-- Fin de #page-wrapper -->
+
+    <!-- Modal de Whitelist --><div id="whitelist-modal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 opacity-0 invisible">
+        <div class="modal-content w-full max-w-md rounded-2xl p-8 text-center scale-95">
+            <button id="close-modal-btn" class="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-500/10"><i data-lucide="x"></i></button>
+            <i data-lucide="rocket" class="w-12 h-12 mx-auto text-blue-500 mb-4"></i>
+            <h2 class="text-2xl font-bold">Únete al Acceso Prioritario</h2>
+            <p class="mt-2 text-main/70">Sé el primero en saber cuándo lanzamos y obtén un <span class="font-bold text-blue-500">20% de descuento</span> en tu suscripción.</p>
+            <div id="fomo-counter" class="text-base font-semibold">
+               ¡Únete a <span id="whitelist-count">...</span> analistas en la lista!
+            </div>
+            <div id="modal-countdown-container" class="flex items-center justify-center gap-3 md:gap-4 my-6">
+                <div class="countdown-box rounded-2xl w-20 h-20 flex flex-col items-center justify-center"><span id="modal-days" class="countdown-number">00</span><span class="countdown-label">Días</span></div>
+                <div class="countdown-box rounded-2xl w-20 h-20 flex flex-col items-center justify-center"><span id="modal-hours" class="countdown-number">00</span><span class="countdown-label">Horas</span></div>
+                <div class="countdown-box rounded-2xl w-20 h-20 flex flex-col items-center justify-center"><span id="modal-minutes" class="countdown-number">00</span><span class="countdown-label">Minutos</span></div>
+                <div class="countdown-box rounded-2xl w-20 h-20 flex flex-col items-center justify-center"><span id="modal-seconds" class="countdown-number">00</span><span class="countdown-label">Segundos</span></div>
+            </div>
+            <form id="whitelist-form-modal">
+                <div class="flex items-center p-2 rounded-full border" style="border-color: var(--border-main);"><input type="email" id="email-input-modal" placeholder="Tu correo electrónico" required class="w-full bg-transparent px-4 py-2 text-main placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none"><button type="submit" id="submit-btn-modal" class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-full flex-shrink-0 hover:bg-blue-700 transition-colors">Anotarme</button></div>
+                <p id="form-message-modal" class="mt-3 text-sm h-5"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- (NUEVO) Banner Fijo Inferior Izquierdo (Pop-up 2) -->
+    <div id="bottom-left-banner" class="fixed bottom-4 left-4 z-40 w-full max-w-sm p-4 rounded-lg shadow-lg hidden" style="background-color: var(--bg-main); border: 1px solid var(--border-main);">
+        <div class="flex items-start gap-3">
+            <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                <i data-lucide="rocket" class="w-6 h-6 text-blue-500"></i>
+            </div>
+            <div class="flex-1">
+                <h4 class="font-semibold">Acceso Prioritario</h4>
+                <p class="text-sm opacity-80">Obtén un 20% de descuento en el lanzamiento.</p>
+                <button id="banner-register-btn" class="mt-2 text-sm font-semibold text-blue-500 hover:text-blue-400">Registrar ahora</button>
+            </div>
+            <button id="banner-close-btn" class="p-1 rounded-full hover:bg-gray-500/10">
+                <i data-lucide="x" class="w-4 h-4 opacity-70"></i>
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Scripts de la Aplicación -->
+    <script type="module">
+        // Importaciones de Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp, onSnapshot, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Variables Globales
+        let db, auth;
+        let userId = null;
+        let isAuthReady = false;
+        let whitelistCol;
+        let isClickOutsideListenerAdded = false; // Flag global para el listener
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(
+            typeof __firebase_config !== 'undefined' ? __firebase_config : '{}'
+        );
+
+        let modalShown = false; // (NUEVO) Flag para controlar pop-up automático
+
+        // --- Funciones del Modal ---
+        const openModal = (e) => {
+            if (e) e.preventDefault();
+            // MODIFICADO: No abrir modal si el enlace tiene un href real
+            if (e.currentTarget && e.currentTarget.href && !e.currentTarget.href.endsWith('#') && e.currentTarget.target !== '_blank') {
+                return; // Dejar que el enlace navegue
+            }
+            const modal = document.getElementById('whitelist-modal');
+            if (!modal || !modal.classList.contains('invisible')) return;
+            
+            modalShown = true; // (NUEVO) Marcar que el modal se ha mostrado
+            
+            const modalContent = modal.querySelector('.modal-content');
+            modal.classList.remove('invisible', 'opacity-0');
+            modalContent.classList.remove('scale-95');
+        };
+
+        const closeModal = () => {
+            const modal = document.getElementById('whitelist-modal');
+            if (!modal) return;
+            const modalContent = modal.querySelector('.modal-content');
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('invisible'), 300);
+        };
+
+        // --- Contenido de Marketing para "Apréndelo" ---
+        const aprendeloContentData = {
+            desafio: `<h3 class="text-2xl font-bold mb-3">Tu Camino al Dominio Financiero</h3><p class="mt-2 opacity-80 leading-relaxed">Sigue un camino claro, nivel a nivel, inspirado en Duolingo. Completa lecciones diarias sobre análisis técnico, macroeconomía, valoración de empresas y más. Mantén tu racha de aprendizaje activa y desbloquea contenido avanzado. ¡Convierte el aprendizaje en un hábito con nuestro sistema gamificado!</p><h4 class="font-semibold mt-4 mb-2">Rutas Populares:</h4><ul class="list-disc list-inside text-sm opacity-70 space-y-1"><li>Fundamentos para Inversión a Largo Plazo</li><li>Ruta del Trader Técnico</li><li>Análisis Macroeconómico Global</li></ul>`,
+            cursos: `<h3 class="text-2xl font-bold mb-3">Cursos Inteligentes con IA</h3><p class="mt-2 opacity-80 leading-relaxed">Nuestros cursos (ej: "Introducción a ETFs", "Valoración Avanzada con Flujos de Caja", "Psicología del Trading") cobran vida con IA. Accede a videos de alta calidad directamente en nuestra plataforma. Aunque el asistente de IA no está visible aquí, en la plataforma real te acompañará para resolver dudas, hacer preguntas relevantes y pausar el video en puntos clave para validar tu comprensión. ¡Nunca más te sentirás perdido en una clase!</p>`,
+            examenes: `<h3 class="text-2xl font-bold mb-3">Misiones: Pon a Prueba tu Habilidad</h3><p class="mt-2 opacity-80 leading-relaxed">Olvida los tests aburridos. Enfrenta "Misiones" gamificadas (ej: "Identifica 3 patrones 'Hombro-Cabeza-Hombro' en gráficos reales", "Calcula el Valor Intrínseco de 5 empresas del IPSA", "Sobrevive a una simulación de crash bursátil"). Compite contra el tiempo, gestiona tus 'vidas', gana puntos por precisión y desbloquea niveles de dificultad y recompensas exclusivas.</p>`,
+            progreso: `<h3 class="text-2xl font-bold mb-3">Tu Sala de Trofeos Financieros</h3><p class="mt-2 opacity-80 leading-relaxed">Cada logro cuenta. Visualiza tu avance general y por área temática (Técnico, Fundamental, Macro). Colecciona insignias únicas por <strong class="text-yellow-500">completar Rutas de aprendizaje, mantener rachas de desafíos semanales, alcanzar puntajes 'Maestro' en misiones</strong> y dominar conceptos específicos. ¡Tu perfil de progreso es el reflejo de tu dedicación y habilidad!</p>`
+        };
+
+        // --- Inicialización General ---
+        async function initApp() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            } else {
+                console.warn("Lucide no está listo, reintentando...");
+                setTimeout(initApp, 100);
+                return;
+            }
+
+            initTheme(); // Ahora incluye la inicialización del dropdown de tema
+            await initFirebase();
+
+            initWhitelistModal();
+            initFauxChatAndLLM(); // (NUEVO) Contiene la lógica del chat demo
+            initWhitelistForms();
+            initChatInputBehavior();
+            /* initAnimations(); (ELIMINADO) */
+            initCountdown();
+            initTypingAnimation();
+            initHeaderScrollBehavior(); // Configura el listener inicial
+            initNavigation(); // Inicializa dropdown de Funciones
+            initAprendeloTabs();
+            generateParticlesSlow(); // (Función de partículas)
+            initMobileMenu(); // (NUEVO) Inicializa el menú móvil
+            initPopups(); // (NUEVO) Inicializa los pop-ups de marketing
+
+            if (isAuthReady) {
+                 console.log("Firebase listo, iniciando listener de whitelist.");
+                 listenToWhitelistCount();
+            } else {
+                 console.warn("La autenticación de Firebase falló o no está lista. El listener de whitelist no se iniciará.");
+            }
+        }
+
+
+        // --- Inicialización de Firebase ---
+        async function initFirebase() {
+             if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "TU_API_KEY") {
+                console.warn("Firebase no está configurado. El formulario de Whitelist no funcionará.");
+                isAuthReady = false;
+                return;
+            }
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                setLogLevel('debug');
+                whitelistCol = collection(db, 'artifacts', appId, 'public', 'data', 'whitelist');
+
+                await new Promise((resolve, reject) => {
+                    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+                        unsubscribe();
+                        if (user) {
+                            userId = user.uid;
+                            isAuthReady = true;
+                            console.log("Usuario ya autenticado:", userId);
+                            resolve();
+                        } else {
+                            try {
+                                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                                    console.log("Intentando signInWithCustomToken...");
+                                    await signInWithCustomToken(auth, __initial_auth_token);
+                                } else {
+                                    console.log("Intentando signInAnonymously...");
+                                    await signInAnonymously(auth);
+                                }
+                                if (auth.currentUser) {
+                                    userId = auth.currentUser.uid;
+                                    isAuthReady = true;
+                                    console.log("Autenticación exitosa:", userId);
+                                    resolve();
+                                } else {
+                                     console.error("Error: No se pudo obtener currentUser después del intento de login.");
+                                     isAuthReady = false;
+                                     reject(new Error("Fallo en la autenticación silenciosa."));
+                                }
+                            } catch (authError) {
+                                console.error("Error durante el intento de autenticación:", authError);
+                                isAuthReady = false;
+                                reject(authError);
+                            }
+                        }
+                    }, (error) => {
+                        console.error("Error en onAuthStateChanged:", error);
+                        isAuthReady = false;
+                        reject(error);
+                    });
+                });
+
+            } catch (e) {
+                console.error("Error crítico al inicializar Firebase o durante la autenticación:", e.message);
+                isAuthReady = false;
+            }
+        }
+
+        // --- Widget de TradingView ---
+        // Modificado para aceptar contenedor directo y widgetType
+        function loadTradingViewWidgetDirect(container, widgetConfig, widgetType) {
+             if (!container || typeof TradingView === 'undefined') {
+                 console.warn(`Contenedor ${container ? container.id : 'desconocido'} o TradingView no listo.`);
+                 setTimeout(() => loadTradingViewWidgetDirect(container, widgetConfig, widgetType), 200); // Reintentar
+                 return;
+             }
+             container.innerHTML = ''; // Limpiar contenedor
+             try {
+                // Usar la API de TradingView directamente si está disponible
+                 new TradingView.widget({
+                     ...widgetConfig,
+                     container_id: container.id // Asegurar que el contenedor tenga un ID
+                 });
+             } catch (e) {
+                 console.error("Error al crear widget de TradingView:", e);
+             }
+        }
+        
+        // Función original para el widget de AAPL
+         function loadTradingViewWidget(theme) {
+             const container = document.getElementById('tv-widget-inner');
+             if (!container) return;
+             // Asegurar que el contenedor interno tenga ID
+             if (!container.id) container.id = 'tv-widget-inner-dynamic'; 
+             
+             const config = {
+                 "symbol": "NASDAQ:AAPL",
+                 "chartOnly": false,
+                 "dateRange": "12M",
+                 "noTimeScale": false,
+                 "colorTheme": theme,
+                 "isTransparent": true,
+                 "locale": "es",
+                 "width": "100%",
+                 "autosize": true,
+                 "height": "100%"
+             };
+             // Esperar a que TradingView esté listo
+             if (typeof TradingView !== 'undefined') {
+                loadTradingViewWidgetDirect(container, config, 'mini-symbol-overview');
+             } else {
+                 console.warn("TradingView no listo, reintentando para widget AAPL...");
+                 setTimeout(() => loadTradingViewWidget(theme), 200);
+             }
+         }
+
+
+        // --- Manejo de Temas ---
+        function initTheme() {
+            const themeMainBtn = document.getElementById('theme-main-btn');
+            const themeDropdownMenu = document.getElementById('theme-dropdown-menu');
+            const themeDropdownBtns = themeDropdownMenu.querySelectorAll('.theme-dropdown-btn');
+
+            if (!themeMainBtn || !themeDropdownMenu) {
+                console.warn("Elementos del selector de tema no encontrados.");
+                return;
+            }
+
+            const currentTheme = localStorage.getItem('maverlang_theme') || 'light';
+            applyTheme(currentTheme, true); // (NUEVO) True para carga inicial
+
+            // Toggle dropdown
+             themeMainBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                 const isVisible = !themeDropdownMenu.classList.contains('invisible');
+                 if (isVisible) {
+                     themeDropdownMenu.classList.add('opacity-0', 'scale-95', 'invisible');
+                 } else {
+                     // Cerrar otros menús
+                     document.getElementById('nav-funciones-menu')?.classList.add('opacity-0', 'scale-95', 'invisible');
+                     document.getElementById('mobile-menu-panel')?.classList.add('opacity-0', 'hidden'); // (NUEVO) Cerrar menú móvil
+                     themeDropdownMenu.classList.remove('opacity-0', 'scale-95', 'invisible');
+                 }
+            });
+
+            // Aplicar tema desde dropdown y cerrar
+            themeDropdownBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    applyTheme(btn.dataset.theme);
+                    themeDropdownMenu.classList.add('opacity-0', 'scale-95', 'invisible'); // Cerrar menú
+                });
+            });
+            // La lógica para cerrar al hacer clic fuera se movió a initNavigation para manejar ambos dropdowns
+        }
+
+        function applyTheme(theme, isInitialLoad = false) { // (NUEVO) Parámetro isInitialLoad
+            const html = document.documentElement;
+            const themeMainBtn = document.getElementById('theme-main-btn'); // Obtener el botón
+            let tvTheme;
+            let iconName = 'sun'; // Default icon
+
+            html.classList.remove('dark'); // 'stars-theme' ya no existe
+
+            if (theme === 'dark') {
+                html.classList.add('dark');
+                tvTheme = 'dark';
+                iconName = 'moon';
+            } else { // Light theme
+                tvTheme = 'light';
+                iconName = 'sun';
+            }
+
+            if (!isInitialLoad) { // (NUEVO) Solo guardar si no es la carga inicial
+                localStorage.setItem('maverlang_theme', theme);
+            }
+
+            // Actualizar ícono principal DENTRO del botón
+            if (themeMainBtn) { // Verificar si el botón existe
+                // Crear el nuevo icono como string HTML
+                const newIconHTML = `<i data-lucide="${iconName}"></i>`;
+                // Reemplazar el contenido interno del botón con el nuevo icono
+                themeMainBtn.innerHTML = newIconHTML; 
+                // Asegurarse de que Lucide procese el nuevo icono
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons(); 
+                }
+            } else {
+                 console.warn("Botón principal de tema no encontrado para actualizar icono.");
+            }
+
+            // Marcar botón activo en dropdown
+            document.querySelectorAll('.theme-dropdown-btn').forEach(b => b.classList.remove('active'));
+            const activeButton = document.querySelector(`.theme-dropdown-btn[data-theme="${theme}"]`);
+            if (activeButton) activeButton.classList.add('active');
+
+            /* initAnimations(); (ELIMINADO) */
+            loadTradingViewWidget(tvTheme); // Recargar widget TV principal (AAPL)
+            
+            // Llama a la lógica de actualización del fondo del header INMEDIATAMENTE
+            updateHeaderBackground(); 
+        }
+
+        // (NUEVO) Lógica de Pop-ups (Timer y Banner)
+        function initPopups() {
+            const banner = document.getElementById('bottom-left-banner');
+            const closeBannerBtn = document.getElementById('banner-close-btn');
+            const registerBannerBtn = document.getElementById('banner-register-btn');
+
+            if (banner && closeBannerBtn && registerBannerBtn) {
+                // 1. Mostrar banner después de 2.5 segundos
+                setTimeout(() => {
+                    banner.classList.remove('hidden');
+                    setTimeout(() => banner.classList.add('visible'), 50); // Pequeño delay para la transición
+                }, 2500);
+
+                // 2. Cerrar banner
+                closeBannerBtn.addEventListener('click', () => {
+                    banner.classList.remove('visible');
+                    setTimeout(() => banner.classList.add('hidden'), 500);
+                });
+
+                // 3. Botón de registro del banner
+                registerBannerBtn.addEventListener('click', (e) => {
+                    openModal(e);
+                    banner.classList.remove('visible');
+                    setTimeout(() => banner.classList.add('hidden'), 500);
+                });
+            }
+
+            // 4. Abrir modal principal después de 10 segundos, solo si no se ha abierto
+            setTimeout(() => {
+                if (!modalShown) {
+                    openModal();
+                }
+            }, 10000); // 10 segundos
+        }
+
+        // --- Lógica de Whitelist y Modal ---
+        function initWhitelistModal() {
+            const modal = document.getElementById('whitelist-modal');
+            if (!modal) return;
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            // (NUEVO) Todos los triggers del modal, incluyendo los nuevos
+            const triggerButtons = document.querySelectorAll('.modal-trigger-btn, #header-whitelist-btn, #response-cta-button, #banner-register-btn, #mobile-whitelist-btn'); 
+            
+            triggerButtons.forEach(btn => {
+                // Evitar añadir múltiples listeners si la función se llama de nuevo
+                if (btn.dataset.modalListenerAttached === 'true') return; 
+                
+                // MODIFICADO: Añadir comprobación de href
+                btn.addEventListener('click', (e) => {
+                     // Si el botón es un enlace A y tiene un href real (no solo '#'), deja que navegue.
+                     if (e.currentTarget.tagName === 'A' && e.currentTarget.href && !e.currentTarget.href.endsWith('#') && e.currentTarget.target !== '_blank') {
+                         return; // No abrir el modal, permitir navegación
+                     }
+                     // Si no, es un botón o un enlace placeholder, abrir el modal.
+                     openModal(e);
+                });
+                btn.dataset.modalListenerAttached = 'true'; // Marcar como asignado
+            });
+            
+            if (closeModalBtn && closeModalBtn.dataset.modalListenerAttached !== 'true') {
+                 closeModalBtn.addEventListener('click', closeModal);
+                 closeModalBtn.dataset.modalListenerAttached = 'true';
+            }
+            if (modal.dataset.modalListenerAttached !== 'true') {
+                 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+                 modal.dataset.modalListenerAttached = 'true';
+            }
+        }
+
+
+        // --- Listener de Whitelist Count ---
+        function listenToWhitelistCount() {
+             if (!db || !whitelistCol || !isAuthReady) {
+                console.warn("listenToWhitelistCount: DB no listo o usuario no autenticado. Abortando.");
+                const fomoCounterEl = document.getElementById('fomo-counter');
+                 const countEl = document.getElementById('whitelist-count');
+                 if(fomoCounterEl && countEl) { countEl.textContent = '...'; }
+                return;
+            }
+            const fomoCounterEl = document.getElementById('fomo-counter');
+            const countEl = document.getElementById('whitelist-count');
+            if (!fomoCounterEl || !countEl) { console.error("Elementos del contador FOMO no encontrados."); return; }
+            try {
+                const unsub = onSnapshot(whitelistCol, (snapshot) => {
+                    const count = snapshot.size;
+                    countEl.textContent = count > 0 ? count.toLocaleString('es') : '0';
+                    fomoCounterEl.classList.add('visible');
+                }, (error) => {
+                    console.error("Error DENTRO de onSnapshot al escuchar contador:", error);
+                    fomoCounterEl.classList.add('visible');
+                    countEl.textContent = 'Error';
+                });
+            } catch (error) {
+                console.error("Error al configurar onSnapshot:", error);
+                fomoCounterEl.classList.add('visible');
+                countEl.textContent = 'Error';
+            }
+        }
+
+        function initWhitelistForms() {
+             const modalForm = document.getElementById('whitelist-form-modal');
+            if (modalForm) modalForm.addEventListener('submit', (e) => handleWhitelistSubmit(e));
+        }
+
+        async function handleWhitelistSubmit(e) {
+             e.preventDefault();
+            if (!db || !whitelistCol || !isAuthReady || !auth.currentUser) { setMessage('Error: Autenticación o base de datos no lista.', 'error'); return; }
+
+            const emailInput = document.getElementById('email-input-modal');
+            const submitBtn = document.getElementById('submit-btn-modal');
+            const email = emailInput.value.trim();
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setMessage('Correo inválido.', 'error'); return; }
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true; submitBtn.textContent = 'Enviando...'; setMessage('', 'clear');
+            try {
+                const q = query(whitelistCol, where("email", "==", email));
+                const querySnapshot = await getDocs(q);
+                if (!querySnapshot.empty) { throw new Error('Este correo ya está registrado.'); }
+                await addDoc(whitelistCol, {
+                    email: email,
+                    timestamp: serverTimestamp(),
+                    source: 'modal',
+                });
+                setMessage('¡Gracias! Estás en la lista.', 'success'); emailInput.value = '';
+                setTimeout(closeModal, 2000);
+            } catch (error) {
+                console.error("Error al registrar en whitelist:", error);
+                setMessage(error.message || 'Error al registrar.', 'error');
+            } finally {
+                submitBtn.disabled = false; submitBtn.textContent = originalBtnText;
+            }
+        }
+
+        function setMessage(message, type) {
+             const messageEl = document.getElementById('form-message-modal');
+             if (!messageEl) return;
+             messageEl.textContent = message;
+             messageEl.style.color = type === 'success' ? 'var(--success-color)' : (type === 'error' ? 'var(--accent-red)' : 'inherit');
+        }
+
+        // --- Funciones de UI/Animación ---
+        function initCountdown() {
+            const targetDate = new Date('2025-11-24T00:00:00').getTime();
+            const ids = ['modal'];
+            const labels = ['days', 'hours', 'minutes', 'seconds'];
+            const elements = {};
+            ids.forEach(id => { elements[id] = {}; labels.forEach(l => elements[id][l] = document.getElementById(`${id}-${l}`)); });
+            const interval = setInterval(() => {
+                const distance = targetDate - new Date().getTime();
+                if (distance < 0) {
+                    clearInterval(interval);
+                    ids.forEach(id => { const cont = document.getElementById(`${id}-countdown-container`); if(cont) cont.innerHTML = '<p class="text-xl font-bold text-blue-500">¡Lanzamiento iniciado!</p>'; });
+                    return;
+                }
+                const d = Math.floor(distance / 864e5), h = Math.floor((distance % 864e5) / 36e5), m = Math.floor((distance % 36e5) / 6e4), s = Math.floor((distance % 6e4) / 1e3);
+                const times = { days: d, hours: h, minutes: m, seconds: s };
+                ids.forEach(id => { labels.forEach(l => { if(elements[id] && elements[id][l]) elements[id][l].textContent = String(times[l]).padStart(2, '0'); }); });
+            }, 1000);
+        }
+
+        function initTypingAnimation() {
+            const el = document.getElementById('typing-text'); if(!el) return;
+            const q = ["Análisis fundamental de SQM", "¿Impacto del cobre en el IPSA?", "Noticias clave para COPEC", "Pronóstico técnico de BTC/USD"];
+            let qi = 0, ci = 0, del = false, t;
+            const type = () => { clearTimeout(t); const cq = q[qi]; let ts = del ? 50 : 100; if (del) { el.textContent = cq.substring(0, ci-1); ci--; } else { el.textContent = cq.substring(0, ci+1); ci++; } if (!del && ci === cq.length) { ts = 2000; del = true; } else if (del && ci === 0) { del = false; qi=(qi+1)%q.length; ts = 500; } if(el.isConnected) t=setTimeout(type, ts); }; type();
+        }
+
+        function initChatInputBehavior() {
+            const chatInput = document.getElementById('chat-input');
+            const placeholder = document.getElementById('placeholder-container');
+            if (!chatInput || !placeholder) return;
+            chatInput.addEventListener('input', () => { placeholder.style.opacity = chatInput.value.length > 0 ? '0' : '1'; });
+        }
+
+        // (NUEVO) Lógica del Chat Demo (Idea 1)
+        function initFauxChatAndLLM() {
+            // Elementos del Menú AI (existentes)
+            const aiModeBtn = document.getElementById('ai-mode-btn'); const aiModeMenu = document.getElementById('ai-mode-menu'); const mainView = document.getElementById('ai-menu-main-view'); const llmView = document.getElementById('llm-options-view'); const llmH = document.getElementById('llm-selector-header'); const llmBackButton = document.getElementById('llm-back-btn'); const llmOptsContainer = document.getElementById('llm-options'); const llmLabel = document.getElementById('llm-selector-label'); const tutorCont = document.getElementById('tutor-toggle-container');
+            
+            // (NUEVO) Elementos de la Demo de Chat
+            const chatInput = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            const micBtn = document.getElementById('mic-btn'); // Botón de Micrófono
+            const chatInputContainer = document.getElementById('chat-input-container');
+            const chatResponseContainer = document.getElementById('chat-response-container');
+            const thinkingIndicator = document.getElementById('thinking-indicator');
+            const aiResponseCard = document.getElementById('ai-response-card');
+            const responseCtaButton = document.getElementById('response-cta-button');
+
+            if (!aiModeBtn || !aiModeMenu || !mainView || !llmView || !llmH || !llmBackButton || !llmOptsContainer || !llmLabel || !tutorCont || !chatInput || !sendBtn || !micBtn || !chatInputContainer || !chatResponseContainer || !thinkingIndicator || !aiResponseCard || !responseCtaButton) { 
+                console.error("Error: Faltan elementos críticos del chat o de la demo."); return; 
+            }
+            
+            // --- Lógica del Menú AI (sin cambios) ---
+            if (tutorCont) { const check = tutorCont.querySelector('input'); tutorCont.addEventListener('click', (e) => { if (!e.target.closest('.tutor-toggle-switch')) check.checked = !check.checked; console.log("Tutor:", check.checked); }); }
+            const llms = [{ id:'gpt-5', name:'GPT-5' }, { id:'grok-4', name:'Grok 4' }, { id:'grok-4-fast', name:'Grok 4 Fast' }, { id:'gemini-2.5-pro', name:'Gemini 2.5 Pro' }, { id:'gemini-2.5-flash', name:'Gemini 2.5 Flash' }, { id:'claude-sonnet', name:'Claude 4.5 Sonnet' }];
+            llmOptsContainer.innerHTML = llms.map(l => `<div class="llm-card-small rounded-lg p-2 text-center" data-llm-id="${l.id}"><p class="font-semibold text-xs">${l.name}</p></div>`).join('');
+            const localCloseMenu = () => { aiModeMenu.classList.add('opacity-0','scale-95'); setTimeout(() => { aiModeMenu.classList.add('invisible'); mainView.classList.remove('hidden'); llmView.classList.add('hidden'); }, 200); };
+            aiModeBtn.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); aiModeMenu.classList.contains('invisible') ? aiModeMenu.classList.remove('invisible','opacity-0','scale-95') : localCloseMenu(); });
+            document.addEventListener('click', () => { if (!aiModeMenu.classList.contains('invisible')) localCloseMenu(); }); // Cerrar menú IA al clickear fuera
+            llmH.addEventListener('click', (e) => { e.stopPropagation(); mainView.classList.add('hidden'); llmView.classList.remove('hidden'); lucide.createIcons(); });
+            llmBackButton.addEventListener('click', (e) => { e.stopPropagation(); llmView.classList.add('hidden'); mainView.classList.remove('hidden'); });
+            llmOptsContainer.querySelectorAll('.llm-card-small').forEach(c => { c.addEventListener('click', (e) => { e.stopPropagation(); const id = c.dataset.llmId; const sel = llms.find(l => l.id === id); localStorage.setItem('selectedLLM', id); llmOptsContainer.querySelectorAll('.llm-card-small').forEach(x => x.classList.remove('selected')); c.classList.add('selected'); llmLabel.textContent = sel.name; localCloseMenu(); }); });
+            const savedId = localStorage.getItem('selectedLLM') || 'gpt-5'; const saved = llms.find(l => l.id === savedId); const savedCard = llmOptsContainer.querySelector(`[data-llm-id="${savedId}"]`); if(savedCard && saved) { savedCard.classList.add('selected'); llmLabel.textContent = saved.name; }
+            document.querySelectorAll('#ai-menu-main-view .modal-trigger-btn').forEach(btn => { if (btn.dataset.modalListenerAttached !== 'true') { btn.addEventListener('click', (e) => { e.preventDefault(); localCloseMenu(); }); btn.dataset.modalListenerAttached = 'true'; } });
+
+            // --- (NUEVO) Lógica de la Demo de Chat ---
+            const triggerChatDemo = (e) => {
+                e.preventDefault();
+                // Si el input está vacío, simplemente abre el modal de registro
+                if (chatInput.value.trim() === '') {
+                    openModal(e);
+                    return;
+                }
+                
+                // Si el usuario escribió algo, inicia la demo
+                chatInputContainer.style.display = 'none';
+                chatResponseContainer.style.display = 'block';
+                thinkingIndicator.style.display = 'flex';
+                aiResponseCard.style.display = 'none';
+                
+                // Simular 1.5s de "pensamiento"
+                setTimeout(() => {
+                    thinkingIndicator.style.display = 'none';
+                    aiResponseCard.style.display = 'block';
+                    chatResponseContainer.classList.add('visible'); // Activa la transición de opacidad
+                }, 1500);
+            };
+
+            // Listeners para la demo
+            sendBtn.addEventListener('click', triggerChatDemo);
+            chatInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    triggerChatDemo(e);
+                }
+            });
+            
+            // El botón de micrófono ahora solo abre el modal
+            micBtn.addEventListener('click', openModal);
+            
+            // El botón en la respuesta de la IA también abre el modal
+            responseCtaButton.addEventListener('click', openModal);
+        }
+
+        /* initAnimations(); (ELIMINADO) */
+        /* initStarfield(); (ELIMINADO) */
+
+        // Función separada para actualizar el fondo del header
+        function updateHeaderBackground() {
+            const header = document.querySelector('header');
+            if (!header) return;
+            const headerContent = header.firstElementChild;
+            if (!headerContent) return; 
+
+            const threshold = 50;
+            const scrolled = window.scrollY > threshold;
+            const isDark = document.documentElement.classList.contains('dark'); // 'stars-theme' ya no existe
+            
+            const bgColor = scrolled 
+                ? (isDark ? 'rgba(10,10,10,0.8)' : 'rgba(255,255,255,0.8)') 
+                : (isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)');
+                
+            headerContent.style.backgroundColor = bgColor;
+        }
+
+
+        // Función que se activa con el scroll
+        function initHeaderScrollBehavior() {
+            window.addEventListener('scroll', updateHeaderBackground, { passive: true });
+            updateHeaderBackground(); // Llamar una vez al inicio
+        }
+
+
+        // --- Lógica de Navegación Dropdown ---
+        function initNavigation() {
+            const funcionesBtn = document.getElementById('nav-funciones-btn');
+            const funcionesMenu = document.getElementById('nav-funciones-menu');
+
+            if (funcionesBtn && funcionesMenu) {
+                const toggleFuncionesDropdown = (e) => {
+                    e.stopPropagation();
+                    const isVisible = !funcionesMenu.classList.contains('invisible');
+                    if (isVisible) {
+                        funcionesMenu.classList.add('opacity-0', 'scale-95', 'invisible');
+                    } else {
+                        // Cerrar otros menús
+                        document.getElementById('theme-dropdown-menu')?.classList.add('opacity-0', 'scale-95', 'invisible');
+                        document.getElementById('mobile-menu-panel')?.classList.add('opacity-0', 'hidden'); // (NUEVO) Cerrar menú móvil
+                        funcionesMenu.classList.remove('opacity-0', 'scale-95', 'invisible');
+                    }
+                };
+                 // Evitar añadir múltiples listeners
+                 if (funcionesBtn.dataset.navListenerAttached !== 'true') {
+                     funcionesBtn.addEventListener('click', toggleFuncionesDropdown);
+                     funcionesBtn.dataset.navListenerAttached = 'true';
+                 }
+            } else {
+                 console.warn("Dropdown 'Funciones' no encontrado.");
+            }
+
+            // Cerrar CUALQUIER dropdown al hacer clic fuera
+            if (!isClickOutsideListenerAdded) { 
+                 document.addEventListener('click', (e) => {
+                    const themeDropdown = document.getElementById('theme-dropdown-menu');
+                    const themeButton = document.getElementById('theme-main-btn');
+                    const funcionesDropdown = document.getElementById('nav-funciones-menu');
+                    const funcionesButton = document.getElementById('nav-funciones-btn');
+                    const mobileMenu = document.getElementById('mobile-menu-panel'); // (NUEVO)
+                    const mobileButton = document.getElementById('mobile-menu-btn'); // (NUEVO)
+
+                    // Añadida verificación extra `themeButton` y `funcionesButton`
+                    if (themeDropdown && !themeDropdown.classList.contains('invisible') && themeButton && !themeButton.contains(e.target) && !themeDropdown.contains(e.target)) {
+                        themeDropdown.classList.add('opacity-0', 'scale-95', 'invisible');
+                    }
+                     if (funcionesDropdown && !funcionesDropdown.classList.contains('invisible') && funcionesButton && !funcionesButton.contains(e.target) && !funcionesDropdown.contains(e.target)) {
+                        funcionesDropdown.classList.add('opacity-0', 'scale-95', 'invisible');
+                    }
+                    // (NUEVO) Cerrar menú móvil
+                     if (mobileMenu && !mobileMenu.classList.contains('hidden') && mobileButton && !mobileButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+                        mobileMenu.classList.add('opacity-0');
+                        setTimeout(() => mobileMenu.classList.add('hidden'), 300);
+                    }
+                });
+                isClickOutsideListenerAdded = true; // Marcar que el listener global fue añadido
+            }
+
+
+            // Cerrar dropdown de Funciones al hacer clic en un item
+            if (funcionesMenu) {
+                funcionesMenu.querySelectorAll('a').forEach(item => {
+                     // Evitar añadir múltiples listeners
+                     if (item.dataset.navItemListener !== 'true') {
+                         item.addEventListener('click', (e) => { // (Añadido 'e')
+                             // MODIFICADO: Solo cerrar si no es un enlace real
+                             if (!item.href || item.href.endsWith('#') || item.classList.contains('modal-trigger-btn')) {
+                                funcionesMenu.classList.add('opacity-0', 'scale-95', 'invisible');
+                             }
+                             // Si es un enlace real, permitir que navegue (el modal no se abrirá)
+                         });
+                         item.dataset.navItemListener = 'true';
+                     }
+                });
+            }
+        }
+
+        // (NUEVO) Lógica para Menú Móvil
+        function initMobileMenu() {
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const closeBtn = document.getElementById('mobile-menu-close-btn');
+            const panel = document.getElementById('mobile-menu-panel');
+            const links = panel.querySelectorAll('a');
+
+            if (!menuBtn || !closeBtn || !panel) {
+                console.warn("Elementos del menú móvil no encontrados.");
+                return;
+            }
+
+            const openMenu = () => {
+                panel.classList.remove('hidden');
+                setTimeout(() => panel.classList.remove('opacity-0'), 10); // Pequeño delay para la transición
+            };
+
+            const closeMenu = () => {
+                panel.classList.add('opacity-0');
+                setTimeout(() => panel.classList.add('hidden'), 300);
+            };
+
+            menuBtn.addEventListener('click', openMenu);
+            closeBtn.addEventListener('click', closeMenu);
+            
+            // Cerrar menú al hacer clic en un enlace (para navegación en la misma página o modales)
+            links.forEach(link => {
+                link.addEventListener('click', () => {
+                    // No cerrar si es un enlace a otra página
+                    if (link.href && !link.href.endsWith('#') && !link.classList.contains('modal-trigger-btn')) {
+                        return;
+                    }
+                    closeMenu();
+                });
+            });
+        }
+        
+        // --- Lógica para "Apréndelo" Tabs ---
+        function initAprendeloTabs() {
+            const triggersContainer = document.getElementById('aprendelo-tabs-triggers');
+            const contentArea = document.getElementById('aprendelo-tab-content-area');
+            const textContentEl = document.getElementById('aprendelo-text-content');
+            const visualsContainer = document.getElementById('aprendelo-visuals-container');
+
+            if (!triggersContainer || !contentArea || !textContentEl || !visualsContainer) {
+                // MODIFICADO: Ya no es un error, simplemente no ejecutar si la sección no existe
+                // console.error("Faltan elementos de la sección Aprendelo."); 
+                return;
+            }
+
+            const triggers = triggersContainer.querySelectorAll('.aprendelo-tab-trigger');
+            if (triggers.length === 0) return; // Salir si no hay triggers
+            
+            let isAnimating = false;
+            const ANIMATION_DURATION = 300;
+
+            const switchTab = (triggerToActivate) => {
+                if (isAnimating || triggerToActivate.classList.contains('active')) return;
+                isAnimating = true;
+
+                const currentActiveTrigger = triggersContainer.querySelector('.aprendelo-tab-trigger.active');
+                const currentActiveVisual = visualsContainer.querySelector('.aprendelo-visual.active');
+                const contentId = triggerToActivate.dataset.contentId;
+                const newContentHtml = aprendeloContentData[contentId] || '<p>Contenido no encontrado.</p>';
+                const newVisual = document.getElementById(`visual-${contentId}`);
+
+                if (currentActiveTrigger) currentActiveTrigger.classList.remove('active');
+                if (currentActiveVisual) currentActiveVisual.classList.remove('active');
+                textContentEl.style.opacity = '0';
+
+                setTimeout(() => {
+                    textContentEl.innerHTML = newContentHtml;
+                    triggerToActivate.classList.add('active');
+                    if (newVisual) newVisual.classList.add('active');
+                    textContentEl.style.opacity = '1';
+                    isAnimating = false;
+                }, ANIMATION_DURATION);
+            };
+
+            triggers.forEach(trigger => {
+                 // Evitar añadir múltiples listeners
+                 if (trigger.dataset.tabListener !== 'true') {
+                     trigger.addEventListener('click', () => switchTab(trigger));
+                     trigger.dataset.tabListener = 'true';
+                 }
+            });
+
+
+             const defaultTrigger = triggersContainer.querySelector('.aprendelo-tab-trigger[data-content-id="desafio"]');
+             if (defaultTrigger) {
+                 const defaultContentId = defaultTrigger.dataset.contentId;
+                 const defaultVisual = document.getElementById(`visual-${defaultContentId}`);
+                 defaultTrigger.classList.add('active');
+                 textContentEl.innerHTML = aprendeloContentData[defaultContentId];
+                 textContentEl.style.opacity = '1';
+                 if (defaultVisual) defaultVisual.classList.add('active');
+             }
+        }
+        
+       // --- Animación Partículas Portafolio AI ---
+        function generateParticlesSlow() {
+            const container = document.querySelector('#nav-portafolio-ai-link .particles-container');
+            if (!container) return;
+
+            const particleCount = 8; // Número de partículas
+            const colors = ['var(--particle-color-1)', 'var(--particle-color-2)', 'var(--particle-color-3)'];
+            const totalAnimationCycle = 5; // Duración total del ciclo de animación del texto (5s)
+            const particleAnimationDuration = 2.5; // Duración de la animación de CADA partícula
+            const baseStartDelay = 2.1; // (segundos) - Empieza un poco después de los 2s
+
+            container.innerHTML = ''; // Limpiar partículas existentes
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const randomDelayOffset = Math.random() * 0.4; // +/- 0.2s
+                const particleStartDelay = baseStartDelay + randomDelayOffset; // Delay absoluto en segundos
+                const relativeDelayCSS = particleStartDelay / totalAnimationCycle; 
+
+                particle.style.setProperty('--particle-delay', relativeDelayCSS.toFixed(3)); 
+                particle.style.setProperty('--particle-x', `${Math.random() * 20 - 10}px`); 
+                particle.style.setProperty('--particle-y', `${Math.random() * -4 - 2}px`); 
+                particle.style.setProperty('--particle-color', colors[Math.floor(Math.random() * colors.length)]);
+                
+                 particle.style.animationDuration = `${particleAnimationDuration}s`; 
+                 particle.style.animationIterationCount = 'infinite'; 
+
+                container.appendChild(particle);
+            }
+        }
+
+
+        // Iniciar la aplicación
+        initApp();
+
+    </script>
+</body>
+</html>
