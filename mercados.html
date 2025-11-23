@@ -223,8 +223,9 @@
             scroll-margin-top: 100px; 
         }
 
-        #heatmap-widget-container { height: 450px; }
-        #events-widget-container { height: 450px; }
+        /* AJUSTES VISUALES SOLICITADOS: ALTURA 850px IGUALADA */
+        #heatmap-widget-container { height: 850px !important; min-height: 850px; } 
+        #events-widget-container { height: 850px !important; min-height: 850px; }
 
         /* Estilo para Título de Sección Multi-Activo */
         .asset-group-title {
@@ -252,6 +253,13 @@
              border-color: var(--accent-blue);
              box-shadow: 0 5px 15px rgba(var(--accent-blue-rgb), 0.2);
          }
+         
+        /* Menú Móvil (Agregado desde chats.html) */
+        #mobile-menu-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-main); z-index: 100; transform: translateX(100%); transition: transform 0.3s ease-in-out; display: flex; flex-direction: column; padding: 1.5rem; padding-top: 5rem; }
+        #mobile-menu-panel.open { transform: translateX(0); }
+        .mobile-nav-link { font-size: 1.5rem; font-weight: 600; padding: 0.75rem 1rem; border-radius: 0.5rem; transition: background-color 0.2s ease; }
+        .mobile-nav-link:hover { background-color: rgba(120, 120, 120, 0.1); }
+        .mobile-nav-link.active { color: var(--accent-blue); }
         
         /* == FIN: ESTILOS PARA WIDGETS DE MERCADOS Y CINTA == */
 
@@ -280,7 +288,8 @@
                                      <a href="seguimiento.html" class="nav-dropdown-item"><i data-lucide="activity" class="w-4 h-4"></i><span>Seguimiento</span></a>
                                      <a href="aprendelo.html" class="nav-dropdown-item"><i data-lucide="book-open-check" class="w-4 h-4"></i><span>Aprendelo</span></a>
                                      <a href="portafolio.html" class="nav-dropdown-item"><i data-lucide="briefcase" class="w-4 h-4"></i><span>Portafolio</span></a>
-                                     <a href="grupos.html" class="nav-dropdown-item"><i data-lucide="users" class="w-4 h-4"></i><span>Grupos</span></a>
+                                     <!-- CORRECCIÓN: Grupos -> Chats -->
+                                     <a href="chats.html" class="nav-dropdown-item"><i data-lucide="message-square" class="w-4 h-4"></i><span>Chats</span></a>
                                      <a href="mercados.html" class="nav-dropdown-item"><i data-lucide="line-chart" class="w-4 h-4"></i><span>Mercados</span></a>
                                  </div>
                              </div>
@@ -296,9 +305,37 @@
                                  <button data-theme="stars" title="Tema Estrellado" class="theme-dropdown-btn"><i data-lucide="sparkles"></i></button>
                              </div>
                          </div>
+                         <!-- Botón Menú Móvil -->
+                         <button id="mobile-menu-btn" class="p-1.5 rounded-full border md:hidden" style="border-color: var(--border-main);">
+                             <i data-lucide="menu" class="w-6 h-6"></i>
+                         </button>
                      </div>
                  </div>
             </header>
+
+            <!-- Panel Menú Móvil (Agregado) -->
+            <div id="mobile-menu-panel" class="z-[55]">
+                <button id="mobile-menu-close-btn" class="absolute top-7 right-7 p-2 rounded-full hover:bg-gray-500/10">
+                    <i data-lucide="x" class="w-8 h-8"></i>
+                </button>
+                <nav class="flex flex-col gap-2">
+                    <a href="index.html" class="mobile-nav-link">Inicio</a>
+                    <a href="noticias.html" class="mobile-nav-link">Noticias</a>
+                    <a href="mercados.html" class="mobile-nav-link active">Mercados</a>
+                    <a href="portafolioAI.html" class="mobile-nav-link">Portafolio AI</a>
+                    <hr class="my-2" style="border-color: var(--border-main);" />
+                    <a href="seguimiento.html" class="mobile-nav-link">Seguimiento</a>
+                    <a href="aprendelo.html" class="mobile-nav-link">Apréndelo</a>
+                    <a href="portafolio.html" class="mobile-nav-link">Portafolio Virtual</a>
+                    <!-- CORRECCIÓN MÓVIL: Chats -->
+                    <a href="chats.html" class="mobile-nav-link">Chats</a>
+                </nav>
+                <div class="mt-auto pt-6">
+                    <button id="mobile-whitelist-btn" class="modal-trigger-btn w-full bg-blue-600 text-white font-semibold rounded-full px-6 py-4 text-lg transition-transform hover:scale-105 whitespace-nowrap">
+                        Acceso Prioritario
+                    </button>
+                </div>
+            </div>
 
             <main class="relative z-10">
 
@@ -382,31 +419,31 @@
 
 
                 <section id="multi-asset" class="relative z-10 w-full pt-14 md:pt-16 pb-16 md:pb-24" style="background-color: rgba(120, 120, 120, 0.03);">
-                     <!-- AJUSTE: Ancho aumentado a max-w-screen-2xl -->
-                     <div class="container mx-auto max-w-screen-2xl px-4">
-                         <div class="text-center mb-16">
-                             <span class="text-purple-500 font-bold uppercase tracking-wider text-base">Visión Sin Precedentes</span>
-                             <h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-2 mb-4">
-                                 Más Allá de las Acciones: Todo Conectado
-                             </h2>
-                             <p class="text-xl opacity-80 max-w-3xl mx-auto">
-                                 El mercado es un ecosistema. Monitorea Criptomonedas, Commodities, Divisas y datos macroeconómicos clave de Chile para entender las correlaciones y tomar decisiones informadas.
-                             </p>
-                         </div>
-                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-                             <!-- Widgets Single Quote Reales, ahora clickeables -->
-                             <div class="feature-card p-4 tv-widget-container multi-asset-widget" data-symbol="BINANCE:BTCUSDT" data-name="Bitcoin"></div>
-                             <div class="feature-card p-4 tv-widget-container multi-asset-widget" data-symbol="TVC:USOIL" data-name="Crude Oil (WTI)"></div>
-                             <div class="feature-card p-4 tv-widget-container multi-asset-widget" data-symbol="FX_IDC:USDCLP" data-name="USD/CLP"></div>
-                             <!-- Widget TPM Mantenido como Mockup (datos estáticos) -->
-                             <div class="feature-card p-4 mockup-widget-item">
-                                 <i data-lucide="flag" class="w-8 h-8 mx-auto mb-3 text-blue-700"></i>
-                                 <div class="label">TPM Chile</div>
-                                 <div class="value">4.75%</div>
-                                 <div class="change opacity-60 text-xs">Septiembre 2025</div>
-                             </div>
-                         </div>
-                     </div>
+                      <!-- AJUSTE: Ancho aumentado a max-w-screen-2xl -->
+                      <div class="container mx-auto max-w-screen-2xl px-4">
+                          <div class="text-center mb-16">
+                              <span class="text-purple-500 font-bold uppercase tracking-wider text-base">Visión Sin Precedentes</span>
+                              <h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-2 mb-4">
+                                  Más Allá de las Acciones: Todo Conectado
+                              </h2>
+                              <p class="text-xl opacity-80 max-w-3xl mx-auto">
+                                  El mercado es un ecosistema. Monitorea Criptomonedas, Commodities, Divisas y datos macroeconómicos clave de Chile para entender las correlaciones y tomar decisiones informadas.
+                              </p>
+                          </div>
+                          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                              <!-- Widgets Single Quote Reales, ahora clickeables -->
+                              <div class="feature-card p-4 tv-widget-container multi-asset-widget" data-symbol="BINANCE:BTCUSDT" data-name="Bitcoin"></div>
+                              <div class="feature-card p-4 tv-widget-container multi-asset-widget" data-symbol="TVC:USOIL" data-name="Crude Oil (WTI)"></div>
+                              <div class="feature-card p-4 tv-widget-container multi-asset-widget" data-symbol="FX_IDC:USDCLP" data-name="USD/CLP"></div>
+                              <!-- Widget TPM Mantenido como Mockup (datos estáticos) -->
+                              <div class="feature-card p-4 mockup-widget-item">
+                                  <i data-lucide="flag" class="w-8 h-8 mx-auto mb-3 text-blue-700"></i>
+                                  <div class="label">TPM Chile</div>
+                                  <div class="value">4.75%</div>
+                                  <div class="change opacity-60 text-xs">Septiembre 2025</div>
+                              </div>
+                          </div>
+                      </div>
                 </section>
 
                 <section id="movers-news" class="relative z-10 w-full pt-14 md:pt-16 pb-16 md:pb-24">
@@ -526,14 +563,56 @@
 
             </main>
 
-            <footer class="relative z-10 border-t" style="border-color: var(--border-main);">
-                <!-- AJUSTE: Ancho aumentado a max-w-screen-2xl -->
-                <div class="container mx-auto max-w-screen-2xl px-4 py-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left">
-                    <p class="text-sm opacity-70">&copy; 2025 Maverlang. Todos los derechos reservados.</p>
-                    <div class="flex gap-4 mt-4 md:mt-0">
-                        <a href="#" class="opacity-70 hover:opacity-100 transition-opacity"><i data-lucide="twitter" class="w-5 h-5"></i></a>
-                        <a href="#" class="opacity-70 hover:opacity-100 transition-opacity"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
-                        <a href="#" class="opacity-70 hover:opacity-100 transition-opacity"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+            <!-- FOOTER COMPLETO (Copiado de chats.html) -->
+            <footer class="relative z-10 w-full border-t" style="border-color: var(--border-main); background-color: var(--bg-main);">
+                <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+                    <div class="mb-12 text-center md:text-left">
+                        <div class="text-xl font-bold tracking-wider inline-block">MAVERLANG</div>
+                        <p class="mt-2 text-md opacity-80 max-w-lg mx-auto md:mx-0">Potenciando decisiones financieras con inteligencia artificial avanzada.</p>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-12">
+                        <div>
+                            <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Navegación</h3>
+                            <nav class="flex flex-col gap-3">
+                                <a href="index.html" class="text-sm opacity-70 hover:opacity-100 hover:text-blue-500 transition-all">Inicio</a>
+                                <a href="noticias.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Noticias</a>
+                                <a href="mercados.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Mercados</a>
+                                <a href="aprendelo.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Apréndelo</a>
+                            </nav>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Plataforma</h3>
+                            <nav class="flex flex-col gap-3">
+                                <a href="portafolioAI.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Portafolio AI</a>
+                                <a href="seguimiento.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Seguimiento</a>
+                                <a href="portafolio.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Portafolio Virtual</a>
+                                <a href="chats.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Chats</a>
+                            </nav>
+                        </div>
+                         <div>
+                            <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Compañía</h3>
+                            <nav class="flex flex-col gap-3">
+                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Sobre Nosotros</a>
+                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Blog</a>
+                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Contacto</a>
+                            </nav>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Legal</h3>
+                            <nav class="flex flex-col gap-3">
+                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Términos de Servicio</a>
+                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Política de Privacidad</a>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-6" style="border-color: var(--border-main);">
+                        <p class="text-sm opacity-70 text-center md:text-left">&copy; 2025 Maverlang. Todos los derechos reservados.</p>
+                         <div class="flex gap-6">
+                            <a href="#" class="opacity-70 hover:opacity-100 hover:text-blue-500 transition-all"><i data-lucide="linkedin" class="w-6 h-6"></i></a>
+                            <a href="#" class="opacity-70 hover:opacity-100 hover:text-pink-500 transition-all"><i data-lucide="instagram" class="w-6 h-6"></i></a>
+                            <a href="#" class="opacity-70 hover:opacity-100 transition-all"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 16 16"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.06l3.51 4.639L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg></a>
+                            <a href="#" class="opacity-70 hover:opacity-100 hover:text-blue-600 transition-all"><i data-lucide="facebook" class="w-6 h-6"></i></a>
+                        </div>
                     </div>
                 </div>
             </footer>
@@ -620,6 +699,7 @@
             loadAllTradingViewWidgets(); // Cargar widgets TV
             setupIndexClickListener(); // Configurar clics en índices
             setupMultiAssetClickListener(); // Configurar clics en multi-activo
+            initMobileMenu(); // Iniciar Menú Móvil Agregado
 
             if (isAuthReady) { listenToWhitelistCount(); }
             else { console.warn("Auth no lista. Whitelist count no iniciará."); }
@@ -632,6 +712,7 @@
             try {
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app); auth = getAuth(app); setLogLevel('debug');
+                // CORRECCIÓN IMPORTANTE: Ruta segura
                 whitelistCol = collection(db, 'artifacts', appId, 'public', 'data', 'whitelist');
                 await new Promise((resolve, reject) => {
                     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -689,12 +770,8 @@
                 "autosize": false, // Desactivar autosize para forzar altura
                 "width": "100%",
                 "height": 680, // AJUSTE: Altura explícita
-                "chartOnly": true, // AJUSTE: Ocultar info extra
+                "chartOnly": false, // AJUSTE: REACTIVADA BARRA SUPERIOR
                 "container_id": "main-chart-widget-container" 
-                // Nota: El Symbol Overview no tiene una opción directa para 'chartType', 
-                // usa área por defecto cuando 'symbols' no está definido como antes.
-                // Para mostrar el nombre correcto, tendríamos que volver a la
-                // estructura de 'symbols' y sacrificar la altura.
             };
             injectWidgetScript('main-chart-widget-container', config, 'symbol-overview');
         }
@@ -754,8 +831,8 @@
                  "hasTopBar": false,
                  "isTransparent": true, 
                  "width": "100%",
-                 "height": "100%",
-                  "autosize": true
+                 "height": "850", // AJUSTE JS: IGUALADO A CALENDARIO
+                 "autosize": false // AJUSTE JS
              }, 'stock-heatmap');
         }
 
@@ -765,9 +842,9 @@
                  "colorTheme": getWidgetTheme(),
                  "isTransparent": true,
                  "width": "100%",
-                 "height": "100%",
+                 "height": "850", // AJUSTE JS: IGUALADO A MAPA DE CALOR
                  "locale": "es",
-                  "autosize": true,
+                  "autosize": false, // AJUSTE JS
                  "importanceFilter": "0,1",
                  "currencyFilter": "USD,CLP,EUR"
              }, 'events');
@@ -937,7 +1014,7 @@
         function initWhitelistModal() {
              const modal = document.getElementById('whitelist-modal'); if (!modal) return;
              const closeModalBtn = document.getElementById('close-modal-btn');
-             const triggerButtons = document.querySelectorAll('#header-whitelist-btn, .animated-whitelist-btn, .modal-trigger-btn, #footer-whitelist-btn');
+             const triggerButtons = document.querySelectorAll('#header-whitelist-btn, .animated-whitelist-btn, .modal-trigger-btn, #footer-whitelist-btn, #mobile-whitelist-btn');
              triggerButtons.forEach(btn => { if (btn && btn.dataset.modalListenerAttached !== 'true') { btn.addEventListener('click', openModal); btn.dataset.modalListenerAttached = 'true'; } });
              if (closeModalBtn && closeModalBtn.dataset.modalListenerAttached !== 'true') { closeModalBtn.addEventListener('click', closeModal); closeModalBtn.dataset.modalListenerAttached = 'true'; }
              if (modal.dataset.modalListenerAttached !== 'true') { modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); }); modal.dataset.modalListenerAttached = 'true'; }
@@ -1009,6 +1086,36 @@
             // Cerrar dropdown de Funciones al hacer clic en un item
             if (funcionesMenu) { funcionesMenu.querySelectorAll('a').forEach(item => { if (item.dataset.navItemListener !== 'true') { item.addEventListener('click', () => { if (!item.classList.contains('modal-trigger-btn')) { funcionesMenu.classList.add('opacity-0', 'scale-95', 'invisible'); } }); item.dataset.navItemListener = 'true'; } }); }
         }
+        
+        // --- Lógica Menú Móvil (Nueva) ---
+        function initMobileMenu() {
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const panel = document.getElementById('mobile-menu-panel');
+            const closeBtn = document.getElementById('mobile-menu-close-btn');
+            
+            if (!menuBtn || !panel) return;
+
+            const toggleMenu = (show) => {
+                if (show) {
+                    panel.classList.remove('hidden');
+                    setTimeout(() => panel.classList.add('open'), 10);
+                    document.body.classList.add('overflow-hidden'); // Prevenir scroll de fondo
+                } else {
+                    panel.classList.remove('open');
+                    setTimeout(() => panel.classList.add('hidden'), 300);
+                    document.body.classList.remove('overflow-hidden');
+                }
+            };
+
+            menuBtn.addEventListener('click', () => toggleMenu(true));
+            if (closeBtn) closeBtn.addEventListener('click', () => toggleMenu(false));
+            
+            // Cerrar al hacer clic en enlaces
+            panel.querySelectorAll('a, button').forEach(el => {
+                el.addEventListener('click', () => toggleMenu(false));
+            });
+        }
+
         function initAprendeloTabs() { /* No aplica aquí */ }
         function generateParticlesSlow() { const container = document.querySelector('#nav-portafolio-ai-link .particles-container'); if (!container) return; const particleCount = 6; const colors = ['var(--particle-color-1)', 'var(--particle-color-2)', 'var(--particle-color-3)']; const totalDuration = 5; const particleAnimationDuration = 2.5; container.innerHTML = ''; for (let i = 0; i < particleCount; i++) { const particle = document.createElement('div'); particle.classList.add('particle'); const baseStartPercentage = 0.45; const randomOffsetPercentage = Math.random() * 0.1; const startDelay = (baseStartPercentage + randomOffsetPercentage); particle.style.setProperty('--particle-delay', startDelay.toFixed(2)); particle.style.setProperty('--particle-x', `${Math.random() * 30 - 15}px`); particle.style.setProperty('--particle-y', `${Math.random() * -5 - 3}px`); particle.style.setProperty('--particle-color', colors[Math.floor(Math.random() * colors.length)]); particle.style.animationDuration = `${particleAnimationDuration}s`; particle.style.animationDelay = `${startDelay * totalDuration}s`; container.appendChild(particle); } }
 
@@ -1023,4 +1130,3 @@
 
 </body>
 </html>
-
