@@ -277,12 +277,11 @@
         .typing-dot:nth-child(3) { animation-delay: 0.4s; }
         @keyframes typing { 0%, 100% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; } }
 
-        /* --- CERTIFICADO RESTAURADO (TAMAÑO ORIGINAL) --- */
         .certificate-mockup {
             background-color: #f9fafb; color: #1f2937; 
             border: 10px solid #dbeafe; 
             border-radius: 0.5rem; padding: 2rem; text-align: center; 
-            max-width: 450px; width: 100%; /* Restaurado a 450px */
+            max-width: 450px; width: 100%;
             margin: 0 auto;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
@@ -422,11 +421,12 @@
                 <section id="aprendelo-tabs-nav" class="reveal">
                     <div class="container mx-auto max-w-screen-xl">
                         <div id="aprendelo-tabs-triggers">
-                            <button class="aprendelo-tab-trigger active" data-tab="desafio">
+                            <button class="aprendelo-tab-trigger" data-tab="desafio">
                                 <i data-lucide="flame" class="icon"></i>
                                 <h3>Desafío Diario</h3>
                             </button>
-                            <button class="aprendelo-tab-trigger" data-tab="cursos">
+                            <!-- TAB ACTIVA POR DEFECTO: CURSOS -->
+                            <button class="aprendelo-tab-trigger active" data-tab="cursos">
                                 <i data-lucide="book-open-check" class="icon"></i>
                                 <h3>Cursos Profesionales</h3>
                             </button>
@@ -441,7 +441,7 @@
                 <div id="aprendelo-main-content" class="reveal">
                 
                     <!-- PANEL 1: DESAFÍO DIARIO -->
-                    <section id="content-desafio" class="aprendelo-content-panel active">
+                    <section id="content-desafio" class="aprendelo-content-panel">
                         <div class="container mx-auto max-w-screen-xl px-4">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
                                 <div>
@@ -499,8 +499,37 @@
                     </section>
                     
                     <!-- PANEL 2: CURSOS PROFESIONALES -->
-                    <section id="content-cursos" class="aprendelo-content-panel">
+                    <section id="content-cursos" class="aprendelo-content-panel active">
                         <div class="container mx-auto max-w-screen-xl px-4">
+                        
+                            <!-- (REORDENADO) 1. Plataforma Interactiva (Video + Chat) -->
+                            <div class="mb-16 md:mb-24">
+                                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 md:gap-12 items-center">
+                                    <div class="lg:col-span-3 course-player-mockup">
+                                        <div class="video-placeholder">
+                                            <iframe src="https://www.youtube.com/embed/5p248yoa3oE?si=maverlang_demo" title="Curso" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                        </div>
+                                        <div class="ai-chat-mockup">
+                                            <h4 class="font-semibold text-sm text-center opacity-70 mb-2">Asistente IA</h4>
+                                            <div class="flex flex-col gap-2 overflow-y-auto flex-1" id="course-ai-chat-container">
+                                                <!-- Mensajes dinámicos -->
+                                            </div>
+                                            <div class="ai-chat-input-mockup mt-2">Haz una pregunta...</div>
+                                        </div>
+                                    </div>
+                                    <div class="lg:col-span-2">
+                                        <h2 class="text-2xl md:text-4xl font-bold tracking-tight">Plataforma Interactiva</h2>
+                                        <p class="text-base md:text-lg opacity-80 mt-4 mb-6">Un ecosistema de aprendizaje diseñado para la maestría.</p>
+                                        <ul class="space-y-3">
+                                            <li class="flex items-start"><i data-lucide="sparkles" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i><div><h3 class="font-semibold text-md">Asistente IA Integrado</h3><p class="opacity-70 text-sm">Pausa el video y pregúntale a la IA.</p></div></li>
+                                            <li class="flex items-start"><i data-lucide="highlighter" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i><div><h3 class="font-semibold text-md">Notas Sincronizadas</h3></div></li>
+                                            <li class="flex items-start"><i data-lucide="download" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i><div><h3 class="font-semibold text-md">Recursos Descargables</h3></div></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- (REORDENADO) 2. Conviértete en Experto (Grid Cursos) -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
                                 <div>
                                      <h2 class="text-2xl md:text-4xl font-bold tracking-tight mb-4">Conviértete en un Experto</h2>
@@ -530,32 +559,6 @@
                                              <div class="course-content"><h3 class="course-title">Derivados</h3><p class="course-footer-text">Especialización</p></div>
                                          </div>
                                      </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-16 md:mt-24">
-                                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 md:gap-12 items-center">
-                                    <div class="lg:col-span-3 course-player-mockup">
-                                        <div class="video-placeholder">
-                                            <iframe src="https://www.youtube.com/embed/5p248yoa3oE?si=maverlang_demo" title="Curso" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                        </div>
-                                        <div class="ai-chat-mockup">
-                                            <h4 class="font-semibold text-sm text-center opacity-70 mb-2">Asistente IA</h4>
-                                            <div class="flex flex-col gap-2 overflow-y-auto flex-1" id="course-ai-chat-container">
-                                                <!-- Mensajes dinámicos -->
-                                            </div>
-                                            <div class="ai-chat-input-mockup mt-2">Haz una pregunta...</div>
-                                        </div>
-                                    </div>
-                                    <div class="lg:col-span-2">
-                                        <h2 class="text-2xl md:text-4xl font-bold tracking-tight">Plataforma Interactiva</h2>
-                                        <p class="text-base md:text-lg opacity-80 mt-4 mb-6">Un ecosistema de aprendizaje diseñado para la maestría.</p>
-                                        <ul class="space-y-3">
-                                            <li class="flex items-start"><i data-lucide="sparkles" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i><div><h3 class="font-semibold text-md">Asistente IA Integrado</h3><p class="opacity-70 text-sm">Pausa el video y pregúntale a la IA.</p></div></li>
-                                            <li class="flex items-start"><i data-lucide="highlighter" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i><div><h3 class="font-semibold text-md">Notas Sincronizadas</h3></div></li>
-                                            <li class="flex items-start"><i data-lucide="download" class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i><div><h3 class="font-semibold text-md">Recursos Descargables</h3></div></li>
-                                        </ul>
-                                    </div>
                                 </div>
                             </div>
 
@@ -633,18 +636,17 @@
 
             </main>
 
-            <!-- Footer Igualado a Chats/Mercados -->
             <footer class="relative z-10 w-full border-t pt-12 pb-6" style="border-color: var(--border-main); background-color: var(--bg-main);">
-                <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-                    <div class="mb-12 text-center md:text-left">
+                <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8 md:mb-12 text-center md:text-left">
                         <div class="text-xl font-bold tracking-wider inline-block">MAVERLANG</div>
-                        <p class="mt-2 text-md opacity-80 max-w-lg mx-auto md:mx-0">Potenciando decisiones financieras con inteligencia artificial avanzada.</p>
+                        <p class="mt-2 text-sm md:text-md opacity-80 max-w-lg mx-auto md:mx-0">Potenciando decisiones financieras.</p>
                     </div>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-12">
                         <div>
                             <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Navegación</h3>
                             <nav class="flex flex-col gap-3">
-                                <a href="index.html" class="text-sm opacity-70 hover:opacity-100 hover:text-blue-500 transition-all">Inicio</a>
+                                <a href="index.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Inicio</a>
                                 <a href="noticias.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Noticias</a>
                                 <a href="mercados.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Mercados</a>
                                 <a href="aprendelo.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Apréndelo</a>
@@ -663,25 +665,23 @@
                             <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Compañía</h3>
                             <nav class="flex flex-col gap-3">
                                 <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Sobre Nosotros</a>
-                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Blog</a>
                                 <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Contacto</a>
                             </nav>
                         </div>
                         <div>
                             <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Legal</h3>
                             <nav class="flex flex-col gap-3">
-                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Términos de Servicio</a>
-                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Política de Privacidad</a>
+                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Términos</a>
+                                <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Privacidad</a>
                             </nav>
                         </div>
                     </div>
                     <div class="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-6" style="border-color: var(--border-main);">
-                        <p class="text-sm opacity-70 text-center md:text-left">&copy; 2025 Maverlang. Todos los derechos reservados.</p>
-                         <div class="flex gap-6">
-                            <a href="#" class="opacity-70 hover:opacity-100 hover:text-blue-500 transition-all"><i data-lucide="linkedin" class="w-6 h-6"></i></a>
-                            <a href="#" class="opacity-70 hover:opacity-100 hover:text-pink-500 transition-all"><i data-lucide="instagram" class="w-6 h-6"></i></a>
-                            <a href="#" class="opacity-70 hover:opacity-100 transition-all"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 16 16"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.06l3.51 4.639L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg></a>
-                            <a href="#" class="opacity-70 hover:opacity-100 hover:text-blue-600 transition-all"><i data-lucide="facebook" class="w-6 h-6"></i></a>
+                        <p class="text-sm opacity-70 text-center md:text-left">&copy; 2025 Maverlang.</p>
+                         <div class="flex gap-6 justify-center md:justify-start">
+                            <a href="#" class="opacity-70 hover:opacity-100 transition-all"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+                            <a href="#" class="opacity-70 hover:opacity-100 transition-all"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                            <a href="#" class="opacity-70 hover:opacity-100 transition-all"><i data-lucide="facebook" class="w-5 h-5"></i></a>
                         </div>
                     </div>
                 </div>
@@ -705,7 +705,7 @@
                 <div class="countdown-box w-16 h-16 md:w-20 md:h-20 flex flex-col items-center justify-center"><span id="modal-seconds" class="countdown-number text-lg md:text-2xl">00</span><span class="countdown-label text-[10px] md:text-xs">Segundos</span></div>
             </div>
             <form id="whitelist-form-modal">
-                <div class="flex items-center p-2 rounded-full border" style="border-color: var(--border-main);"><input type="email" id="email-input-modal" placeholder="Tu correo electrónico" required class="w-full bg-transparent px-4 py-2 text-main placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none"><button type="submit" id="submit-btn-modal" class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-full flex-shrink-0 hover:bg-blue-700 transition-colors">Entrar</button></div>
+                <div class="flex items-center p-2 rounded-full border" style="border-color: var(--border-main);"><input type="email" id="email-input-modal" placeholder="Tu correo electrónico" required class="w-full bg-transparent px-4 py-2 text-main placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none"><button type="submit" id="submit-btn-modal" class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-full flex-shrink-0 hover:bg-blue-700 transition-colors">Anotarme</button></div>
                 <p id="form-message-modal" class="mt-3 text-sm h-5"></p>
             </form>
         </div>
@@ -732,9 +732,6 @@
         // --- Funciones del Modal ---
         const openModal = (e) => {
             if (e) e.preventDefault();
-            if (e.currentTarget && e.currentTarget.href && !e.currentTarget.href.endsWith('#') && e.currentTarget.target !== '_blank') {
-                return; 
-            }
             const modal = document.getElementById('whitelist-modal');
             if (!modal || !modal.classList.contains('invisible')) return;
             modalShown = true;
@@ -1020,9 +1017,8 @@
                 });
             });
 
-            // 3. Inicialización por defecto (Desafío)
-            // Aseguramos que el estado inicial sea consistente
-            switchTab('desafio');
+            // 3. Inicialización por defecto: Cursos Profesionales
+            switchTab('cursos');
         }
 
         // --- Chat Simulation Logic ---
