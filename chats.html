@@ -11,27 +11,24 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
-        /* --- ESTILOS BASE DE LANDING PAGE --- */
+        /* --- ESTILOS BASE --- */
         :root {
             --bg-light: #f4f4f5; --text-light: #18181b; --border-light: #e4e4e7;
             --bg-dark: #0A0A0A; --text-dark: #f9fafb; --border-dark: #27272a;
-            /* --bg-stars: #000000; (ELIMINADO) */
             --accent-blue: #3b82f6;
-            --accent-blue-rgb: 59, 130, 246; /* (NUEVO) RGB para azul */
+            --accent-blue-rgb: 59, 130, 246;
             --accent-red: #ef4444;
             --success-color: #22c55e;
             --warning-color: #f59e0b;
-            /* Color de acento para esta página */
             --accent-purple: #8b5cf6;
             --accent-purple-rgb: 139, 92, 246;
-
             --bg-active-theme-light: #e4e4e7;
             --bg-active-theme-dark: #27272a;
             --particle-color-1: rgba(59, 130, 246, 0.9);
             --particle-color-2: rgba(96, 165, 250, 0.7);
             --particle-color-3: rgba(255, 255, 255, 0.8);
             
-            /* Asignar color de acento de la página (Morado) */
+            /* Color de acento para esta página (Morado) */
             --accent-color: var(--accent-purple); 
             --accent-color-rgb: var(--accent-purple-rgb);
         }
@@ -41,7 +38,6 @@
         html:not(.dark) {
             --bg-main: var(--bg-light); --text-main: var(--text-light); --border-main: var(--border-light);
         }
-        /* html.stars-theme (ELIMINADO) */
 
         html { scroll-behavior: smooth; }
         body {
@@ -51,34 +47,42 @@
             transition: background-color 0.5s ease, color 0.5s ease;
             overflow-y: auto;
         }
+        
+        /* Bloqueo de Scroll */
+        body.no-scroll { overflow: hidden; }
+
+        /* Animaciones Scroll Reveal */
+        .reveal {
+            opacity: 0; transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+            will-change: opacity, transform;
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
         section.hero-section {
             padding-bottom: 5rem;
             position: relative;
             z-index: 10;
         }
 
-        /* #starfield (ELIMINADO) */
-
         .background-logo-text {
             font-size: clamp(8rem, 25vw, 22rem); font-weight: 800; letter-spacing: -0.05em;
             color: rgba(120, 120, 120, 0.05); position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%); z-index: 1; pointer-events: none;
         }
-        /* Color de fondo para esta página */
-        html.dark .background-logo-text { color: rgba(var(--accent-purple-rgb), 0.03); }
-        html:not(.dark) .background-logo-text { color: rgba(var(--accent-purple-rgb), 0.05); }
+        html.dark .background-logo-text { color: rgba(var(--accent-color-rgb), 0.03); }
+        html:not(.dark) .background-logo-text { color: rgba(var(--accent-color-rgb), 0.05); }
 
-
-        .countdown-box, .form-container {
+        .countdown-box, .form-container, .modal-content, .feature-card {
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-radius: 1rem;
         }
-        html.dark .countdown-box, html.dark .form-container {
+        html.dark .countdown-box, html.dark .form-container, html.dark .modal-content, html.dark .feature-card {
             background: rgba(30, 30, 30, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        html:not(.dark) .countdown-box, html:not(.dark) .form-container {
+        html:not(.dark) .countdown-box, html:not(.dark) .form-container, html:not(.dark) .modal-content, html:not(.dark) .feature-card {
             background: rgba(255, 255, 255, 0.7);
             border: 1px solid var(--border-light);
         }
@@ -97,23 +101,7 @@
         .countdown-number { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 600; line-height: 1; color: var(--text-main); }
         .countdown-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-main); opacity: 0.6; }
 
-        #fomo-counter { font-size: 1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: -1rem; opacity: 0; transition: opacity 0.5s ease; }
-        #fomo-counter.visible { opacity: 1; }
-        #whitelist-count { display: inline-block; color: var(--accent-color); font-weight: 700; padding: 0 0.25rem; min-width: 1em; }
-
-        .modal-content, .feature-card {
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 1rem;
-        }
-        html.dark .modal-content, html.dark .feature-card {
-            background: rgba(30, 30, 30, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        html:not(.dark) .modal-content, html:not(.dark) .feature-card {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid var(--border-light);
-        }
+        /* FOMO Counter REMOVIDO */
 
         #whitelist-modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
         #whitelist-modal .modal-content { transition: transform 0.3s ease; }
@@ -124,10 +112,10 @@
         }
         .animated-whitelist-btn { 
             animation: pulse-glow 2.5s infinite ease-in-out; 
-            background-color: var(--accent-color); /* Usa el acento de la página (Morado) */
+            background-color: var(--accent-color); 
         }
         #header-whitelist-btn {
-            background-color: var(--accent-blue); /* Mantenemos el azul del header */
+            background-color: var(--accent-blue); 
             animation: none;
             box-shadow: none;
         }
@@ -140,7 +128,6 @@
         .nav-dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 500; border-radius: 0.5rem; transition: background-color 0.2s ease; cursor: pointer; }
         .nav-dropdown-item:hover { background-color: rgba(120,120,120,0.1); }
         .nav-dropdown-item i { opacity: 0.7; }
-        /* Estilo para link activo 'Chats' */
         .nav-dropdown-item.active { 
             color: var(--accent-color); 
             font-weight: 600; 
@@ -154,467 +141,161 @@
         @keyframes text-color-slow-pulse { 0%, 100% { color: inherit; } 40% { color: var(--accent-blue); } 60% { color: var(--accent-blue); } }
         @keyframes particle-fall { 0% { opacity: 0; transform: translate(-50%, 0) scale(0.3); } 50% { opacity: 1; transform: translate(calc(-50% + var(--particle-x)), calc(var(--particle-y) - 5px)) scale(1); } 100% { opacity: 0; transform: translate(calc(-50% + var(--particle-x) * 1.2), calc(var(--particle-y) - 15px)) scale(0); } }
 
-        /* ================================================= */
-        /* == (NUEVO) ESTILOS PARA EL MOCKUP DEL CHAT == */
-        /* ================================================= */
-
+        /* --- Chat Mockup Styles --- */
         .chat-mockup-container {
-            max-width: 810px; 
-            width: 100%;
-            height: 600px; 
-            border: 1px solid var(--border-main);
-            background-color: var(--bg-main);
-            border-radius: 1rem;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.15);
+            max-width: 810px; width: 100%; height: 600px; 
+            border: 1px solid var(--border-main); background-color: var(--bg-main);
+            border-radius: 1rem; padding: 1rem; display: flex; flex-direction: column;
+            overflow: hidden; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.15);
         }
-        html.dark .chat-mockup-container {
-             box-shadow: 0 20px 40px -15px rgba(0,0,0,0.3);
-        }
+        html.dark .chat-mockup-container { box-shadow: 0 20px 40px -15px rgba(0,0,0,0.3); }
 
         .chat-mockup-header {
-            display: flex;
-            align-items: center;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--border-main);
-            flex-shrink: 0;
+            display: flex; align-items: center; padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-main); flex-shrink: 0;
         }
         .chat-mockup-header .group-icon {
-            width: 38px; height: 38px; 
-            border-radius: 50%;
-            background-color: var(--accent-color);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 1rem; 
-            margin-right: 0.75rem;
+            width: 38px; height: 38px; border-radius: 50%;
+            background-color: var(--accent-color); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 1rem; margin-right: 0.75rem;
         }
-        .chat-mockup-header h4 { 
-            font-weight: 600; 
-            font-size: 1.125rem; 
-        }
-        .chat-mockup-header p { 
-            font-size: 0.875rem; 
-            opacity: 0.7; 
-        }
+        .chat-mockup-header h4 { font-weight: 600; font-size: 1.125rem; }
+        .chat-mockup-header p { font-size: 0.875rem; opacity: 0.7; }
 
         .chat-mockup-messages {
-            flex-grow: 1;
-            overflow-y: hidden;
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-            padding: 1.25rem 0.25rem;
+            flex-grow: 1; overflow-y: hidden; display: flex; flex-direction: column;
+            gap: 0.5rem; padding: 1.25rem 0.25rem;
         }
 
         .message-bubble {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            max-width: 85%;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            display: flex; align-items: flex-start; gap: 0.75rem; max-width: 85%;
+            opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
         .message-bubble .avatar {
-            width: 40px; height: 40px; 
-            border-radius: 50%;
-            flex-shrink: 0;
-            font-weight: 600;
-            font-size: 0.875rem;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 0.25rem; 
+            width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+            font-weight: 600; font-size: 0.875rem; color: white;
+            display: flex; align-items: center; justify-content: center; margin-top: 0.25rem; 
         }
-        /* Avatar de IA */
-        .message-bubble .avatar.is-ai {
-            /* CORRECCIÓN: Cambiado de purple a blue */
-            background-color: var(--accent-blue);
-            border: 2px solid rgba(255,255,255,0.5);
-        }
+        .message-bubble .avatar.is-ai { background-color: var(--accent-blue); border: 2px solid rgba(255,255,255,0.5); }
 
-        /* Contenedor para Nombre + Contenido */
-        .message-main-content {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start; 
-            width: 100%;
-        }
-        /* Nombre del remitente */
-        .sender-name {
-            font-size: 0.875rem; 
-            font-weight: 600;
-            opacity: 0.8;
-            margin-left: 0.75rem; 
-            margin-bottom: 0.25rem;
-        }
+        .message-main-content { display: flex; flex-direction: column; align-items: flex-start; width: 100%; }
+        .sender-name { font-size: 0.875rem; font-weight: 600; opacity: 0.8; margin-left: 0.75rem; margin-bottom: 0.25rem; }
         
-        .message-bubble .content {
-            padding: 0.75rem 1.2rem; 
-            border-radius: 1.25rem;
-            width: fit-content; 
-        }
-        .message-bubble .content p { 
-            font-size: 1rem; 
-            line-height: 1.5; 
-        }
+        .message-bubble .content { padding: 0.75rem 1.2rem; border-radius: 1.25rem; width: fit-content; }
+        .message-bubble .content p { font-size: 1rem; line-height: 1.5; }
         .message-bubble .content .mention {
-            background-color: rgba(var(--accent-color-rgb), 0.2);
-            color: var(--accent-color);
-            font-weight: 600;
-            padding: 0.1rem 0.25rem;
-            border-radius: 0.25rem;
+            background-color: rgba(var(--accent-color-rgb), 0.2); color: var(--accent-color);
+            font-weight: 600; padding: 0.1rem 0.25rem; border-radius: 0.25rem;
         }
-        /* Mención de IA */
-        .message-bubble .content .mention.is-ai {
-            /* CORRECCIÓN: Cambiado de purple a blue */
-            background-color: rgba(var(--accent-blue-rgb), 0.2);
-            color: var(--accent-blue);
-        }
+        .message-bubble .content .mention.is-ai { background-color: rgba(var(--accent-blue-rgb), 0.2); color: var(--accent-blue); }
 
-        /* Mensaje Propio (Derecha) */
-        .message-bubble.is-me {
-            align-self: flex-end;
-            flex-direction: row-reverse;
-        }
-        .message-bubble.is-me .message-main-content {
-            align-items: flex-end; 
-        }
-        .message-bubble.is-me .sender-name {
-            margin-left: 0;
-            margin-right: 0.75rem; 
-            /* (NUEVO) Añadido color azul al nombre "Tú" */
-            color: var(--accent-blue);
-        }
+        .message-bubble.is-me { align-self: flex-end; flex-direction: row-reverse; }
+        .message-bubble.is-me .message-main-content { align-items: flex-end; }
+        .message-bubble.is-me .sender-name { margin-left: 0; margin-right: 0.75rem; color: var(--accent-blue); }
         .message-bubble.is-me .content {
-            /* CORRECCIÓN: Estilo de burbuja "Tú" actualizado */
-            background-color: rgba(var(--accent-blue-rgb), 0.1); /* Azul apenas perceptible */
-            color: var(--text-main); /* Texto principal (oscuro o claro) */
-            border: 1px solid var(--accent-blue); /* Borde azul */
-            border-bottom-right-radius: 0.5rem;
-        }
-        .message-bubble.is-me .content .mention {
-            /* CORRECCIÓN: Ajustado para el nuevo fondo */
-            background-color: rgba(var(--accent-color-rgb), 0.2);
-            color: var(--accent-color);
-        }
-         /* Mención de IA en burbuja propia */
-        .message-bubble.is-me .content .mention.is-ai {
-            /* CORRECCIÓN: Ajustado para el nuevo fondo */
-            background-color: rgba(var(--accent-blue-rgb), 0.2);
-            color: var(--accent-blue); 
-        }
-
-        /* Mensaje de Otro (Izquierda) */
-        .message-bubble.is-other {
-            align-self: flex-start;
-        }
-        .message-bubble.is-other .content {
-            background-color: var(--border-light);
-            color: var(--text-main);
-            border-bottom-left-radius: 0.5rem;
-        }
-        html.dark .message-bubble.is-other .content {
-            background-color: var(--border-dark);
-        }
-
-        /* Mensaje de Portafolio */
-        .message-bubble .portfolio-share {
-            border: 1px solid var(--border-main);
-            border-radius: 0.75rem;
-            padding: 0.875rem; 
-            background-color: var(--bg-main);
-            margin-top: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            max-width: 280px; 
-        }
-        .message-bubble.is-other .portfolio-share {
-            border-color: var(--border-main);
-            background-color: var(--bg-main);
-        }
-        .message-bubble.is-me .portfolio-share {
-            /* CORRECCIÓN: Estilo de portafolio "Tú" actualizado */
-            border-color: var(--accent-blue);
-            background-color: rgba(var(--accent-blue-rgb), 0.1);
-            /* (NUEVO) El texto adentro ahora será var(--text-main) por defecto, lo cual es correcto */
-        }
-        .portfolio-share .icon {
-            width: 38px; height: 38px; 
-            border-radius: 0.5rem;
-            background-color: rgba(var(--success-color), 0.1);
-            color: var(--success-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0; 
-        }
-        .portfolio-share .text h5 { 
-            font-weight: 600; 
-            font-size: 1rem; 
-        }
-        .portfolio-share .text p { 
-            font-size: 0.875rem; 
-            opacity: 0.8; 
+            background-color: rgba(var(--accent-blue-rgb), 0.1); color: var(--text-main);
+            border: 1px solid var(--accent-blue); border-bottom-right-radius: 0.5rem;
         }
         
-        /* Reacciones */
+        .message-bubble.is-other { align-self: flex-start; }
+        .message-bubble.is-other .content {
+            background-color: var(--border-light); color: var(--text-main); border-bottom-left-radius: 0.5rem;
+        }
+        html.dark .message-bubble.is-other .content { background-color: var(--border-dark); }
+
+        .message-bubble .portfolio-share {
+            border: 1px solid var(--border-main); border-radius: 0.75rem; padding: 0.875rem; 
+            background-color: var(--bg-main); margin-top: 0.5rem; display: flex; align-items: center;
+            gap: 0.75rem; max-width: 280px; 
+        }
+        .message-bubble.is-me .portfolio-share { border-color: var(--accent-blue); background-color: rgba(var(--accent-blue-rgb), 0.1); }
+        .portfolio-share .icon {
+            width: 38px; height: 38px; border-radius: 0.5rem;
+            background-color: rgba(var(--success-color), 0.1); color: var(--success-color);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0; 
+        }
+        
         .reactions-container {
-            display: flex;
-            gap: 0.25rem;
-            margin-top: 0.5rem;
-            opacity: 0;
-            transform: translateY(5px);
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            display: flex; gap: 0.25rem; margin-top: 0.5rem; opacity: 0;
+            transform: translateY(5px); transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
-        .message-bubble.is-other .reactions-container { 
-             align-self: flex-end; 
-        }
-        .message-bubble.is-me .reactions-container { 
-             align-self: flex-end; 
-        }
+        .message-bubble.is-other .reactions-container, .message-bubble.is-me .reactions-container { align-self: flex-end; }
 
         .reaction-chip {
-            font-size: 0.75rem;
-            padding: 0.1rem 0.5rem;
-            border-radius: 99px;
-            background-color: rgba(var(--accent-color-rgb), 0.1);
-            border: 1px solid rgba(var(--accent-color-rgb), 0.2);
+            font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: 99px;
+            background-color: rgba(var(--accent-color-rgb), 0.1); border: 1px solid rgba(var(--accent-color-rgb), 0.2);
         }
+        
+        .typing-indicator {
+            display: flex; gap: 4px; padding: 8px 12px; align-items: center;
+            background: var(--border-light); border-radius: 1rem; width: fit-content;
+        }
+        html.dark .typing-indicator { background: var(--border-dark); }
+        .typing-dot {
+            width: 6px; height: 6px; background: var(--text-main); border-radius: 50%; opacity: 0.5;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 100% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; } }
 
         .chat-mockup-input {
-            margin-top: auto;
-            flex-shrink: 0;
-            font-size: 0.875rem;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            background-color: var(--bg-main);
-            border: 1px solid var(--border-main);
-            opacity: 0.6;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin-top: auto; flex-shrink: 0; font-size: 0.875rem; padding: 0.75rem 1rem;
+            border-radius: 0.5rem; background-color: var(--bg-main); border: 1px solid var(--border-main);
+            opacity: 0.6; display: flex; justify-content: space-between; align-items: center;
         }
-        .chat-mockup-input span { opacity: 0.7; }
 
-        /* ================================================= */
-        /* == ESTILOS PARA FEATURE GRID == */
-        /* ================================================= */
-        .feature-grid-card {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            padding: 1.5rem;
-            height: 100%;
-        }
+        /* Feature Grid */
+        .feature-grid-card { display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem; height: 100%; transition: transform 0.2s ease; }
+        .feature-grid-card:hover { transform: translateY(-5px); }
         .feature-grid-card .icon {
-            width: 48px; height: 48px;
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: rgba(var(--accent-color-rgb), 0.1);
-            color: var(--accent-color);
+            width: 48px; height: 48px; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center;
+            background-color: rgba(var(--accent-color-rgb), 0.1); color: var(--accent-color);
         }
-        
-        .mockup-ranking-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin-top: 1rem;
-        }
+        .mockup-ranking-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
         .mockup-ranking-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            background-color: var(--bg-main);
-            border: 1px solid var(--border-main);
+            display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem; background-color: var(--bg-main); border: 1px solid var(--border-main);
         }
-        .mockup-ranking-item .name {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 600;
-        }
-        .mockup-ranking-item .perf {
-            font-weight: 700;
-        }
+        .mockup-ranking-item .name { display: flex; align-items: center; gap: 0.75rem; font-weight: 600; }
+        .mockup-ranking-item .perf { font-weight: 700; }
         
-        .mockup-mention-list {
-            margin-top: 1rem;
-            padding: 0.5rem;
-            border: 1px solid var(--border-main);
-            border-radius: 0.5rem;
-        }
-        .mockup-mention-item {
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.375rem;
-            font-weight: 500;
-            font-size: 0.875rem;
-        }
-        .mockup-mention-item:hover, .mockup-mention-item.active {
-            background-color: rgba(var(--accent-color-rgb), 0.1);
-            color: var(--accent-color);
-        }
+        .mockup-mention-list { margin-top: 1rem; padding: 0.5rem; border: 1px solid var(--border-main); border-radius: 0.5rem; }
+        .mockup-mention-item { padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-weight: 500; font-size: 0.875rem; }
+        .mockup-mention-item.active { background-color: rgba(var(--accent-color-rgb), 0.1); color: var(--accent-color); }
         
-        .mockup-group-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
-            margin-top: 1rem;
-        }
-        .mockup-group-item {
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            border: 1px solid var(--border-main);
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.875rem;
-        }
-        .mockup-group-item .icon {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            margin: 0 auto 0.5rem auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-        
-        /* Mockup Hilos */
-        .mockup-thread-card {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            background-color: var(--bg-main);
-            border: 1px solid var(--border-main);
-        }
-        .mockup-thread-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .mockup-thread-item .avatar {
-            width: 20px; height: 20px;
-            border-radius: 50%;
-            background-color: #ccc;
-        }
-        .mockup-thread-item p {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-        .mockup-thread-reply {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--accent-color);
-            margin-top: 0.5rem;
-            padding-left: 28px; /* (20px avatar + 8px gap) */
-        }
-        
-        /* --- Testimonial Carousel --- */
-        #testimonials-container {
-            padding-left: 10rem;
-            padding-right: 10rem;
-            mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
-        }
-        .testimonial-track {
-            display: flex;
-            width: calc(350px * 16); 
-            animation: scroll 80s linear infinite;
-            padding: 1.5rem 0;
-        }
-        .testimonial-card {
-            width: 350px;
-            flex-shrink: 0;
-            margin: 0 0.75rem;
-            padding: 1.5rem;
-            border-radius: 1rem;
-        }
+        .mockup-group-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-top: 1rem; }
+        .mockup-group-item { padding: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--border-main); text-align: center; font-weight: 600; font-size: 0.875rem; }
+        .mockup-group-item .icon { width: 32px; height: 32px; border-radius: 50%; margin: 0 auto 0.5rem auto; display: flex; align-items: center; justify-content: center; color: white; }
+
+        /* Testimonials */
+        #testimonials-container { padding-left: 10rem; padding-right: 10rem; mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%); }
+        .testimonial-track { display: flex; width: calc(350px * 16); animation: scroll 80s linear infinite; padding: 1.5rem 0; }
+        .testimonial-card { width: 350px; flex-shrink: 0; margin: 0 0.75rem; padding: 1.5rem; border-radius: 1rem; }
         .testimonial-track:hover { animation-play-state: paused; }
-        @keyframes scroll {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); } 
-        }
-        .testimonial-card .avatar {
-            width: 48px; height: 48px;
-            border-radius: 50%;
-            margin-right: 1rem;
-            border: 2px solid var(--border-main);
-        }
-        .testimonial-card h4 { font-weight: 600; }
-        .testimonial-card p.title { font-size: 0.875rem; opacity: 0.7; }
-        .testimonial-card p.quote { font-size: 0.95rem; opacity: 0.9; font-style: italic; margin-top: 1rem; }
-
-        /* --- Fix de Responsividad Móvil --- */
+        @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        
+        /* Mobile Fixes */
         @media (max-width: 767px) {
-            /* Reducir títulos en móvil para mejor ajuste */
-            h1 { font-size: 3rem !important; line-height: 1.1 !important; } /* 48px */
-            h2 { font-size: 2.25rem !important; line-height: 1.1 !important; } /* 36px */
-
-            /* (CORREGIDO) Arreglo de testimonios en móvil */
-            #testimonials-container {
-                padding-left: 1rem;
-                padding-right: 1rem;
-                mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-                -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-            }
-            .testimonial-card {
-                width: 300px; /* Tarjetas un poco más pequeñas en móvil */
-            }
-            .testimonial-track {
-                 width: calc(324px * 16);
-            }
+            h1 { font-size: 3rem !important; line-height: 1.1 !important; } 
+            h2 { font-size: 2.25rem !important; line-height: 1.1 !important; }
+            #testimonials-container { padding-left: 1rem; padding-right: 1rem; }
+            .testimonial-card { width: 300px; }
+            .testimonial-track { width: calc(324px * 16); }
         }
 
-        /* (NUEVO) ESTILOS PARA EL MENÚ MÓVIL */
-        #mobile-menu-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-main);
-            z-index: 100;
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem;
-            padding-top: 5rem; /* Espacio para el header */
-        }
-        #mobile-menu-panel.open {
-            transform: translateX(0);
-        }
-        .mobile-nav-link {
-            font-size: 1.5rem; /* 24px */
-            font-weight: 600;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s ease;
-        }
-        .mobile-nav-link:hover {
-            background-color: rgba(120, 120, 120, 0.1);
-        }
-        .mobile-nav-link.active {
-            color: var(--accent-purple); /* Color de acento de esta página */
-        }
-        /* (FIN) ESTILOS PARA EL MENÚ MÓVIL */
+        /* Menú Móvil */
+        #mobile-menu-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-main); z-index: 100; transform: translateX(100%); transition: transform 0.3s ease-in-out; display: flex; flex-direction: column; padding: 1.5rem; padding-top: 5rem; }
+        #mobile-menu-panel.open { transform: translateX(0); }
+        .mobile-nav-link { font-size: 1.5rem; font-weight: 600; padding: 0.75rem 1rem; border-radius: 0.5rem; transition: background-color 0.2s ease; }
+        .mobile-nav-link:hover { background-color: rgba(120, 120, 120, 0.1); }
+        .mobile-nav-link.active { color: var(--accent-purple); }
 
 </style>
 </head>
 <body class="overflow-y-auto">
-    <!-- <canvas id="starfield"></canvas> (ELIMINADO) -->
     <div id="page-wrapper" class="overflow-x-hidden">
         <div id="main-content">
 
@@ -622,7 +303,6 @@
                  <div class="container mx-auto flex justify-between items-center bg-white/30 dark:bg-black/30 backdrop-blur-md p-3 rounded-full border border-white/10 shadow-sm">
                      <a href="index.html" class="text-xl font-bold tracking-wider ml-2 flex-shrink-0">MAVERLANG</a>
                      <div class="flex items-center gap-4 lg:gap-6 mx-4">
-                         <!-- (CORREGIDO) Navegación oculta en móvil -->
                          <nav class="hidden md:flex items-center gap-4 lg:gap-6">
                              <a href="index.html" class="font-semibold text-sm hover:opacity-70 transition-opacity">Inicio</a> 
                              <a href="noticias.html" class="font-semibold text-sm hover:opacity-70 transition-opacity">Noticias</a> 
@@ -638,14 +318,12 @@
                                      <a href="seguimiento.html" class="nav-dropdown-item"><i data-lucide="activity" class="w-4 h-4"></i><span>Seguimiento</span></a> 
                                      <a href="aprendelo.html" class="nav-dropdown-item"><i data-lucide="book-open-check" class="w-4 h-4"></i><span>Apréndelo</span></a> 
                                      <a href="portafolio.html" class="nav-dropdown-item"><i data-lucide="briefcase" class="w-4 h-4"></i><span>Portafolio Virtual</span></a> 
-                                     <!-- (NUEVO) Link de Chats Activo -->
                                      <a href="chats.html" class="nav-dropdown-item active"><i data-lucide="message-square" class="w-4 h-4"></i><span>Chats</span></a> 
                                      <a href="mercados.html" class="nav-dropdown-item"><i data-lucide="line-chart" class="w-4 h-4"></i><span>Mercados</span></a> 
                                  </div>
                              </div>
                          </nav>
-                         <!-- (CORREGIDO) Botón de acceso oculto en móvil -->
-                         <button id="header-whitelist-btn" class="bg-blue-600 text-white font-semibold rounded-full px-4 py-2 text-sm transition-transform hover:scale-105 whitespace-nowrap hidden md:block">
+                         <button id="header-whitelist-btn" class="bg-blue-600 text-white font-semibold rounded-full px-4 py-2 text-sm transition-transform hover:scale-105 animated-whitelist-btn whitespace-nowrap hidden md:block">
                              Acceso Prioritario
                          </button>
                          <div class="relative" id="theme-selector">
@@ -653,10 +331,8 @@
                              <div id="theme-dropdown-menu" class="theme-dropdown-menu invisible opacity-0 scale-95 p-1 border" style="border-color: var(--border-main);">
                                   <button data-theme="light" title="Tema Claro" class="theme-dropdown-btn"><i data-lucide="sun"></i></button>
                                   <button data-theme="dark" title="Tema Oscuro" class="theme-dropdown-btn"><i data-lucide="moon"></i></button>
-                                  <!-- (ELIMINADO) Botón de tema estrellado -->
                              </div>
                          </div>
-                         <!-- (NUEVO) Botón de Menú Móvil -->
                          <button id="mobile-menu-btn" class="p-1.5 rounded-full border md:hidden" style="border-color: var(--border-main);">
                              <i data-lucide="menu" class="w-6 h-6"></i>
                          </button>
@@ -664,8 +340,10 @@
                  </div>
             </header>
 
-            <!-- (NUEVO) Panel de Menú Móvil -->
             <div id="mobile-menu-panel" class="z-[55]">
+                <button id="mobile-menu-close-btn" class="absolute top-7 right-7 p-2 rounded-full hover:bg-gray-500/10">
+                    <i data-lucide="x" class="w-8 h-8"></i>
+                </button>
                 <nav class="flex flex-col gap-2">
                     <a href="index.html" class="mobile-nav-link">Inicio</a>
                     <a href="noticias.html" class="mobile-nav-link">Noticias</a>
@@ -689,7 +367,7 @@
                 <section class="hero-section relative flex flex-col items-center justify-center text-center p-4 overflow-hidden">
                     <div class="background-logo-text opacity-50">CHAT</div>
                     <div class="relative z-10 pt-[18vh] container mx-auto max-w-screen-xl px-4">
-                        <div class="z-10 text-center max-w-4xl mx-auto">
+                        <div class="z-10 text-center max-w-4xl mx-auto reveal">
                             <span class="font-bold uppercase tracking-wider text-base" style="color: var(--accent-color);">Inteligencia Colectiva</span>
                             <h1 class="text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mt-2">
                                 Invierte en Comunidad.
@@ -702,439 +380,151 @@
                             </p>
                         </div>
                         
-                        <!-- (NUEVO) Mockup del Chat Interactivo -->
-                        <div class="mt-16 flex justify-center">
+                        <div class="mt-16 flex justify-center reveal">
                             <div class="chat-mockup-container feature-card">
-                                <!-- Header del Chat -->
                                 <div class="chat-mockup-header">
                                     <div class="group-icon">AT</div>
-                                    <div>
-                                        <h4>Análisis Técnico</h4>
-                                        <p>4 Miembros: Juan, María, Carlos, @Tú</p>
-                                    </div>
+                                    <div><h4>Análisis Técnico</h4><p>4 Miembros: Juan, María, Carlos, @Tú</p></div>
                                 </div>
-                                <!-- Mensajes -->
                                 <div class="chat-mockup-messages">
-                                    
-                                    <!-- (CORREGIDO) Estilos de animación inline eliminados -->
-                                    <div class="message-bubble is-other">
-                                        <div class="avatar" style="background-color: #d946ef;">M</div>
-                                        <div class="message-main-content">
-                                            <p class="sender-name">María</p>
-                                            <div class="content">
-                                                <p>Ojo con <span class="mention">$NVDA</span>, el análisis de Sentinel me marcó 'Positivo' por la noticia de Blackwell.</p>
-                                            </div>
-                                            <div class="reactions-container">
-                                                <div class="reaction-chip">🔥 1</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="message-bubble is-me">
-                                        <div class="avatar" style="background-color: #3b82f6;">T</div>
-                                        <div class="message-main-content">
-                                            <p class="sender-name">Tú</p>
-                                            <div class="content">
-                                                <p><span class="mention">@María</span>, buena vista. Acabo de compartir mi portafolio 'Tech' en la pestaña. Miren el % de $NVDA.</p>
-                                                <div class="portfolio-share">
-                                                    <div class="icon"><i data-lucide="briefcase" class="w-5 h-5"></i></div>
-                                                    <div class="text">
-                                                        <h5>Portafolio "Tech"</h5>
-                                                        <p>Compartido por @Tú</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="message-bubble is-other">
-                                        <div class="avatar" style="background-color: #f59e0b;">J</div>
-                                        <div class="message-main-content">
-                                            <p class="sender-name">Juan</p>
-                                            <div class="content">
-                                                <p>Wow, tu portafolio va +15% en 7 días. Vas a ganar el ranking de esta semana 🥇.</p>
-                                                <p class="mt-2">Oigan, <span class="mention is-ai">@IA</span> ¿Cuál es el soporte clave para $BTC?</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="message-bubble is-other">
-                                        <div class="avatar is-ai"><i data-lucide="brain-circuit" class="w-5 h-5"></i></div>
-                                        <div class="message-main-content">
-                                            <!-- CORRECCIÓN: Color de nombre de IA cambiado a azul -->
-                                            <p class="sender-name" style="color: var(--accent-blue);">IA de Maverlang</p>
-                                            <div class="content">
-                                                <p>El soporte clave para $BTC está en <span class="mention">$58,500</span>. Se observa debilidad en el volumen de compra en las últimas 4 horas.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                                    <!-- Mensajes generados dinámicamente por JS -->
                                 </div>
-                                <!-- Input Falso -->
                                 <div class="chat-mockup-input">
-                                    <span>Escribe un mensaje...</span>
-                                    <i data-lucide="send" class="w-5 h-5 opacity-50"></i>
+                                    <span>Escribe un mensaje...</span><i data-lucide="send" class="w-5 h-5 opacity-50"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
                 
-                <!-- (NUEVO) Sección de Features 2x3 -->
-                <section class="relative z-10 w-full pt-16 md:pt-24 pb-16 md:pb-24" style="background-color: rgba(var(--accent-color-rgb), 0.03);">
+                <section class="relative z-10 w-full pt-16 md:pt-24 pb-16 md:pb-24 reveal" style="background-color: rgba(var(--accent-color-rgb), 0.03);">
                     <div class="container mx-auto max-w-screen-xl px-4">
                         <div class="text-center mb-16">
-                             <h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-2 mb-4">
-                                Herramientas de Colaboración
-                             </h2>
-                             <p class="text-xl opacity-80 max-w-3xl mx-auto">
-                                 Más que un chat. Es tu centro de operaciones grupal, diseñado para inversores.
-                             </p>
+                             <h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-2 mb-4">Herramientas de Colaboración</h2>
+                             <p class="text-xl opacity-80 max-w-3xl mx-auto">Más que un chat. Es tu centro de operaciones grupal.</p>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             
-                            <!-- Feature 1: Portafolios y Ranking -->
                             <div class="feature-card feature-grid-card">
                                 <div class="icon"><i data-lucide="trophy" class="w-7 h-7"></i></div>
                                 <h3 class="text-2xl font-bold">Compite y Compara</h3>
-                                <p class="opacity-80">
-                                   Comparte tu portafolio (real o virtual). Ve el rendimiento de los demás y compite en el **Ranking de Rentabilidad** semanal, mensual o anual.
-                                </p>
+                                <p class="opacity-80">Comparte tu portafolio y compite en el Ranking de Rentabilidad semanal.</p>
                                 <div class="flex-grow"></div>
                                 <div class="mockup-ranking-list">
-                                    <div class="mockup-ranking-item">
-                                        <div class="name"><span>🥇</span><span>@Tú (Portafolio Tech)</span></div>
-                                        <div class="perf" style="color: var(--success-color);">+15.2%</div>
-                                    </div>
-                                    <div class="mockup-ranking-item">
-                                        <div class="name"><span>🥈</span><span>@Juan (Largo Plazo)</span></div>
-                                        <div class="perf" style="color: var(--success-color);">+11.8%</div>
-                                    </div>
-                                    <div class="mockup-ranking-item">
-                                        <div class="name"><span>🥉</span><span>@María (Value Stocks)</span></div>
-                                        <div class="perf" style="color: var(--success-color);">+9.1%</div>
-                                    </div>
+                                    <div class="mockup-ranking-item"><div class="name"><span>🥇</span><span>@Tú</span></div><div class="perf" style="color: var(--success-color);">+15.2%</div></div>
+                                    <div class="mockup-ranking-item"><div class="name"><span>🥈</span><span>@Juan</span></div><div class="perf" style="color: var(--success-color);">+11.8%</div></div>
                                 </div>
                             </div>
 
-                            <!-- Feature 2: Menciones y Reacciones -->
                             <div class="feature-card feature-grid-card">
                                 <div class="icon"><i data-lucide="at-sign" class="w-7 h-7"></i></div>
                                 <h3 class="text-2xl font-bold">Comunicación Fluida</h3>
-                                <p class="opacity-80">
-                                   Mantén la conversación ágil. **Menciona (@)** a miembros específicos para notificarlos y **reacciona con emojis** (👍, 🔥, 🚀) a los mensajes.
-                                </p>
+                                <p class="opacity-80">Menciona (@) miembros y reacciona con emojis a los mensajes.</p>
                                 <div class="flex-grow"></div>
                                 <div class="flex gap-4">
-                                    <div class="w-1/2">
-                                        <p class="text-sm font-semibold mb-2 opacity-70">Menciona:</p>
-                                        <div class="mockup-mention-list">
-                                            <div class="mockup-mention-item active">@Juan</div>
-                                            <div class="mockup-mention-item">@María</div>
-                                            <div class="mockup-mention-item">@Carlos</div>
-                                        </div>
-                                    </div>
-                                    <div class="w-1/2">
-                                        <p class="text-sm font-semibold mb-2 opacity-70">Reacciona:</p>
-                                        <div class="flex flex-wrap gap-2 mt-3">
-                                            <span class="reaction-chip text-lg p-2">👍</span>
-                                            <span class="reaction-chip text-lg p-2">🔥</span>
-                                            <span class="reaction-chip text-lg p-2">🚀</span>
-                                            <span class="reaction-chip text-lg p-2">🤔</span>
-                                        </div>
-                                    </div>
+                                    <div class="w-1/2"><div class="mockup-mention-list"><div class="mockup-mention-item active">@Juan</div><div class="mockup-mention-item">@María</div></div></div>
+                                    <div class="w-1/2"><div class="flex flex-wrap gap-2 mt-3"><span class="reaction-chip text-lg p-2">👍</span><span class="reaction-chip text-lg p-2">🔥</span><span class="reaction-chip text-lg p-2">🚀</span></div></div>
                                 </div>
                             </div>
                             
-                            <!-- (NUEVO) Feature 3: IA Integrada -->
                             <div class="feature-card feature-grid-card">
                                 <div class="icon"><i data-lucide="brain-circuit" class="w-7 h-7"></i></div>
-                                <h3 class="text-2xl font-bold">IA Integrada en el Chat</h3>
-                                <p class="opacity-80">
-                                   ¿Necesitas un dato rápido? Llama a la IA con <span class="mention is-ai">@IA</span>. Pregunta por definiciones, soportes, resistencias o resúmenes de noticias sin salir del chat.
-                                </p>
+                                <h3 class="text-2xl font-bold">IA Integrada</h3>
+                                <p class="opacity-80">Llama a la IA con <span class="mention is-ai">@IA</span> para datos rápidos sin salir del chat.</p>
                                 <div class="flex-grow"></div>
                                 <div class="p-4 rounded-lg border" style="border-color: var(--border-main); background-color: var(--bg-main); margin-top: 1rem;">
-                                    <p class="text-sm font-semibold">Tú: <span class="mention is-ai">@IA</span> ¿Qué es un 'Short Squeeze'?</p>
-                                    <!-- CORRECCIÓN: Color de IA cambiado a azul -->
-                                    <p class="text-sm opacity-80 mt-2"><strong style="color: var(--accent-blue);">IA:</strong> Un 'Short Squeeze' es un...</p>
+                                    <p class="text-sm font-semibold">Tú: <span class="mention is-ai">@IA</span> ¿Soporte de $BTC?</p>
+                                    <p class="text-sm opacity-80 mt-2"><strong style="color: var(--accent-blue);">IA:</strong> El soporte clave está en $58,500.</p>
                                 </div>
                             </div>
 
-                            <!-- Feature 4: Grupos Privados y Temáticos -->
                              <div class="feature-card feature-grid-card">
                                 <div class="icon"><i data-lucide="users" class="w-7 h-7"></i></div>
-                                <h3 class="text-2xl font-bold">Tu Círculo de Confianza</h3>
-                                <p class="opacity-80">
-                                   Crea grupos **privados** solo por invitación para tus estrategias secretas, o únete a canales **públicos** temáticos para debatir con toda la comunidad.
-                                </p>
+                                <h3 class="text-2xl font-bold">Grupos Privados</h3>
+                                <p class="opacity-80">Crea grupos por invitación o únete a canales públicos temáticos.</p>
                                 <div class="flex-grow"></div>
                                 <div class="mockup-group-list">
-                                    <div class="mockup-group-item">
-                                        <div class="icon" style="background-color: #ef4444;"><i data-lucide="lock" class="w-5 h-5"></i></div>
-                                        Amigos Inversores
-                                    </div>
-                                    <div class="mockup-group-item">
-                                        <div class="icon" style="background-color: #f59e0b;"><i data-lucide="bitcoin" class="w-5 h-5"></i></div>
-                                        Cripto Chile
-                                    </div>
+                                    <div class="mockup-group-item"><div class="icon" style="background-color: #ef4444;"><i data-lucide="lock" class="w-5 h-5"></i></div>Amigos</div>
+                                    <div class="mockup-group-item"><div class="icon" style="background-color: #f59e0b;"><i data-lucide="bitcoin" class="w-5 h-5"></i></div>Cripto</div>
                                 </div>
                             </div>
 
-                            <!-- Feature 5: Todo Conectado -->
                             <div class="feature-card feature-grid-card">
                                 <div class="icon"><i data-lucide="link" class="w-7 h-7"></i></div>
-                                <h3 class="text-2xl font-bold">Ecosistema Conectado</h3>
-                                <p class="opacity-80">
-                                   Trae tus análisis de **Sentinel**, gráficos de **Mercados** o artículos de **Noticias** directamente a la conversación para debatir con fundamento.
-                                </p>
+                                <h3 class="text-2xl font-bold">Todo Conectado</h3>
+                                <p class="opacity-80">Comparte análisis de Sentinel o gráficos directamente en la conversación.</p>
                                 <div class="flex-grow"></div>
                                 <div class="p-4 rounded-lg border" style="border-color: var(--border-main); background-color: var(--bg-main); margin-top: 1rem;">
                                     <p class="text-sm font-semibold text-red-500">ALERTA SENTINEL</p>
-                                    <p class="text-sm font-semibold mt-1">Impacto Negativo detectado en $MSFT.</p>
-                                    <p class="text-xs opacity-70 mt-2">Compartido desde 'Seguimiento'</p>
+                                    <p class="text-sm font-semibold mt-1">Impacto Negativo en $MSFT.</p>
                                 </div>
                             </div>
                             
-                            <!-- (NUEVO) Feature 6: Hilos -->
                             <div class="feature-card feature-grid-card">
                                 <div class="icon"><i data-lucide="message-square-reply" class="w-7 h-7"></i></div>
-                                <h3 class="text-2xl font-bold">Hilos de Conversación</h3>
-                                <p class="opacity-80">
-                                   Mantén el orden. Responde a cualquier mensaje en un **hilo dedicado** para profundizar en un tema sin interrumpir la conversación principal.
-                                </p>
+                                <h3 class="text-2xl font-bold">Hilos</h3>
+                                <p class="opacity-80">Responde en hilos para mantener el orden en debates profundos.</p>
                                 <div class="flex-grow"></div>
-                                <div class="mockup-thread-card">
-                                    <div class="mockup-thread-item">
-                                        <div class="avatar" style="background-color: #d946ef;"></div>
-                                        <p>Ojo con <span class="mention">$NVDA</span>...</p>
-                                    </div>
-                                    <p class="mockup-thread-reply">3 respuestas en el hilo...</p>
-                                </div>
+                                <div class="p-3 rounded-lg border mt-4" style="border-color: var(--border-main);"><p class="text-sm opacity-70">3 respuestas en el hilo...</p></div>
                             </div>
 
                         </div>
                     </div>
                 </section>
 
-                <!-- (NUEVO) Sección "Cómo Funciona" -->
-                <section class="relative z-10 w-full pt-16 md:pt-24 pb-16 md:pb-24">
-                    <div class="container mx-auto max-w-screen-xl px-4">
-                        <div class="text-center mb-16 max-w-3xl mx-auto">
-                             <h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-2 mb-4">
-                                Tu Plataforma de Debate en 3 Pasos
-                             </h2>
-                             <p class="text-xl opacity-80">
-                                 Comenzar a colaborar es simple, rápido e intuitivo.
-                             </p>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-                            <!-- Paso 1 -->
-                            <div class="text-center">
-                                <div class="relative flex justify-center items-center">
-                                    <div class="icon flex items-center justify-center w-20 h-20 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-300">
-                                        <i data-lucide="user-plus" class="w-10 h-10"></i>
-                                    </div>
-                                </div>
-                                <h3 class="text-xl font-bold mt-6 mb-2">1. Crea o Únete a un Grupo</h3>
-                                <p class="opacity-80">
-                                    Inicia un chat privado con amigos o únete a canales públicos temáticos (Cripto, Acciones Chile, ETFs) para conocer a otros inversores.
-                                </p>
-                            </div>
-                            <!-- Paso 2 -->
-                            <div class="text-center">
-                                <div class="relative flex justify-center items-center">
-                                    <div class="icon flex items-center justify-center w-20 h-20 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-300">
-                                        <i data-lucide="share-2" class="w-10 h-10"></i>
-                                    </div>
-                                </div>
-                                <h3 class="text-xl font-bold mt-6 mb-2">2. Conecta y Comparte</h3>
-                                <p class="opacity-80">
-                                    Trae contexto a la conversación. Comparte tu portafolio virtual, un análisis de Sentinel o una noticia de última hora con un solo clic.
-                                </p>
-                            </div>
-                            <!-- Paso 3 -->
-                            <div class="text-center">
-                                <div class="relative flex justify-center items-center">
-                                    <div class="icon flex items-center justify-center w-20 h-20 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-300">
-                                        <i data-lucide="trending-up" class="w-10 h-10"></i>
-                                    </div>
-                                </div>
-                                <h3 class="text-xl font-bold mt-6 mb-2">3. Debate y Crece</h3>
-                                <p class="opacity-80">
-                                    Reacciona, menciona y debate. Usa la inteligencia colectiva del grupo para validar tus ideas y tomar decisiones más informadas.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Sección de Testimonios (Re-enfocada) -->
-                <!-- MODIFICADO: Padding reducido a la mitad -->
-                <section id="social-proof" class="relative z-10 w-full pt-8 md:pt-12 pb-8 md:pb-12 overflow-hidden" style="background-color: rgba(var(--accent-color-rgb), 0.03);">
+                <!-- Sección de Testimonios -->
+                <section id="social-proof" class="relative z-10 w-full pt-8 md:pt-12 pb-8 md:pb-12 overflow-hidden reveal" style="background-color: rgba(var(--accent-color-rgb), 0.03);">
                        <div class="container mx-auto max-w-screen-xl px-4">
                          <div class="text-center mb-16 max-w-3xl mx-auto">
-                             <h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-2 mb-4">
-                                 Invierte Solo. Analiza en Conjunto.
-                             </h2>
-                             <p class="text-lg opacity-80">
-                                 Así es como nuestros miembros beta están usando los Chats para tomar mejores decisiones.
-                             </p>
+                             <h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-2 mb-4">Invierte Solo. Analiza en Conjunto.</h2>
+                             <p class="text-lg opacity-80">Así es como nuestros miembros beta están usando los Chats.</p>
                          </div>
                      </div>
-
                      <div id="testimonials-container" class="relative w-full overflow-hidden">
                          <div class="testimonial-track flex">
-                             <!-- Testimonios (8 tarjetas) -->
                              <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/6366f1/white?text=JS" alt="Avatar" class="avatar">
-                                     <div><h4>Juan S.</h4><p class="title">Trader de Acciones</p></div>
-                                 </div>
-                                 <p class="quote">"Pude validar mi tesis sobre $TSLA debatiéndola en el grupo 'Acciones USA'. Ver los portafolios de otros miembros me dio una perspectiva que no tenía."</p>
+                                 <div class="flex items-center mb-3"><img src="https://placehold.co/48x48/6366f1/white?text=JS" class="avatar mr-3"><div><h4>Juan S.</h4><p class="title">Trader</p></div></div>
+                                 <p class="quote">"Validar mi tesis sobre $TSLA en el grupo 'Acciones USA' me dio una perspectiva nueva."</p>
                              </div>
                              <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/ec4899/white?text=MF" alt="Avatar" class="avatar">
-                                     <div><h4>Maria F.</h4><p class="title">Inversora Principiante</p></div>
-                                 </div>
-                                 <p class="quote">"Estar en el grupo 'Principiantes Chile' me ayudó a aprender 10x más rápido. Preguntar y ver cómo operan los demás en tiempo real no tiene precio."</p>
+                                 <div class="flex items-center mb-3"><img src="https://placehold.co/48x48/ec4899/white?text=MF" class="avatar mr-3"><div><h4>Maria F.</h4><p class="title">Principiante</p></div></div>
+                                 <p class="quote">"Estar en el grupo 'Principiantes Chile' me ayudó a aprender 10x más rápido."</p>
                              </div>
                               <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/f59e0b/white?text=RC" alt="Avatar" class="avatar">
-                                     <div><h4>Ricardo C.</h4><p class="title">Entusiasta Cripto</p></div>
-                                 </div>
-                                 <p class="quote">"El ranking semanal es mi motivación. Es increíble ver cómo mi portafolio de cripto se compara con el de los demás. La competencia es amistosa y muy educativa."</p>
+                                 <div class="flex items-center mb-3"><img src="https://placehold.co/48x48/f59e0b/white?text=RC" class="avatar mr-3"><div><h4>Ricardo C.</h4><p class="title">Cripto</p></div></div>
+                                 <p class="quote">"El ranking semanal es mi motivación. La competencia es amistosa y muy educativa."</p>
                              </div>
                               <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/10b981/white?text=LV" alt="Avatar" class="avatar">
-                                     <div><h4>Laura V.</h4><p class="title">Analista Ocupada</p></div>
-                                 </div>
-                                 <p class="quote">"Me encanta poder compartir un análisis de Sentinel directamente en el chat. Ahorra muchísimo tiempo y genera un debate inmediato con datos reales."</p>
+                                 <div class="flex items-center mb-3"><img src="https://placehold.co/48x48/10b981/white?text=LV" class="avatar mr-3"><div><h4>Laura V.</h4><p class="title">Analista</p></div></div>
+                                 <p class="quote">"Compartir análisis de Sentinel en el chat ahorra tiempo y genera debate real."</p>
                              </div>
+                             <!-- Duplicados -->
                              <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/ef4444/white?text=A" alt="Avatar" class="avatar">
-                                     <div><h4>Ana G.</h4><p class="title">Analista de Riesgos</p></div>
-                                 </div>
-                                 <p class="quote">"La IA de Maverlang me marcó una alerta de sentimiento en $MSFT que me salvó. Traer eso al chat para discutirlo con el equipo fue clave."</p>
-                             </div>
-                             <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/3b82f6/white?text=D" alt="Avatar" class="avatar">
-                                     <div><h4>Daniel P.</h4><p class="title">Inversor Familiar</p></div>
-                                 </div>
-                                 <p class="quote">"Tengo un grupo privado con mi familia. Compartimos nuestros portafolios virtuales. Es la mejor forma de aprender juntos sin arriesgar dinero real."</p>
-                             </div>
-                              <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/22c55e/white?text=S" alt="Avatar" class="avatar">
-                                     <div><h4>Sofía L.</h4><p class="title">Estratega ESG</p></div>
-                                 </div>
-                                 <p class="quote">"El canal de 'Energías Renovables' es increíble. Pura gente experta. Aprendo más ahí que en muchos cursos. Las menciones me ayudan a no perderme de nada."</p>
-                             </div>
-                              <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/a855f7/white?text=M" alt="Avatar" class="avatar">
-                                     <div><h4>Martín R.</h4><p class="title">Day Trader</p></div>
-                                 </div>
-                                 <p class="quote">"Me encanta la interfaz. Reaccionar con '🚀' a un buen análisis o '🤔' a uno dudoso es súper rápido y le da mucha vida a la conversación."</p>
-                             </div>
-
-                             <!-- Duplicados para el bucle infinito -->
-                             <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/6366f1/white?text=JS" alt="Avatar" class="avatar">
-                                     <div><h4>Juan S.</h4><p class="title">Trader de Acciones</p></div>
-                                 </div>
-                                 <p class="quote">"Pude validar mi tesis sobre $TSLA debatiéndola en el grupo 'Acciones USA'. Ver los portafolios de otros miembros me dio una perspectiva que no tenía."</p>
-                             </div>
-                             <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/ec4899/white?text=MF" alt="Avatar" class="avatar">
-                                     <div><h4>Maria F.</h4><p class="title">Inversora Principiante</p></div>
-                                 </div>
-                                 <p class="quote">"Estar en el grupo 'Principiantes Chile' me ayudó a aprender 10x más rápido. Preguntar y ver cómo operan los demás en tiempo real no tiene precio."</p>
-                             </div>
-                              <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/f59e0b/white?text=RC" alt="Avatar" class="avatar">
-                                     <div><h4>Ricardo C.</h4><p class="title">Entusiasta Cripto</p></div>
-                                 </div>
-                                 <p class="quote">"El ranking semanal es mi motivación. Es increíble ver cómo mi portafolio de cripto se compara con el de los demás. La competencia es amistosa y muy educativa."</p>
-                             </div>
-                              <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/10b981/white?text=LV" alt="Avatar" class="avatar">
-                                     <div><h4>Laura V.</h4><p class="title">Analista Ocupada</p></div>
-                                 </div>
-                                 <p class="quote">"Me encanta poder compartir un análisis de Sentinel directamente en el chat. Ahorra muchísimo tiempo y genera un debate inmediato con datos reales."</p>
-                             </div>
-                             <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/ef4444/white?text=A" alt="Avatar" class="avatar">
-                                     <div><h4>Ana G.</h4><p class="title">Analista de Riesgos</p></div>
-                                 </div>
-                                 <p class="quote">"La IA de Maverlang me marcó una alerta de sentimiento en $MSFT que me salvó. Traer eso al chat para discutirlo con el equipo fue clave."</p>
-                             </div>
-                             <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/3b82f6/white?text=D" alt="Avatar" class="avatar">
-                                     <div><h4>Daniel P.</h4><p class="title">Inversor Familiar</p></div>
-                                 </div>
-                                 <p class="quote">"Tengo un grupo privado con mi familia. Compartimos nuestros portafolios virtuales. Es la mejor forma de aprender juntos sin arriesgar dinero real."</p>
-                             </div>
-                              <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/22c55e/white?text=S" alt="Avatar" class="avatar">
-                                     <div><h4>Sofía L.</h4><p class="title">Estratega ESG</p></div>
-                                 </div>
-                                 <p class="quote">"El canal de 'Energías Renovables' es increíble. Pura gente experta. Aprendo más ahí que en muchos cursos. Las menciones me ayudan a no perderme de nada."</p>
-                             </div>
-                              <div class="testimonial-card">
-                                 <div class="flex items-center mb-3">
-                                     <img src="https://placehold.co/48x48/a855f7/white?text=M" alt="Avatar" class="avatar">
-                                     <div><h4>Martín R.</h4><p class="title">Day Trader</p></div>
-                                 </div>
-                                 <p class="quote">"Me encanta la interfaz. Reaccionar con '🚀' a un buen análisis o '🤔' a uno dudoso es súper rápido y le da mucha vida a la conversación."</p>
+                                 <div class="flex items-center mb-3"><img src="https://placehold.co/48x48/6366f1/white?text=JS" class="avatar mr-3"><div><h4>Juan S.</h4><p class="title">Trader</p></div></div>
+                                 <p class="quote">"Validar mi tesis sobre $TSLA en el grupo 'Acciones USA' me dio una perspectiva nueva."</p>
                              </div>
                          </div>
                      </div>
                  </section>
 
-                <!-- CTA Final -->
-                 <section id="final-cta" class="relative z-10 w-full pt-16 md:pt-24 pb-20 md:pb-32 text-center">
+                 <section id="final-cta" class="relative z-10 w-full pt-16 md:pt-24 pb-20 md:pb-32 text-center reveal">
                     <div class="container mx-auto max-w-3xl px-4">
-                        <h2 class="text-4xl md:text-5xl font-bold tracking-tight">
-                            Construye tu Red de Inversión
-                        </h2>
-                        <p class="mt-4 text-lg md:text-xl opacity-80">
-                           No vuelvas a tomar una decisión a ciegas. Únete a la lista de acceso prioritario y sé el primero en conectar con la comunidad de Maverlang.
-                        </p>
-                        <button id="footer-whitelist-btn" class="modal-trigger-btn mt-10 text-white font-semibold rounded-full px-8 py-4 text-lg transition-transform hover:scale-105 animated-whitelist-btn whitespace-nowrap">
-                            Unirse a los Chats (Acceso Prioritario)
-                        </button>
+                        <h2 class="text-4xl md:text-5xl font-bold tracking-tight">Construye tu Red de Inversión</h2>
+                        <p class="mt-4 text-lg md:text-xl opacity-80">No vuelvas a tomar una decisión a ciegas. Únete a la lista de acceso prioritario.</p>
+                        <button id="footer-whitelist-btn" class="modal-trigger-btn mt-10 text-white font-semibold rounded-full px-8 py-4 text-lg transition-transform hover:scale-105 animated-whitelist-btn whitespace-nowrap">Unirse a los Chats</button>
                     </div>
                 </section>
 
             </main>
 
-            <!-- Footer (MODIFICADO) -->
-            <footer class="relative z-10 w-full border-t pt-12" style="border-color: var(--border-main); background-color: var(--bg-main);">
-                <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    
+            <footer class="relative z-10 w-full border-t" style="border-color: var(--border-main); background-color: var(--bg-main);">
+                <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
                     <div class="mb-12 text-center md:text-left">
                         <div class="text-xl font-bold tracking-wider inline-block">MAVERLANG</div>
-                        <p class="mt-2 text-md opacity-80 max-w-lg mx-auto md:mx-0">
-                            Potenciando decisiones financieras con inteligencia artificial avanzada.
-                        </p>
+                        <p class="mt-2 text-md opacity-80 max-w-lg mx-auto md:mx-0">Potenciando decisiones financieras con inteligencia artificial avanzada.</p>
                     </div>
-
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-12">
-                        <!-- Col 1: Navegación (MODIFICADA) -->
                         <div>
                             <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Navegación</h3>
                             <nav class="flex flex-col gap-3">
@@ -1144,7 +534,6 @@
                                 <a href="aprendelo.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Apréndelo</a>
                             </nav>
                         </div>
-                        <!-- Col 2: Plataforma (NUEVA) -->
                         <div>
                             <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Plataforma</h3>
                             <nav class="flex flex-col gap-3">
@@ -1154,8 +543,7 @@
                                 <a href="chats.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Chats</a>
                             </nav>
                         </div>
-                        <!-- Col 3: Compañía (Sin cambios) -->
-                        <div>
+                         <div>
                             <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Compañía</h3>
                             <nav class="flex flex-col gap-3">
                                 <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Sobre Nosotros</a>
@@ -1163,7 +551,6 @@
                                 <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Contacto</a>
                             </nav>
                         </div>
-                        <!-- Col 4: Legal (Sin cambios) -->
                         <div>
                             <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Legal</h3>
                             <nav class="flex flex-col gap-3">
@@ -1172,26 +559,13 @@
                             </nav>
                         </div>
                     </div>
-
-                    <div class="border-t pt-8 pb-12 flex flex-col md:flex-row justify-between items-center gap-6" style="border-color: var(--border-main);">
-                        <p class="text-sm opacity-70 text-center md:text-left">
-                            &copy; 2025 Maverlang. Todos los derechos reservados.
-                        </p>
-                        <div class="flex gap-6">
-                            <a href="#" aria-label="LinkedIn" class="opacity-70 hover:opacity-100 hover:text-blue-500 transition-all">
-                                <i data-lucide="linkedin" class="w-6 h-6"></i>
-                            </a>
-                            <a href="#" aria-label="Instagram" class="opacity-70 hover:opacity-100 hover:text-pink-500 transition-all">
-                                <i data-lucide="instagram" class="w-6 h-6"></i>
-                            </a>
-                            <a href="#" aria-label="X (Twitter)" class="opacity-70 hover:opacity-100 transition-all">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.06l3.51 4.639L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
-                                </svg>
-                            </a>
-                            <a href="#" aria-label="Facebook" class="opacity-70 hover:opacity-100 hover:text-blue-600 transition-all">
-                                <i data-lucide="facebook" class="w-6 h-6"></i>
-                            </a>
+                    <div class="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-6" style="border-color: var(--border-main);">
+                        <p class="text-sm opacity-70 text-center md:text-left">&copy; 2025 Maverlang. Todos los derechos reservados.</p>
+                         <div class="flex gap-6">
+                            <a href="#" class="opacity-70 hover:opacity-100 hover:text-blue-500 transition-all"><i data-lucide="linkedin" class="w-6 h-6"></i></a>
+                            <a href="#" class="opacity-70 hover:opacity-100 hover:text-pink-500 transition-all"><i data-lucide="instagram" class="w-6 h-6"></i></a>
+                            <a href="#" class="opacity-70 hover:opacity-100 transition-all"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 16 16"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.06l3.51 4.639L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg></a>
+                            <a href="#" class="opacity-70 hover:opacity-100 hover:text-blue-600 transition-all"><i data-lucide="facebook" class="w-6 h-6"></i></a>
                         </div>
                     </div>
                 </div>
@@ -1207,9 +581,7 @@
             <i data-lucide="rocket" class="w-12 h-12 mx-auto text-blue-500 mb-4"></i>
             <h2 class="text-2xl font-bold">Únete al Acceso Prioritario</h2>
             <p class="mt-2 text-main/70">Sé el primero en saber cuándo lanzamos y obtén un <span class="font-bold text-blue-500">20% de descuento</span>.</p>
-            <div id="fomo-counter" class="text-base font-semibold">
-               ¡Únete a <span id="whitelist-count">...</span> analistas en la lista!
-            </div>
+            <!-- CONTADOR DE ANALISTAS ELIMINADO -->
             <div id="modal-countdown-container" class="flex items-center justify-center gap-3 md:gap-4 my-6">
                 <div class="countdown-box w-20 h-20 flex flex-col items-center justify-center"><span id="modal-days" class="countdown-number">00</span><span class="countdown-label">Días</span></div>
                 <div class="countdown-box w-20 h-20 flex flex-col items-center justify-center"><span id="modal-hours" class="countdown-number">00</span><span class="countdown-label">Horas</span></div>
@@ -1217,13 +589,15 @@
                 <div class="countdown-box w-20 h-20 flex flex-col items-center justify-center"><span id="modal-seconds" class="countdown-number">00</span><span class="countdown-label">Segundos</span></div>
             </div>
             <form id="whitelist-form-modal">
-                <div class="flex items-center p-2 rounded-full border" style="border-color: var(--border-main);"><input type="email" id="email-input-modal" placeholder="Tu correo electrónico" required class="w-full bg-transparent px-4 py-2 text-main placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none"><button type="submit" id="submit-btn-modal" class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-full flex-shrink-0 hover:bg-blue-700 transition-colors">Anotarme</button></div>
+                <div class="flex items-center p-2 rounded-full border" style="border-color: var(--border-main);"><input type="email" id="email-input-modal" placeholder="Tu correo electrónico" required class="w-full bg-transparent px-4 py-2 text-main placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none"><button type="submit" id="submit-btn-modal" class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-full flex-shrink-0 hover:bg-blue-700 transition-colors" disabled>Iniciando...</button></div>
                 <p id="form-message-modal" class="mt-3 text-sm h-5"></p>
             </form>
         </div>
     </div>
     
-    <!-- Script (Compartido por todas las páginas) -->
+    <!-- Toast de Notificación -->
+    <div id="toast-notification"><i data-lucide="info" class="w-5 h-5 text-blue-500"></i><span id="toast-message">Mensaje</span></div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -1234,21 +608,15 @@
         let isAuthReady = false;
         let whitelistCol;
         let isClickOutsideListenerAdded = false;
-
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        let modalShown = false;
 
         // --- Funciones del Modal ---
         const openModal = (e) => {
-            if (e) e.preventDefault();
-             // No abrir modal si el enlace tiene un href real (que no sea #)
-            if (e.currentTarget && e.currentTarget.href && !e.currentTarget.href.endsWith('#') && e.currentTarget.target !== '_blank') {
-                return; 
-            }
+            if (e && e.preventDefault) e.preventDefault();
+            if (e && e.currentTarget && e.currentTarget.href && !e.currentTarget.href.endsWith('#') && e.currentTarget.target !== '_blank') return;
             const modal = document.getElementById('whitelist-modal');
             if (!modal || !modal.classList.contains('invisible')) return;
-            modalShown = true;
             const modalContent = modal.querySelector('.modal-content');
             modal.classList.remove('invisible', 'opacity-0');
             modalContent.classList.remove('scale-95');
@@ -1265,50 +633,54 @@
         // --- Inicialización ---
         async function initApp() {
             if (typeof lucide !== 'undefined') { lucide.createIcons(); }
-            else { console.warn("Lucide no está listo..."); setTimeout(initApp, 100); return; }
+            else { setTimeout(initApp, 100); return; }
 
             initTheme();
             await initFirebase();
             initWhitelistModal();
             initWhitelistForms();
-            initAnimations();
             initCountdown();
             initHeaderScrollBehavior();
             initNavigation();
             generateParticlesSlow();
+            initMobileMenu();
             
-            // (NUEVO) Iniciar la simulación del chat en el Hero
-            initChatMockupAnimation(); 
+            // Nuevas funciones
+            initScrollReveal();
+            // initDeepLinking(); // Removed if unused
+            // initAprendeloTabs(); // Removed duplicate call
+            initChallengePathInteraction();
+            initChatMockupAnimation();
             
-            if (isAuthReady) { listenToWhitelistCount(); }
-            else { console.warn("Auth no lista. Whitelist count no iniciará."); }
+            // Removed listener call for whitelist count
         }
 
         // --- Firebase ---
         async function initFirebase() {
-             if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "TU_API_KEY") {
-                console.warn("Firebase no está configurado."); isAuthReady = false; return;
-            }
+             if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "TU_API_KEY") { isAuthReady = false; return; }
             try {
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app); auth = getAuth(app); setLogLevel('debug');
+                // CORRECCIÓN: Ruta de colección estricta
                 whitelistCol = collection(db, 'artifacts', appId, 'public', 'data', 'whitelist');
                 await new Promise((resolve, reject) => {
                     const unsubscribe = onAuthStateChanged(auth, async (user) => {
                         unsubscribe();
-                        if (user) { userId = user.uid; isAuthReady = true; console.log("Usuario autenticado:", userId); resolve(); }
+                        if (user) { userId = user.uid; isAuthReady = true; updateWhitelistButton(true); resolve(); }
                         else {
                             try {
-                                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                                    await signInWithCustomToken(auth, __initial_auth_token);
-                                } else { await signInAnonymously(auth); }
-                                if (auth.currentUser) { userId = auth.currentUser.uid; isAuthReady = true; console.log("Auth silenciosa OK:", userId); resolve(); }
-                                else { isAuthReady = false; reject(new Error("Fallo en auth silenciosa.")); }
-                            } catch (authError) { isAuthReady = false; console.error("Error auth silenciosa:", authError); reject(authError); }
+                                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) { await signInWithCustomToken(auth, __initial_auth_token); } else { await signInAnonymously(auth); }
+                                if (auth.currentUser) { userId = auth.currentUser.uid; isAuthReady = true; updateWhitelistButton(true); resolve(); } else { isAuthReady = false; updateWhitelistButton(false); reject(new Error("Fallo en auth silenciosa.")); }
+                            } catch (authError) { isAuthReady = false; updateWhitelistButton(false); reject(authError); }
                         }
-                    }, (error) => { isAuthReady = false; console.error("Error onAuthStateChanged:", error); reject(error); });
+                    }, (error) => { isAuthReady = false; updateWhitelistButton(false); reject(error); });
                 });
-            } catch (e) { console.error("Error Firebase:", e.message); isAuthReady = false; }
+            } catch (e) { isAuthReady = false; updateWhitelistButton(false); }
+        }
+        
+        function updateWhitelistButton(ready) {
+            const btn = document.getElementById('submit-btn-modal');
+            if(btn) { btn.disabled = !ready; btn.textContent = ready ? "Anotarme" : "Conectando..."; if(ready) btn.classList.remove('opacity-50', 'cursor-not-allowed'); }
         }
 
         // --- Temas ---
@@ -1316,13 +688,13 @@
             const themeMainBtn = document.getElementById('theme-main-btn');
             const themeDropdownMenu = document.getElementById('theme-dropdown-menu');
             const themeDropdownBtns = themeDropdownMenu ? themeDropdownMenu.querySelectorAll('.theme-dropdown-btn') : [];
-            if (!themeMainBtn || !themeDropdownMenu || themeDropdownBtns.length === 0) { console.warn("Elementos tema no encontrados."); return; }
+            if (!themeMainBtn || !themeDropdownMenu) return;
             const currentTheme = localStorage.getItem('maverlang_theme') || 'light';
-            applyTheme(currentTheme, true); // True para carga inicial
+            applyTheme(currentTheme, true); 
             themeMainBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const isVisible = !themeDropdownMenu.classList.contains('invisible');
-                document.querySelectorAll('.nav-dropdown-menu').forEach(m => m?.classList.add('opacity-0', 'scale-95', 'invisible')); // Cerrar otros
+                document.querySelectorAll('.nav-dropdown-menu').forEach(m => m?.classList.add('opacity-0', 'scale-95', 'invisible'));
                 if (isVisible) { themeDropdownMenu.classList.add('opacity-0', 'scale-95', 'invisible'); }
                 else { themeDropdownMenu.classList.remove('opacity-0', 'scale-95', 'invisible'); }
             });
@@ -1335,216 +707,318 @@
              const html = document.documentElement;
             const themeMainBtn = document.getElementById('theme-main-btn');
             let iconName = 'sun';
-            html.classList.remove('dark', 'stars-theme');
+            html.classList.remove('dark');
             if (theme === 'dark') { html.classList.add('dark'); iconName = 'moon'; }
-            /* (ELIMINADO) else if (theme === 'stars') { ... } */
             
-            if (!isInitialLoad) {
-                 localStorage.setItem('maverlang_theme', theme);
-            }
-
-            if (themeMainBtn) { themeMainBtn.innerHTML = `<i data-lucide="${iconName}"></i>`; if (typeof lucide !== 'undefined') { lucide.createIcons(); } }
+            if (!isInitialLoad) localStorage.setItem('maverlang_theme', theme);
+            if (themeMainBtn) { themeMainBtn.innerHTML = `<i data-lucide="${iconName}"></i>`; if (typeof lucide !== 'undefined') lucide.createIcons(); }
             document.querySelectorAll('.theme-dropdown-btn').forEach(b => b.classList.remove('active'));
             document.querySelector(`.theme-dropdown-btn[data-theme="${theme}"]`)?.classList.add('active');
-            initAnimations();
             updateHeaderBackground();
         }
+
+        // --- Scroll Reveal ---
+        function initScrollReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelector('#aprendelo-tabs-nav')?.classList.add('reveal');
+            document.querySelector('#aprendelo-main-content')?.classList.add('reveal');
+            document.querySelector('#final-cta')?.classList.add('reveal');
+
+            reveals.forEach(r => observer.observe(r));
+            document.querySelectorAll('.reveal').forEach(r => observer.observe(r));
+        }
         
-        // --- Lógica de Whitelist ---
+
+        // --- Interactividad Mockups ---
+        function initChallengePathInteraction() {
+            const nodes = document.querySelectorAll('.level-node-mockup');
+            const toast = document.getElementById('toast-notification');
+            let toastMsg = toast ? toast.querySelector('#toast-message') : document.getElementById('toast-message');
+            
+            if (!toastMsg && toast) {
+                 const span = document.createElement('span');
+                 span.id = 'toast-message';
+                 toast.appendChild(span);
+                 toastMsg = span;
+            }
+
+            let toastTimeout;
+
+            nodes.forEach(node => {
+                node.addEventListener('click', () => {
+                    const status = node.dataset.status;
+                    const levelName = node.dataset.level || "Nivel";
+                    
+                    if (toastMsg) {
+                         toastMsg.textContent = `${levelName} - ${status}`;
+                         toast.classList.add('visible');
+                         
+                         if (toastTimeout) clearTimeout(toastTimeout);
+                         toastTimeout = setTimeout(() => {
+                             toast.classList.remove('visible');
+                         }, 3000);
+                    }
+                });
+            });
+        }
+        
+        // --- Menú Móvil ---
+        function initMobileMenu() {
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const panel = document.getElementById('mobile-menu-panel');
+            let closeBtn = document.getElementById('mobile-menu-close-btn');
+            
+            if (!closeBtn && panel) {
+                closeBtn = document.createElement('button');
+                closeBtn.innerHTML = '<i data-lucide="x" class="w-8 h-8"></i>';
+                closeBtn.className = "absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800";
+                panel.prepend(closeBtn);
+                lucide.createIcons();
+            }
+            
+            if (!menuBtn || !panel) return;
+
+            const toggleMenu = (show) => {
+                if (show) {
+                    panel.classList.remove('hidden');
+                    setTimeout(() => panel.classList.add('open'), 10);
+                    document.body.classList.add('no-scroll');
+                } else {
+                    panel.classList.remove('open');
+                    setTimeout(() => panel.classList.add('hidden'), 300);
+                    document.body.classList.remove('no-scroll');
+                }
+            };
+
+            menuBtn.addEventListener('click', () => toggleMenu(true));
+            if (closeBtn) closeBtn.addEventListener('click', () => toggleMenu(false));
+            
+            panel.querySelectorAll('a, button').forEach(el => {
+                el.addEventListener('click', () => toggleMenu(false));
+            });
+        }
+        
+        // --- Utilidades Generales ---
+        function updateHeaderBackground() { 
+            const header = document.querySelector('header'); if (!header) return; 
+            const headerContent = header.firstElementChild; if (!headerContent) return; 
+            const threshold = 50; 
+            const scrolled = window.scrollY > threshold; 
+            const isDark = document.documentElement.classList.contains('dark'); 
+            const bgColor = scrolled ? (isDark ? 'rgba(10,10,10,0.8)' : 'rgba(255,255,255,0.8)') : (isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)'); 
+            headerContent.style.backgroundColor = bgColor; 
+        }
+        function initHeaderScrollBehavior() { window.addEventListener('scroll', updateHeaderBackground, { passive: true }); updateHeaderBackground(); }
+        function initNavigation() { 
+            const funcionesBtn = document.getElementById('nav-funciones-btn');
+            const funcionesMenu = document.getElementById('nav-funciones-menu');
+
+            if (funcionesBtn && funcionesMenu) {
+                const toggleFuncionesDropdown = (e) => {
+                    e.stopPropagation();
+                    const isVisible = !funcionesMenu.classList.contains('invisible');
+                    if (isVisible) {
+                        funcionesMenu.classList.add('opacity-0', 'scale-95', 'invisible');
+                    } else {
+                        document.getElementById('theme-dropdown-menu')?.classList.add('opacity-0', 'scale-95', 'invisible');
+                        document.getElementById('mobile-menu-panel')?.classList.remove('open'); 
+                        funcionesMenu.classList.remove('opacity-0', 'scale-95', 'invisible');
+                    }
+                };
+                 if (funcionesBtn.dataset.navListenerAttached !== 'true') {
+                     funcionesBtn.addEventListener('click', toggleFuncionesDropdown);
+                     funcionesBtn.dataset.navListenerAttached = 'true';
+                 }
+            }
+            
+             if (!isClickOutsideListenerAdded) {
+                document.addEventListener('click', (e) => {
+                    const themeDropdown = document.getElementById('theme-dropdown-menu');
+                    const themeButton = document.getElementById('theme-main-btn');
+                    const funcionesDropdown = document.getElementById('nav-funciones-menu');
+                    const funcionesButton = document.getElementById('nav-funciones-btn');
+
+                    if (themeDropdown && !themeDropdown.classList.contains('invisible') && themeButton && !themeButton.contains(e.target) && !themeDropdown.contains(e.target)) {
+                        themeDropdown.classList.add('opacity-0', 'scale-95', 'invisible');
+                    }
+                     if (funcionesDropdown && !funcionesDropdown.classList.contains('invisible') && funcionesButton && !funcionesButton.contains(e.target) && !funcionesDropdown.contains(e.target)) {
+                        funcionesDropdown.classList.add('opacity-0', 'scale-95', 'invisible');
+                    }
+                });
+                isClickOutsideListenerAdded = true;
+            }
+        }
+        
+        function generateParticlesSlow() { const container = document.querySelector('#nav-portafolio-ai-link .particles-container'); if (!container) return; const particleCount = 6; const colors = ['var(--particle-color-1)', 'var(--particle-color-2)', 'var(--particle-color-3)']; const totalDuration = 5; const particleAnimationDuration = 2.5; container.innerHTML = ''; for (let i = 0; i < particleCount; i++) { const particle = document.createElement('div'); particle.classList.add('particle'); const baseStartPercentage = 0.45; const randomOffsetPercentage = Math.random() * 0.1; const startDelay = (baseStartPercentage + randomOffsetPercentage); particle.style.setProperty('--particle-delay', startDelay.toFixed(2)); particle.style.setProperty('--particle-x', `${Math.random() * 30 - 15}px`); particle.style.setProperty('--particle-y', `${Math.random() * -5 - 3}px`); particle.style.setProperty('--particle-color', colors[Math.floor(Math.random() * colors.length)]); particle.style.animationDuration = `${particleAnimationDuration}s`; particle.style.animationDelay = `${startDelay * totalDuration}s`; container.appendChild(particle); } }
         function initWhitelistModal() {
              const modal = document.getElementById('whitelist-modal'); if (!modal) return;
              const closeModalBtn = document.getElementById('close-modal-btn');
-             const triggerButtons = document.querySelectorAll('#header-whitelist-btn, .animated-whitelist-btn, .modal-trigger-btn, #footer-whitelist-btn, #mobile-whitelist-btn');
+             const triggerButtons = document.querySelectorAll('#header-whitelist-btn, .animated-whitelist-btn, .modal-trigger-btn, #mobile-whitelist-btn');
              triggerButtons.forEach(btn => { 
-                if (btn && btn.dataset.modalListenerAttached !== 'true') { 
+                if (btn.dataset.modalListenerAttached !== 'true') { 
                     btn.addEventListener('click', (e) => {
-                        if (e.currentTarget.tagName === 'A' && e.currentTarget.href && !e.currentTarget.href.endsWith('#') && e.currentTarget.target !== '_blank') {
-                             return; 
-                        }
+                        if (e.currentTarget.tagName === 'A' && e.currentTarget.href && !e.currentTarget.href.endsWith('#') && e.currentTarget.target !== '_blank') return;
                         openModal(e);
                     }); 
                     btn.dataset.modalListenerAttached = 'true'; 
                 } 
              });
-             if (closeModalBtn && closeModalBtn.dataset.modalListenerAttached !== 'true') { closeModalBtn.addEventListener('click', closeModal); closeModalBtn.dataset.modalListenerAttached = 'true'; }
-             if (modal.dataset.modalListenerAttached !== 'true') { modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); }); modal.dataset.modalListenerAttached = 'true'; }
+             if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+             if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
         }
         
-        function listenToWhitelistCount() {
-             if (!db || !whitelistCol || !isAuthReady) { console.warn("listenToWhitelistCount: DB/Auth no listo."); return; }
-             const fomoCounterEl = document.getElementById('fomo-counter'); const countEl = document.getElementById('whitelist-count'); if (!fomoCounterEl || !countEl) { console.error("Contador FOMO no encontrado."); return; }
-             try {
-                 onSnapshot(whitelistCol, (snapshot) => {
-                     const count = snapshot.size; countEl.textContent = count > 0 ? count.toLocaleString('es') : '0'; fomoCounterEl.classList.add('visible');
-                 }, (error) => { console.error("Error onSnapshot:", error); fomoCounterEl.classList.add('visible'); countEl.textContent = 'Error'; });
-             } catch (error) { console.error("Error setup onSnapshot:", error); fomoCounterEl.classList.add('visible'); countEl.textContent = 'Error'; }
-        }
-        
-        function initWhitelistForms() { const modalForm = document.getElementById('whitelist-form-modal'); if (modalForm) modalForm.addEventListener('submit', handleWhitelistSubmit); }
-        
+        function initWhitelistForms() { const f = document.getElementById('whitelist-form-modal'); if(f) f.addEventListener('submit', handleWhitelistSubmit); }
+
         async function handleWhitelistSubmit(e) {
-             e.preventDefault(); if (!db || !whitelistCol || !isAuthReady || !auth.currentUser) { setMessage('Error: Auth/DB no lista.', 'error'); return; }
-             const emailInput = document.getElementById('email-input-modal'); const submitBtn = document.getElementById('submit-btn-modal'); const email = emailInput.value.trim(); if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setMessage('Correo inválido.', 'error'); return; }
-             const originalBtnText = submitBtn.textContent; submitBtn.disabled = true; submitBtn.textContent = 'Enviando...'; setMessage('', 'clear');
+             e.preventDefault(); if (!db || !isAuthReady) return;
+             const emailInput = document.getElementById('email-input-modal');
+             const submitBtn = document.getElementById('submit-btn-modal');
+             if (!emailInput) return;
+             const email = emailInput.value;
+             
+             const originalBtnText = submitBtn ? submitBtn.textContent : 'Anotarme';
+             if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Enviando...'; }
+             
+             const messageEl = document.getElementById('form-message-modal');
+             if(messageEl) messageEl.textContent = '';
+
              try {
-                 const q = query(whitelistCol, where("email", "==", email)); const querySnapshot = await getDocs(q); if (!querySnapshot.empty) { throw new Error('Correo ya registrado.'); }
-                 // (NUEVO) Fuente actualizada
-                 await addDoc(whitelistCol, { email: email, timestamp: serverTimestamp(), source: 'modal-chats' }); 
-                 setMessage('¡Gracias! Estás en la lista.', 'success'); emailInput.value = ''; setTimeout(closeModal, 2000);
-             } catch (error) { console.error("Error whitelist:", error); setMessage(error.message || 'Error al registrar.', 'error'); }
-             finally { submitBtn.disabled = false; submitBtn.textContent = originalBtnText; }
+                 const q = query(whitelistCol, where("email", "==", email)); 
+                 const querySnapshot = await getDocs(q); 
+                 if (!querySnapshot.empty) { throw new Error('Correo ya registrado.'); }
+                 
+                 await addDoc(whitelistCol, { email: email, timestamp: serverTimestamp(), source: 'chats' }); 
+                 
+                 if(messageEl) {
+                     messageEl.textContent = '¡Gracias! Estás en la lista.';
+                     messageEl.style.color = 'var(--success-color)';
+                 }
+                 emailInput.value = ''; 
+                 setTimeout(closeModal, 2000);
+             } catch (err) { 
+                 console.error(err);
+                 if(messageEl) {
+                     messageEl.textContent = err.message || 'Error al registrar.';
+                     messageEl.style.color = 'var(--accent-red)';
+                 }
+             } finally {
+                 if (submitBtn) {
+                     submitBtn.disabled = false;
+                     submitBtn.textContent = originalBtnText;
+                 }
+             }
         }
-        
-        function setMessage(message, type) { const messageEl = document.getElementById('form-message-modal'); if (!messageEl) return; messageEl.textContent = message; messageEl.style.color = type === 'success' ? 'var(--success-color)' : (type === 'error' ? 'var(--accent-red)' : 'inherit'); }
-        
-        // --- Animaciones y UI ---
+
+        // --- Countdown (10 Dic 2025) ---
         function initCountdown() {
-             const ids = ['modal']; const labels = ['days', 'hours', 'minutes', 'seconds']; const elements = {};
-             ids.forEach(id => { elements[id] = {}; labels.forEach(l => elements[id][l] = document.getElementById(`${id}-${l}`)); });
-             if (!elements['modal']['days']) return; // Salir si no hay elementos
-             const targetDate = new Date('2025-11-24T00:00:00').getTime();
-             const interval = setInterval(() => {
-                 const distance = targetDate - new Date().getTime(); if (distance < 0) { clearInterval(interval); ids.forEach(id => { const cont = document.getElementById(`${id}-countdown-container`); if(cont) cont.innerHTML = '<p class="text-xl font-bold text-blue-500">¡Lanzamiento iniciado!</p>'; }); return; }
-                 const d=Math.floor(distance/864e5), h=Math.floor((distance%864e5)/36e5), m=Math.floor((distance%36e5)/6e4), s=Math.floor((distance%6e4)/1000);
-                 const times = { days: d, hours: h, minutes: m, seconds: s };
-                 ids.forEach(id => { labels.forEach(l => { if(elements[id]?.[l]) elements[id][l].textContent = String(times[l]).padStart(2, '0'); }); });
-             }, 1000);
-        }
-
-        let starfieldAnimationId = null;
-        function initAnimations(){
-             /* (ELIMINADO) Lógica de Starfield */
-        }
-        /* (ELIMINADO) function initStarfield() { ... } */
-        
-        function updateHeaderBackground() { const header = document.querySelector('header'); if (!header) return; const headerContent = header.firstElementChild; if (!headerContent) return; const threshold = 50; const scrolled = window.scrollY > threshold; const isDark = document.documentElement.classList.contains('dark'); const bgColor = scrolled ? (isDark ? 'rgba(10,10,10,0.8)' : 'rgba(255,255,255,0.8)') : (isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)'); headerContent.style.backgroundColor = bgColor; }
-        
-        function initHeaderScrollBehavior() { window.addEventListener('scroll', updateHeaderBackground, { passive: true }); updateHeaderBackground(); }
-        
-        function initNavigation() {
-            const funcionesBtn = document.getElementById('nav-funciones-btn'); 
-            const funcionesMenu = document.getElementById('nav-funciones-menu');
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenuPanel = document.getElementById('mobile-menu-panel');
-            
-            // Lógica Dropdown Escritorio
-            if (funcionesBtn && funcionesMenu) {
-                const toggleFuncionesDropdown = (e) => { 
-                    e.stopPropagation(); 
-                    const isVisible = !funcionesMenu.classList.contains('invisible'); 
-                    document.getElementById('theme-dropdown-menu')?.classList.add('opacity-0', 'scale-95', 'invisible'); 
-                    if (isVisible) { 
-                        funcionesMenu.classList.add('opacity-0', 'scale-95', 'invisible'); 
-                    } else { 
-                        funcionesMenu.classList.remove('opacity-0', 'scale-95', 'invisible'); 
-                    } 
-                };
-                if (funcionesBtn.dataset.navListenerAttached !== 'true') { 
-                    funcionesBtn.addEventListener('click', toggleFuncionesDropdown); 
-                    funcionesBtn.dataset.navListenerAttached = 'true'; 
-                }
-            } else { console.warn("Dropdown 'Funciones' no encontrado."); }
-
-            // Lógica Menú Móvil
-            if (mobileMenuBtn && mobileMenuPanel) {
-                const openMenu = (e) => {
-                    e.stopPropagation();
-                    mobileMenuPanel.classList.add('open');
-                    mobileMenuBtn.innerHTML = `<i data-lucide="x" class="w-6 h-6"></i>`;
-                    lucide.createIcons();
-                };
-
-                const closeMenu = () => {
-                    mobileMenuPanel.classList.remove('open');
-                    mobileMenuBtn.innerHTML = `<i data-lucide="menu" class="w-6 h-6"></i>`;
-                    lucide.createIcons();
-                };
-                
-                mobileMenuBtn.addEventListener('click', (e) => {
-                    if (mobileMenuPanel.classList.contains('open')) {
-                        closeMenu();
-                    } else {
-                        openMenu(e);
-                    }
-                });
-                
-                // Cerrar al hacer clic en un enlace
-                mobileMenuPanel.querySelectorAll('a, .modal-trigger-btn').forEach(link => {
-                    link.addEventListener('click', () => {
-                        // No cerrar si el enlace es modal (ya que openModal se encarga)
-                        if (!link.classList.contains('modal-trigger-btn')) {
-                            closeMenu();
-                        }
-                    });
-                });
-            }
-
-            if (!isClickOutsideListenerAdded) {
-                document.addEventListener('click', (e) => {
-                    // Cerrar ambos menús si se hace clic fuera
-                    document.querySelectorAll('.nav-dropdown-menu, .theme-dropdown-menu').forEach(menu => {
-                         const btnId = menu.id.replace('-menu', '-btn');
-                         const btn = document.getElementById(btnId);
-                         if (menu && !menu.classList.contains('invisible') && btn && !btn.contains(e.target) && !menu.contains(e.target)) {
-                             menu.classList.add('opacity-0', 'scale-95', 'invisible');
-                         }
-                    });
-
-                    // Cerrar menú móvil si se hace clic fuera de él
-                    if (mobileMenuPanel && mobileMenuPanel.classList.contains('open') && !mobileMenuBtn.contains(e.target) && !mobileMenuPanel.contains(e.target)) {
-                         closeMenu();
-                    }
-                });
-                isClickOutsideListenerAdded = true;
-            }
-
-            if (funcionesMenu) { funcionesMenu.querySelectorAll('a').forEach(item => { if (item.dataset.navItemListener !== 'true') { item.addEventListener('click', (e) => { if (!item.href || item.href.endsWith('#')) { funcionesMenu.classList.add('opacity-0', 'scale-95', 'invisible'); } }); item.dataset.navItemListener = 'true'; } }); }
+            const targetDate = new Date('2025-12-10T00:00:00').getTime();
+            const ids = ['modal']; const labels = ['days', 'hours', 'minutes', 'seconds']; const elements = {};
+            ids.forEach(id => { elements[id] = {}; labels.forEach(l => elements[id][l] = document.getElementById(`${id}-${l}`)); });
+            const interval = setInterval(() => {
+                const distance = targetDate - new Date().getTime(); if (distance < 0) { clearInterval(interval); return; }
+                const d=Math.floor(distance/864e5), h=Math.floor((distance%864e5)/36e5), m=Math.floor((distance%36e5)/6e4), s=Math.floor((distance%6e4)/1000);
+                const times = { days: d, hours: h, minutes: m, seconds: s };
+                ids.forEach(id => { labels.forEach(l => { if(elements[id] && elements[id][l]) elements[id][l].textContent = String(times[l]).padStart(2, '0'); }); });
+            }, 1000);
         }
         
-        function generateParticlesSlow() { const container = document.querySelector('#nav-portafolio-ai-link .particles-container'); if (!container) return; const particleCount = 6; const colors = ['var(--particle-color-1)', 'var(--particle-color-2)', 'var(--particle-color-3)']; const totalDuration = 5; const particleAnimationDuration = 2.5; container.innerHTML = ''; for (let i = 0; i < particleCount; i++) { const particle = document.createElement('div'); particle.classList.add('particle'); const baseStartPercentage = 0.45; const randomOffsetPercentage = Math.random() * 0.1; const startDelay = (baseStartPercentage + randomOffsetPercentage); particle.style.setProperty('--particle-delay', startDelay.toFixed(2)); particle.style.setProperty('--particle-x', `${Math.random() * 30 - 15}px`); particle.style.setProperty('--particle-y', `${Math.random() * -5 - 3}px`); particle.style.setProperty('--particle-color', colors[Math.floor(Math.random() * colors.length)]); particle.style.animationDuration = `${particleAnimationDuration}s`; particle.style.animationDelay = `${startDelay * totalDuration}s`; container.appendChild(particle); } }
-
-        // --- (NUEVO) Lógica para Animación del Chat Mockup ---
+        // --- Chat Mockup Animation (NUEVO & MÁS RÁPIDO) ---
         function initChatMockupAnimation() {
-            const messageContainer = document.querySelector('.chat-mockup-messages');
-            if (!messageContainer) return;
+            const container = document.querySelector('.chat-mockup-messages');
+            if (!container) return;
             
-            const messages = Array.from(messageContainer.querySelectorAll('.message-bubble'));
-            // Ocultar todos al inicio
-            messages.forEach(msg => {
-                msg.style.opacity = '0';
-                msg.style.transform = 'translateY(10px)';
-            });
+            const messages = [
+                { type: 'other', name: 'María', avatar: 'M', avatarColor: '#d946ef', text: 'Ojo con <span class="mention">$NVDA</span>, el análisis de Sentinel me marcó "Positivo" por la noticia de Blackwell.', reaction: '🔥 1' },
+                { type: 'me', name: 'Tú', avatar: 'T', avatarColor: '#3b82f6', text: '<span class="mention">@María</span>, buena vista. Acabo de compartir mi portafolio "Tech". Miren el %.', share: { title: 'Portafolio "Tech"', desc: 'Compartido por @Tú' } },
+                { type: 'other', name: 'Juan', avatar: 'J', avatarColor: '#f59e0b', text: 'Wow, tu portafolio va +15% en 7 días. 🥇<br>Oigan, <span class="mention is-ai">@IA</span> ¿Cuál es el soporte clave para $BTC?' },
+                { type: 'other', name: 'IA de Maverlang', avatar: '<i data-lucide="brain-circuit" class="w-5 h-5"></i>', avatarClass: 'is-ai', text: 'El soporte clave para $BTC está en <span class="mention">$58,500</span>. Se observa debilidad en el volumen de compra.' }
+            ];
+            
+            container.innerHTML = ''; // Limpiar
 
-            let delay = 500; // Inicio rápido
+            // Reducidos tiempos en un 25% aprox
+            let delay = 375; 
+            
             messages.forEach((msg, index) => {
-                const reaction = msg.querySelector('.reactions-container');
-                let reactionDelay = 1500; // Delay por defecto para la reacción
-
-                if (reaction) {
-                     reaction.style.opacity = '0';
-                     reaction.style.transform = 'translateY(5px)';
+                // Crear elementos
+                const bubble = document.createElement('div');
+                bubble.className = `message-bubble is-${msg.type}`;
+                
+                // Avatar
+                const avatar = document.createElement('div');
+                avatar.className = `avatar ${msg.avatarClass || ''}`;
+                avatar.style.backgroundColor = msg.avatarClass ? '' : msg.avatarColor;
+                avatar.innerHTML = msg.avatar;
+                
+                // Content Wrapper
+                const mainContent = document.createElement('div');
+                mainContent.className = 'message-main-content';
+                
+                // Name
+                const name = document.createElement('p');
+                name.className = 'sender-name';
+                if(msg.type === 'me' || msg.avatarClass === 'is-ai') name.style.color = 'var(--accent-blue)';
+                name.textContent = msg.name;
+                
+                // Text Content
+                const textDiv = document.createElement('div');
+                textDiv.className = 'content';
+                if(msg.text) textDiv.innerHTML = `<p>${msg.text}</p>`;
+                
+                // Portfolio Share (si existe)
+                if (msg.share) {
+                    const shareDiv = document.createElement('div');
+                    shareDiv.className = 'portfolio-share';
+                    shareDiv.innerHTML = `<div class="icon"><i data-lucide="briefcase" class="w-5 h-5"></i></div><div class="text"><h5>${msg.share.title}</h5><p>${msg.share.desc}</p></div>`;
+                    textDiv.appendChild(shareDiv);
                 }
 
+                mainContent.appendChild(name);
+                mainContent.appendChild(textDiv);
+                
+                // Reaction (si existe)
+                let reactionDiv;
+                if (msg.reaction) {
+                    reactionDiv = document.createElement('div');
+                    reactionDiv.className = 'reactions-container';
+                    reactionDiv.innerHTML = `<div class="reaction-chip">${msg.reaction}</div>`;
+                    mainContent.appendChild(reactionDiv);
+                }
+
+                bubble.appendChild(avatar);
+                bubble.appendChild(mainContent);
+                container.appendChild(bubble);
+                
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                
+                // Animación de aparición
                 setTimeout(() => {
-                    msg.style.opacity = '1';
-                    msg.style.transform = 'translateY(0)';
+                    bubble.style.opacity = '1';
+                    bubble.style.transform = 'translateY(0)';
                     
-                    // Si este mensaje tiene una reacción, mostrarla después
-                    if (reaction) {
-                        // Un delay específico para la primera reacción
-                        if (index === 0) reactionDelay = 2300; 
-                        
+                    if (reactionDiv) {
+                        let reactionDelay = 750; // Reducido de 1000
                         setTimeout(() => {
-                            reaction.style.opacity = '1';
-                            reaction.style.transform = 'translateY(0)';
+                            reactionDiv.style.opacity = '1';
+                            reactionDiv.style.transform = 'translateY(0)';
                         }, reactionDelay);
                     }
                 }, delay);
 
-                // Incrementar el delay para el *siguiente* mensaje
-                if (index === 0) delay += 1800; // Pausa después del primer mensaje
-                else if (index === 2) delay += 1500; // Pausa antes de la respuesta de la IA
-                else delay += 1200;
+                // Tiempos de espera para el siguiente mensaje (Reducidos ~25%)
+                if (index === 0) delay += 1875; // Antes 2500
+                else if (index === 1) delay += 1500; // Antes 2000
+                else if (index === 2) delay += 1125; // Antes 1500
+                else delay += 2250; // Antes 3000
             });
         }
 
@@ -1553,7 +1027,7 @@
         function initTypingAnimation() { /* No aplica aquí */ }
         function initChatInputBehavior() { /* No aplica aquí */ }
         function initFauxChatAndLLM() { /* No aplica aquí */ }
-        function initAprendeloTabs() { /* No aplica aquí */ }
+        function initAprendeloTabs() {}
 
         // Iniciar la aplicación
         initApp();
