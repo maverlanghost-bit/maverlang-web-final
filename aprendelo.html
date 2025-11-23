@@ -325,9 +325,10 @@
         }
         #toast-notification.visible { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
 
-        .topic-tag-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-top: 2rem; }
-        .topic-tag { font-size: 0.75rem; font-weight: 500; padding: 0.4rem 0.8rem; border-radius: 9999px; background-color: var(--bg-main); border: 1px solid var(--border-main); }
-        @media(min-width: 768px){ .topic-tag { font-size: 0.875rem; padding: 0.5rem 1rem; } }
+        /* ESTILOS DE TAGS RESTAURADOS A DETALLE */
+        .topic-tag-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: 2rem; }
+        .topic-tag { font-size: 0.875rem; font-weight: 500; padding: 0.5rem 1rem; border-radius: 9999px; background-color: var(--bg-main); border: 1px solid var(--border-main); transition: all 0.2s ease; }
+        .topic-tag:hover { background-color: rgba(var(--accent-color-rgb), 0.1); border-color: var(--accent-color); color: var(--accent-color); }
 
 </style>
 </head>
@@ -562,14 +563,24 @@
                                 </div>
                             </div>
 
+                            <!-- BIBLIOTECA EN EXPANSIÓN RESTAURADA -->
                             <div class="mt-12 md:mt-24">
                                 <div class="text-center mb-8">
                                     <h2 class="text-2xl md:text-4xl font-bold tracking-tight">Biblioteca en Expansión</h2>
                                 </div>
                                 <div class="topic-tag-list max-w-4xl mx-auto">
-                                    <span class="topic-tag">Inversión en Bolsa</span><span class="topic-tag">Análisis Técnico</span><span class="topic-tag">Valoración</span>
-                                    <span class="topic-tag">Criptomonedas</span><span class="topic-tag">Derivados</span><span class="topic-tag">Macroeconomía</span>
-                                    <span class="topic-tag">Gestión de Portafolio</span><span class="topic-tag">Psicología</span><span class="topic-tag">Finanzas Personales</span>
+                                    <span class="topic-tag">Inversión en Bolsa</span>
+                                    <span class="topic-tag">Análisis Técnico</span>
+                                    <span class="topic-tag">Análisis Fundamental</span>
+                                    <span class="topic-tag">Valoración de Empresas</span>
+                                    <span class="topic-tag">Criptomonedas y Blockchain</span>
+                                    <span class="topic-tag">Derivados Financieros</span>
+                                    <span class="topic-tag">Opciones y Futuros</span>
+                                    <span class="topic-tag">Macroeconomía</span>
+                                    <span class="topic-tag">Gestión de Portafolio</span>
+                                    <span class="topic-tag">Psicología del Trading</span>
+                                    <span class="topic-tag">Finanzas Personales</span>
+                                    <span class="topic-tag">Inversión Inmobiliaria</span>
                                 </div>
                             </div>
                         </div>
