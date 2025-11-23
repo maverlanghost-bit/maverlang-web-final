@@ -3,33 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- TÍTULO NUEVO -->
     <title>Maverlang - Arena IA | Donde Compiten las Estrategias</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Chart.js para los gráficos del mockup -->
+    <!-- Chart.js para los gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
         :root {
             --bg-light: #f4f4f5; --text-light: #18181b; --border-light: #e4e4e7;
             --bg-dark: #0A0A0A; --text-dark: #f9fafb; --border-dark: #27272a;
-            /* --bg-stars: #000000; (ELIMINADO) */
             --accent-blue: #3b82f6;
             --accent-red: #ef4444;
             --success-color: #22c55e;
             --warning-color: #f59e0b; 
-
             --bg-active-theme-light: #e4e4e7;
             --bg-active-theme-dark: #27272a;
-            --particle-color-1: rgba(59, 130, 246, 0.9);
-            --particle-color-2: rgba(96, 165, 250, 0.7);
-            --particle-color-3: rgba(255, 255, 255, 0.8);
-            
-            /* Asignar color de acento de la página (Azul) */
             --accent-color: var(--accent-blue); 
             --accent-color-rgb: 59, 130, 246;
         }
@@ -39,7 +31,6 @@
         html:not(.dark) {
             --bg-main: var(--bg-light); --text-main: var(--text-light); --border-main: var(--border-light);
         }
-        /* html.stars-theme (ELIMINADO) */
 
         html { scroll-behavior: smooth; }
         body {
@@ -49,13 +40,21 @@
             transition: background-color 0.5s ease, color 0.5s ease;
             overflow-y: auto;
         }
+        
+        /* Scroll Lock & Reveal */
+        body.no-scroll { overflow: hidden; }
+        .reveal {
+            opacity: 0; transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+            will-change: opacity, transform;
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
         section.hero-section {
             padding-bottom: 5rem;
             position: relative;
             z-index: 10;
         }
-
-        /* #starfield (ELIMINADO) */
 
         .background-logo-text {
             font-size: clamp(8rem, 25vw, 22rem); font-weight: 800; letter-spacing: -0.05em;
@@ -65,19 +64,16 @@
         html.dark .background-logo-text { color: rgba(var(--accent-color-rgb), 0.03); }
         html:not(.dark) .background-logo-text { color: rgba(var(--accent-color-rgb), 0.05); }
 
-
-        .countdown-box, .form-container {
+        .countdown-box, .form-container, .modal-content, .feature-card {
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-radius: 1rem;
         }
-        html.dark .countdown-box, html.dark .form-container {
-            background: rgba(30, 30, 30, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        html.dark .countdown-box, html.dark .form-container, html.dark .modal-content, html.dark .feature-card {
+            background: rgba(30, 30, 30, 0.7); border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        html:not(.dark) .countdown-box, html:not(.dark) .form-container {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid var(--border-light);
+        html:not(.dark) .countdown-box, html:not(.dark) .form-container, html:not(.dark) .modal-content, html:not(.dark) .feature-card {
+            background: rgba(255, 255, 255, 0.7); border: 1px solid var(--border-light);
         }
 
         .theme-main-btn, .theme-dropdown-btn {
@@ -98,20 +94,6 @@
         #fomo-counter.visible { opacity: 1; }
         #whitelist-count { display: inline-block; color: var(--accent-blue); font-weight: 700; padding: 0 0.25rem; min-width: 1em; }
 
-        .modal-content, .feature-card {
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 1rem;
-        }
-        html.dark .modal-content, html.dark .feature-card {
-            background: rgba(30, 30, 30, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        html:not(.dark) .modal-content, html:not(.dark) .feature-card {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid var(--border-light);
-        }
-
         #whitelist-modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
         #whitelist-modal .modal-content { transition: transform 0.3s ease; }
 
@@ -119,16 +101,9 @@
             0%, 100% { box-shadow: 0 0 12px rgba(var(--accent-color-rgb), 0.4); transform: scale(1); }
             50% { box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.8); transform: scale(1.03); }
         }
-        .animated-whitelist-btn { 
-            animation: pulse-glow 2.5s infinite ease-in-out; 
-            background-color: var(--accent-color); 
-        }
-        #header-whitelist-btn {
-            background-color: var(--accent-blue); 
-            animation: none;
-            box-shadow: none;
-        }
-         #header-whitelist-btn:hover { background-color: #2563eb; }
+        .animated-whitelist-btn { animation: pulse-glow 2.5s infinite ease-in-out; background-color: var(--accent-color); }
+        #header-whitelist-btn { background-color: var(--accent-blue); animation: none; box-shadow: none; }
+        #header-whitelist-btn:hover { background-color: #2563eb; }
 
         .nav-dropdown-menu, .theme-dropdown-menu { position: absolute; top: calc(100% + 1rem); left: 0; width: 220px; padding: 0.5rem; border-radius: 1rem; z-index: 100; transition: all 0.2s ease-out; transform-origin: top left; background-color: var(--bg-main); }
         .theme-dropdown-menu { width: auto; min-width: 50px; left: auto; right: 0; transform-origin: top right; display: flex; flex-direction: column; gap: 0.25rem; }
@@ -137,15 +112,8 @@
         .nav-dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 500; border-radius: 0.5rem; transition: background-color 0.2s ease; cursor: pointer; }
         .nav-dropdown-item:hover { background-color: rgba(120,120,120,0.1); }
         .nav-dropdown-item i { opacity: 0.7; }
-        .nav-link-active { 
-            color: var(--accent-color); 
-            font-weight: 600; 
-        } 
-        .nav-dropdown-item.active { 
-            color: var(--accent-color); 
-            font-weight: 600; 
-            background-color: rgba(var(--accent-color-rgb), 0.1);
-        } 
+        .nav-link-active { color: var(--accent-color); font-weight: 600; } 
+        .nav-dropdown-item.active { color: var(--accent-color); font-weight: 600; background-color: rgba(var(--accent-color-rgb), 0.1); } 
 
         #nav-portafolio-ai-link { position: relative; overflow: visible; padding: 0.25rem 0.5rem; cursor: pointer; }
         #nav-portafolio-ai-link span { position: relative; z-index: 1; display: inline-block; animation: text-color-slow-pulse 5s ease-in-out infinite; }
@@ -154,420 +122,129 @@
         @keyframes text-color-slow-pulse { 0%, 100% { color: inherit; } 40% { color: var(--accent-blue); } 60% { color: var(--accent-blue); } }
         @keyframes particle-fall { 0% { opacity: 0; transform: translate(-50%, 0) scale(0.3); } 50% { opacity: 1; transform: translate(calc(-50% + var(--particle-x)), calc(var(--particle-y) - 5px)) scale(1); } 100% { opacity: 0; transform: translate(calc(-50% + var(--particle-x) * 1.2), calc(var(--particle-y) - 15px)) scale(0); } }
 
-        /* --- (NUEVO) Fix de Responsividad Móvil --- */
+        /* Fix de Responsividad Móvil */
         @media (max-width: 767px) {
-            /* Reducir títulos en móvil para mejor ajuste */
-            h1 { font-size: 3rem !important; line-height: 1.1 !important; } /* 48px */
-            h2 { font-size: 2.25rem !important; line-height: 1.1 !important; } /* 36px */
-
-            /* Ajustar selector de LLM para que no se vea tan apretado */
-            .llm-selector-btn {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.8rem;
-            }
+            h1 { font-size: 3rem !important; line-height: 1.1 !important; }
+            h2 { font-size: 2.25rem !important; line-height: 1.1 !important; }
+            .llm-selector-btn { padding: 0.5rem 0.75rem; font-size: 0.8rem; }
         }
 
-        /* ================================================= */
-        /* == ESTILOS PARA PORTAFOLIO AI (MEJORADOS) == */
-        /* ================================================= */
-        
+        /* Arena Styles */
         .arena-container {
-            border: 1px solid var(--border-main);
-            border-radius: 1rem;
-            background-color: var(--bg-main);
-            overflow: hidden;
-            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-main); border-radius: 1rem; background-color: var(--bg-main); overflow: hidden; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1);
         }
-        html.dark .arena-container {
-            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.3);
-        }
+        html.dark .arena-container { box-shadow: 0 20px 40px -15px rgba(0,0,0,0.3); }
         
-        /* (NUEVO) Header para la Arena */
         .arena-container-header {
-            display: flex;
-            flex-direction: column; /* Stack en móvil */
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border-main);
+            display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-main);
         }
-        .arena-container-header h3 {
-            font-size: 1.25rem; /* text-xl */
-            font-weight: 700;
-            margin-bottom: 0.75rem; /* Espacio en móvil */
-        }
-        @media (min-width: 768px) { /* md: */
-            .arena-container-header {
-                flex-direction: row; /* Lado a lado en desktop */
-            }
-            .arena-container-header h3 {
-                margin-bottom: 0;
-            }
-        }
+        .arena-container-header h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; }
+        @media (min-width: 768px) { .arena-container-header { flex-direction: row; } .arena-container-header h3 { margin-bottom: 0; } }
 
-        /* Selector de LLM (Ahora parte del header) */
-        .llm-selector-bar {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap; 
-            /* padding: 0.75rem; (ELIMINADO) */
-            gap: 0.5rem;
-            /* border-bottom: 1px solid var(--border-main); (ELIMINADO) */
-        }
+        /* LLM Selector Styles */
+        .llm-selector-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.5rem; }
         .llm-selector-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 99px;
-            border: 1px solid var(--border-main);
-            font-weight: 600;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            opacity: 0.7;
-            background-color: transparent;
+            display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem;
+            border-radius: 9999px; border: 1px solid var(--border-main);
+            font-weight: 600; font-size: 0.875rem; cursor: pointer;
+            transition: all 0.2s ease; opacity: 0.7; background-color: transparent;
         }
-        .llm-selector-btn:hover {
-            opacity: 1;
-            background-color: rgba(var(--accent-color-rgb), 0.05);
-        }
+        .llm-selector-btn:hover { opacity: 1; background-color: rgba(var(--accent-color-rgb), 0.05); }
         .llm-selector-btn.active {
-            opacity: 1;
-            color: var(--accent-color);
+            opacity: 1; color: var(--accent-color);
             background-color: rgba(var(--accent-color-rgb), 0.1);
             border-color: rgba(var(--accent-color-rgb), 0.2);
         }
-        .llm-selector-btn .icon {
-            width: 20px; 
-            height: 20px;
-            object-fit: contain; /* (NUEVO) Para logos */
-        }
-        html.dark .llm-selector-btn .icon.grok {
-             filter: invert(1); /* (NUEVO) Invertir logo de Grok (X) en modo oscuro */
-        }
+        .llm-selector-btn .icon { width: 20px; height: 20px; object-fit: contain; }
+        /* Inversión para logos oscuros en modo oscuro */
+        html.dark .llm-selector-btn .icon.grok { filter: invert(1); }
 
 
-        /* Contenido de la Arena */
-        .arena-content-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-        }
-        @media (min-width: 1024px) { /* lg: */
-            .arena-content-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
+        .arena-content-grid { display: grid; grid-template-columns: 1fr; }
+        @media (min-width: 1024px) { .arena-content-grid { grid-template-columns: repeat(3, 1fr); } }
         
-        .arena-chart-container {
-            grid-column: span 1 / span 1;
-            height: 400px;
-            padding: 1rem;
-        }
-        @media (min-width: 1024px) { /* lg: */
-            .arena-chart-container {
-                grid-column: span 2 / span 2;
-                height: 500px;
-                border-right: 1px solid var(--border-main);
-            }
-        }
+        .arena-chart-container { grid-column: span 1 / span 1; height: 400px; padding: 1rem; }
+        @media (min-width: 1024px) { .arena-chart-container { grid-column: span 2 / span 2; height: 500px; border-right: 1px solid var(--border-main); } }
         
-        .arena-stats-container {
-            grid-column: span 1 / span 1;
-            padding: 1.5rem;
-            border-top: 1px solid var(--border-main);
-        }
-        @media (min-width: 1024px) { /* lg: */
-            .arena-stats-container {
-                border-top: none;
-            }
-        }
+        .arena-stats-container { grid-column: span 1 / span 1; padding: 1.5rem; border-top: 1px solid var(--border-main); }
+        @media (min-width: 1024px) { .arena-stats-container { border-top: none; } }
 
-        .arena-stat-card {
-            margin-bottom: 1rem;
-            transition: opacity 0.3s ease;
-        }
-        .arena-stat-card .label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            opacity: 0.7;
-            margin-bottom: 0.25rem;
-        }
-        .arena-stat-card .value {
-            font-size: 2.25rem; /* text-4xl */
-            font-weight: 700;
-            line-height: 1;
-            transition: color 0.3s ease;
-        }
+        .arena-stat-card { margin-bottom: 1rem; transition: opacity 0.3s ease; }
+        .arena-stat-card .label { font-size: 0.875rem; font-weight: 500; opacity: 0.7; margin-bottom: 0.25rem; }
+        .arena-stat-card .value { font-size: 2.25rem; font-weight: 700; line-height: 1; transition: color 0.3s ease; }
         .arena-stat-card .value.positive { color: var(--success-color); }
         .arena-stat-card .value.negative { color: var(--accent-red); }
         .arena-stat-card .value.neutral { color: var(--text-main); }
         
-        #arena-composition-chart-container {
-            height: 180px;
-            transition: opacity 0.3s ease;
-        }
+        #arena-composition-chart-container { height: 180px; transition: opacity 0.3s ease; }
         
-        /* Filosofías de IA */
         .philosophy-card {
-            border: 1px solid var(--border-main);
-            border-radius: 1rem;
-            background-color: var(--bg-main);
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            text-align: center;
+            border: 1px solid var(--border-main); border-radius: 1rem; background-color: var(--bg-main);
+            padding: 1.5rem; display: flex; flex-direction: column; text-align: center;
         }
         .philosophy-card .icon-logo-container { 
-            width: 64px; height: 64px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem auto;
-            padding: 12px; 
+            width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1rem auto; padding: 12px; 
         }
-        .philosophy-card .icon-logo-container img { /* (NUEVO) */
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        html.dark .philosophy-card .icon-logo-container img.grok {
-            filter: invert(1); /* (NUEVO) Invertir logo de Grok (X) en modo oscuro */
-        }
-        .philosophy-card h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        .philosophy-card .subtitle {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            opacity: 0.9;
-        }
-        .philosophy-card p {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            line-height: 1.6;
-            flex-grow: 1;
-        }
-        .philosophy-tags {
-            margin-top: 1.5rem;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.5rem;
-        }
+        .philosophy-card .icon-logo-container img { width: 100%; height: 100%; object-fit: contain; }
+        html.dark .philosophy-card .icon-logo-container img.grok { filter: invert(1); }
+        .philosophy-card h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .philosophy-card .subtitle { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; opacity: 0.9; }
+        .philosophy-card p { font-size: 0.9rem; opacity: 0.8; line-height: 1.6; flex-grow: 1; }
+        .philosophy-tags { margin-top: 1.5rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
         .philosophy-tag {
-            font-size: 0.75rem;
-            font-weight: 500;
-            padding: 0.25rem 0.75rem;
-            border-radius: 99px;
-            background-color: rgba(120, 120, 120, 0.1);
-            border: 1px solid var(--border-main);
+            font-size: 0.75rem; font-weight: 500; padding: 0.25rem 0.75rem; border-radius: 99px;
+            background-color: rgba(120, 120, 120, 0.1); border: 1px solid var(--border-main);
         }
         
-        /* Constructor de Portafolio */
-        .portfolio-builder-card {
-             border: 1px solid var(--border-main);
-             border-radius: 1rem;
-             background-color: var(--bg-main);
-             padding: 1.5rem;
-        }
-        .builder-step {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-main);
-        }
+        .portfolio-builder-card { border: 1px solid var(--border-main); border-radius: 1rem; background-color: var(--bg-main); padding: 1.5rem; }
+        .builder-step { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-main); }
         .builder-step:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-        .builder-step h4 {
-            font-size: 1rem;
-            font-weight: 600;
-            opacity: 0.9;
-            margin-bottom: 1.25rem; 
-        }
-        .builder-option-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* (NUEVO) 3 en móvil para 6 items */
-            gap: 0.75rem;
-        }
-         @media (min-width: 1024px) { /* (NUEVO) lg: 6 en desktop */
-            .builder-option-grid {
-                grid-template-columns: repeat(6, 1fr); 
-            }
-        }
-        .builder-option-grid.sectors {
-             @media (min-width: 640px) {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
+        .builder-step h4 { font-size: 1rem; font-weight: 600; opacity: 0.9; margin-bottom: 1.25rem; }
+        .builder-option-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+         @media (min-width: 1024px) { .builder-option-grid { grid-template-columns: repeat(6, 1fr); } }
         .builder-option {
-            padding: 1rem 0.5rem;
-            border-radius: 0.5rem;
-            border: 1px solid var(--border-main);
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.875rem;
+            padding: 1rem 0.5rem; border-radius: 0.5rem; border: 1px solid var(--border-main); text-align: center; cursor: pointer;
+            transition: all 0.2s ease; font-size: 0.875rem;
         }
-        .builder-option:hover {
-            border-color: var(--accent-color);
-            background-color: rgba(var(--accent-color-rgb), 0.05);
-        }
-        .builder-option.active {
-            border-color: var(--accent-color);
-            background-color: rgba(var(--accent-color-rgb), 0.1);
-            color: var(--accent-color);
-            font-weight: 600;
-        }
-        .builder-option .icon {
-            width: 28px; height: 28px;
-            margin: 0 auto 0.5rem auto;
-            object-fit: contain; /* (NUEVO) */
-        }
-        html.dark .builder-option .icon.grok {
-            filter: invert(1); /* (NUEVO) */
-        }
+        .builder-option:hover { border-color: var(--accent-color); background-color: rgba(var(--accent-color-rgb), 0.05); }
+        .builder-option.active { border-color: var(--accent-color); background-color: rgba(var(--accent-color-rgb), 0.1); color: var(--accent-color); font-weight: 600; }
+        .builder-option .icon { width: 28px; height: 28px; margin: 0 auto 0.5rem auto; object-fit: contain; }
+        html.dark .builder-option .icon.grok { filter: invert(1); }
         .builder-textarea {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid var(--border-main);
-            background-color: var(--bg-main);
-            font-size: 0.875rem;
-            min-height: 80px;
-            resize: vertical;
+            width: 100%; padding: 0.75rem 1rem; border-radius: 0.5rem; border: 1px solid var(--border-main);
+            background-color: var(--bg-main); font-size: 0.875rem; min-height: 80px; resize: vertical;
         }
         html.dark .builder-textarea { background-color: var(--border-dark); }
-        .builder-textarea:focus {
-            border-color: var(--accent-color);
-            outline: none;
-            box-shadow: 0 0 0 1px var(--accent-color);
-        }
+        .builder-textarea:focus { border-color: var(--accent-color); outline: none; box-shadow: 0 0 0 1px var(--accent-color); }
         
-        /* Risk Slider */
-        .risk-slider-container {
-            position: relative;
-            padding-top: 1rem;
-        }
-        .risk-slider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100%;
-            height: 8px;
-            background: var(--border-main);
-            border-radius: 4px;
-            outline: none;
-        }
-        .risk-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            cursor: pointer;
-        }
-        .risk-slider::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            cursor: pointer;
-        }
-        .risk-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            font-weight: 500;
-            opacity: 0.7;
-            padding: 0 0.25rem;
-            margin-top: 0.5rem;
-        }
+        .risk-slider-container { position: relative; padding-top: 1rem; }
+        .risk-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; background: var(--border-main); border-radius: 4px; outline: none; }
+        .risk-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-color); cursor: pointer; }
+        .risk-slider::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: var(--accent-color); cursor: pointer; }
+        .risk-labels { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 500; opacity: 0.7; padding: 0 0.25rem; margin-top: 0.5rem; }
         
-        .builder-result-card {
-            background-color: rgba(var(--accent-color-rgb), 0.05);
-            border: 1px solid rgba(var(--accent-color-rgb), 0.2);
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            text-align: center;
-        }
-        .builder-result-card .value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin: 0.5rem 0;
-        }
+        .builder-result-card { background-color: rgba(var(--accent-color-rgb), 0.05); border: 1px solid rgba(var(--accent-color-rgb), 0.2); border-radius: 0.75rem; padding: 1.5rem; text-align: center; }
+        .builder-result-card .value { font-size: 2.5rem; font-weight: 800; line-height: 1.1; margin: 0.5rem 0; transition: transform 0.2s; }
+        .builder-result-card .value.animate { animation: pulse-value 0.3s ease-in-out; }
+        @keyframes pulse-value { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         .builder-result-card .value.positive { color: var(--success-color); }
         .builder-result-card .value.negative { color: var(--accent-red); }
 
-        /* Tarjeta para sub-características */
-        .sub-feature-card {
-            background-color: var(--bg-main);
-            border: 1px solid var(--border-main);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            text-align: center;
-            height: 100%;
-        }
-        .sub-feature-card .icon {
-             display: inline-flex;
-             padding: 0.75rem;
-             border-radius: 9999px;
-             background-color: rgba(var(--accent-color-rgb), 0.1);
-             color: var(--accent-color);
-             margin-bottom: 1rem;
-        }
-        .sub-feature-card h3 {
-             font-size: 1.125rem;
-             font-weight: 600;
-             margin-bottom: 0.5rem;
-        }
-        .sub-feature-card p {
-             font-size: 0.875rem;
-             opacity: 0.7;
-             line-height: 1.5;
-        }
+        .sub-feature-card { background-color: var(--bg-main); border: 1px solid var(--border-main); border-radius: 1rem; padding: 1.5rem; text-align: center; height: 100%; }
+        .sub-feature-card .icon { display: inline-flex; padding: 0.75rem; border-radius: 9999px; background-color: rgba(var(--accent-color-rgb), 0.1); color: var(--accent-color); margin-bottom: 1rem; }
+        .sub-feature-card h3 { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .sub-feature-card p { font-size: 0.875rem; opacity: 0.7; line-height: 1.5; }
 
-        /* (NUEVO) ESTILOS PARA EL MENÚ MÓVIL */
-        #mobile-menu-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-main);
-            z-index: 100;
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem;
-            padding-top: 5rem; /* Espacio para el header */
-        }
-        #mobile-menu-panel.open {
-            transform: translateX(0);
-        }
-        .mobile-nav-link {
-            font-size: 1.5rem; /* 24px */
-            font-weight: 600;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s ease;
-        }
-        .mobile-nav-link:hover {
-            background-color: rgba(120, 120, 120, 0.1);
-        }
-        .mobile-nav-link.active {
-            color: var(--accent-blue);
-        }
-        /* (FIN) ESTILOS PARA EL MENÚ MÓVIL */
+        #mobile-menu-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-main); z-index: 100; transform: translateX(100%); transition: transform 0.3s ease-in-out; display: flex; flex-direction: column; padding: 1.5rem; padding-top: 5rem; }
+        #mobile-menu-panel.open { transform: translateX(0); }
+        .mobile-nav-link { font-size: 1.5rem; font-weight: 600; padding: 0.75rem 1rem; border-radius: 0.5rem; transition: background-color 0.2s ease; }
+        .mobile-nav-link:hover { background-color: rgba(120, 120, 120, 0.1); }
+        .mobile-nav-link.active { color: var(--accent-blue); }
 
 </style>
 </head>
 <body class="overflow-y-auto">
-    <!-- <canvas id="starfield"></canvas> (ELIMINADO) -->
     <div id="page-wrapper" class="overflow-x-hidden">
         <div id="main-content">
 
@@ -575,7 +252,6 @@
                  <div class="container mx-auto flex justify-between items-center bg-white/30 dark:bg-black/30 backdrop-blur-md p-3 rounded-full border border-white/10 shadow-sm">
                      <a href="index.html" class="text-xl font-bold tracking-wider ml-2 flex-shrink-0">MAVERLANG</a>
                      <div class="flex items-center gap-4 lg:gap-6 mx-4">
-                         <!-- (CORREGIDO) Navegación oculta en móvil -->
                          <nav class="hidden md:flex items-center gap-4 lg:gap-6">
                              <a href="index.html" class="font-semibold text-sm hover:opacity-70 transition-opacity">Inicio</a> 
                              <a href="noticias.html" class="font-semibold text-sm hover:opacity-70 transition-opacity">Noticias</a> 
@@ -588,7 +264,6 @@
                                  <button id="nav-funciones-btn" class="flex items-center gap-1 font-semibold text-sm hover:opacity-70 transition-opacity">
                                      <span>Funciones</span> <i data-lucide="chevron-down" class="w-4 h-4"></i>
                                  </button>
-                                 <!-- NOTA: Este menú ya estaba correcto, no se necesitaron cambios de enlaces -->
                                  <div id="nav-funciones-menu" class="nav-dropdown-menu invisible opacity-0 scale-95">
                                      <a href="seguimiento.html" class="nav-dropdown-item"><i data-lucide="activity" class="w-4 h-4"></i><span>Seguimiento</span></a> 
                                      <a href="aprendelo.html" class="nav-dropdown-item"><i data-lucide="book-open-check" class="w-4 h-4"></i><span>Apréndelo</span></a> 
@@ -598,8 +273,7 @@
                                  </div>
                              </div>
                          </nav>
-                         <!-- (CORREGIDO) Botón de acceso oculto en móvil -->
-                         <button id="header-whitelist-btn" class="bg-blue-600 text-white font-semibold rounded-full px-4 py-2 text-sm transition-transform hover:scale-105 whitespace-nowrap hidden md:block">
+                         <button id="header-whitelist-btn" class="bg-blue-600 text-white font-semibold rounded-full px-4 py-2 text-sm transition-transform hover:scale-105 animated-whitelist-btn whitespace-nowrap hidden md:block">
                              Acceso Prioritario
                          </button>
                          <div class="relative" id="theme-selector">
@@ -607,10 +281,8 @@
                              <div id="theme-dropdown-menu" class="theme-dropdown-menu invisible opacity-0 scale-95 p-1 border" style="border-color: var(--border-main);">
                                   <button data-theme="light" title="Tema Claro" class="theme-dropdown-btn"><i data-lucide="sun"></i></button>
                                   <button data-theme="dark" title="Tema Oscuro" class="theme-dropdown-btn"><i data-lucide="moon"></i></button>
-                                  <!-- (ELIMINADO) Botón de tema estrellado -->
                              </div>
                          </div>
-                         <!-- (NUEVO) Botón de Menú Móvil -->
                          <button id="mobile-menu-btn" class="p-1.5 rounded-full border md:hidden" style="border-color: var(--border-main);">
                              <i data-lucide="menu" class="w-6 h-6"></i>
                          </button>
@@ -618,8 +290,8 @@
                  </div>
             </header>
 
-            <!-- (NUEVO) Panel de Menú Móvil -->
             <div id="mobile-menu-panel" class="z-[55]">
+                <button id="mobile-menu-close-btn" class="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i data-lucide="x" class="w-8 h-8"></i></button>
                 <nav class="flex flex-col gap-2">
                     <a href="index.html" class="mobile-nav-link">Inicio</a>
                     <a href="noticias.html" class="mobile-nav-link">Noticias</a>
@@ -643,9 +315,8 @@
                 <section class="hero-section relative flex flex-col items-center justify-center text-center p-4 overflow-hidden">
                     <div class="background-logo-text opacity-50">ARENA</div>
                     <div class="relative z-10 pt-[18vh] container mx-auto max-w-screen-xl px-4">
-                        <div class="z-10 text-center max-w-4xl mx-auto">
+                        <div class="z-10 text-center max-w-4xl mx-auto reveal">
                             <span class="font-bold uppercase tracking-wider text-base" style="color: var(--accent-color);">La Arena de Modelos</span>
-                            <!-- (NUEVO) Título principal cambiado -->
                             <h1 class="text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mt-2">
                                 La Arena IA
                             </h1>
@@ -657,13 +328,11 @@
                             </p>
                         </div>
                         
-                        <!-- (DISEÑO MEJORADO) Mockup "La Arena de Modelos" -->
-                        <div class="mt-16 max-w-6xl mx-auto">
+                        <div class="mt-16 max-w-6xl mx-auto reveal">
                             <div class="arena-container feature-card">
-                                <!-- (NUEVO) Header Integrado para la Arena -->
                                 <div class="arena-container-header">
                                     <h3 class="flex-shrink-0">Panel de Rendimiento</h3>
-                                    <!-- Selector de LLM (CON LOGOS) - Ahora dentro del header -->
+                                    <!-- LLM Selector with Images -->
                                     <div class="llm-selector-bar">
                                         <button class="llm-selector-btn active" data-model-id="gemini">
                                             <img src="https://pnghdpro.com/wp-content/uploads/2024/04/Gemini-Ai-logo-png-1.png" alt="Gemini logo" class="icon">
@@ -685,7 +354,6 @@
                                             <img src="https://pngdownload.com/wp-content/uploads/2024/01/x-logo-twitter-white-icon-png.png" alt="Grok (X) logo" class="icon grok">
                                             <span>Grok 4</span>
                                         </button>
-                                        <!-- (NUEVO) Qwen Añadido -->
                                         <button class="llm-selector-btn" data-model-id="qwen">
                                             <img src="https://crystalpng.com/wp-content/uploads/2024/05/Qwen-logo.png" alt="Qwen logo" class="icon">
                                             <span>Qwen 2.5</span>
@@ -693,16 +361,12 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Contenido de la Arena -->
                                 <div class="arena-content-grid">
-                                    <!-- Gráfico Principal -->
                                     <div class="arena-chart-container">
                                         <canvas id="arena-chart"></canvas>
                                     </div>
                                     
-                                    <!-- Estadísticas y Composición -->
                                     <div class="arena-stats-container">
-                                        <!-- Estadísticas ahora con ID para JS -->
                                         <div id="stats-container" class="grid grid-cols-2 gap-4">
                                             <div class="arena-stat-card">
                                                 <div class="label">Rendimiento (YTD)</div>
@@ -735,8 +399,8 @@
                     </div>
                 </section>
                 
-                <!-- Sección "Filosofías de Inversión" (ACTUALIZADA) -->
-                <section class="relative z-10 w-full pt-16 md:pt-24 pb-16 md:pb-24" style="background-color: rgba(var(--accent-color-rgb), 0.03);">
+                <!-- Philosophies Section -->
+                <section class="relative z-10 w-full pt-16 md:pt-24 pb-16 md:pb-24 reveal" style="background-color: rgba(var(--accent-color-rgb), 0.03);">
                     <div class="container mx-auto max-w-screen-xl px-4">
                         <div class="text-center mb-16 max-w-3xl mx-auto">
                              <h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-2 mb-4">
@@ -747,100 +411,66 @@
                              </p>
                         </div>
 
-                        <!-- (NUEVO) Rejilla de 3 columnas para los 6 modelos -->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <!-- Gemini 2.5 Pro -->
+                            <!-- Cards with Logos -->
                             <div class="philosophy-card feature-card">
                                 <div class="icon-logo-container" style="background-color: #3b82f61A;">
                                     <img src="https://pnghdpro.com/wp-content/uploads/2024/04/Gemini-Ai-logo-png-1.png" alt="Gemini logo">
                                 </div>
                                 <h3 class="text-xl font-bold">Gemini 2.5</h3>
                                 <p class="subtitle" style="color: #3b82f6;">El Cuantitativo</p>
-                                <p>
-                                    Procesa millones de puntos de datos y sentimiento de noticias para encontrar patrones cuantitativos.
-                                </p>
-                                <div class="philosophy-tags">
-                                    <span class="philosophy-tag">Quant</span>
-                                    <span class="philosophy-tag">Big Data</span>
-                                </div>
+                                <p>Procesa millones de puntos de datos y sentimiento de noticias para encontrar patrones cuantitativos.</p>
+                                <div class="philosophy-tags"><span class="philosophy-tag">Quant</span><span class="philosophy-tag">Big Data</span></div>
                             </div>
                             
-                             <!-- GPT-5 -->
                             <div class="philosophy-card feature-card">
                                 <div class="icon-logo-container" style="background-color: #10a37f1A;">
                                     <img src="https://stickpng.com/img/icons-logos-emojis/tech-icons/chatgpt-logo" alt="ChatGPT logo">
                                 </div>
                                 <h3 class="text-xl font-bold">GPT-5</h3>
                                 <p class="subtitle" style="color: #10a37f;">El Estratega Híbrido</p>
-                                <p>
-                                    Combina análisis fundamental con una comprensión táctica de los catalizadores del mercado.
-                                </p>
-                                <div class="philosophy-tags">
-                                    <span class="philosophy-tag">Fundamental</span>
-                                    <span class="philosophy-tag">Táctico</span>
-                                </div>
+                                <p>Combina análisis fundamental con una comprensión táctica de los catalizadores del mercado.</p>
+                                <div class="philosophy-tags"><span class="philosophy-tag">Fundamental</span><span class="philosophy-tag">Táctico</span></div>
                             </div>
 
-                            <!-- DeepSeek v3.1 -->
                             <div class="philosophy-card feature-card">
                                 <div class="icon-logo-container" style="background-color: #10b9811A;">
                                     <img src="https://seeklogo.com/images/D/deepseek-logo-658BD98319-seeklogo.com.svg" alt="DeepSeek logo">
                                 </div>
                                 <h3 class="text-xl font-bold">DeepSeek</h3>
                                 <p class="subtitle" style="color: #10b981;">El Lector Técnico</p>
-                                <p>
-                                    Analiza papers académicos y patentes para encontrar valor fundamental oculto a largo plazo.
-                                </p>
-                                <div class="philosophy-tags">
-                                    <span class="philosophy-tag">Deep Tech</span>
-                                    <span class="philosophy-tag">Valor</span>
-                                </div>
+                                <p>Analiza papers académicos y patentes para encontrar valor fundamental oculto a largo plazo.</p>
+                                <div class="philosophy-tags"><span class="philosophy-tag">Deep Tech</span><span class="philosophy-tag">Valor</span></div>
                             </div>
                             
-                            <!-- Claude 4.5 Sonnet -->
                             <div class="philosophy-card feature-card">
                                 <div class="icon-logo-container" style="background-color: #D97A511A;">
                                     <img src="https://pnghdpro.com/wp-content/uploads/2024/04/Claude-ai-logo-png-2.png" alt="Claude logo">
                                 </div>
                                 <h3 class="text-xl font-bold">Claude 4.5</h3>
                                 <p class="subtitle" style="color: #D97A51;">El Analista Macro</p>
-                                <p>
-                                    "Lee entre líneas" los informes de la FED y discursos políticos para predecir movimientos sectoriales.
-                                </p>
-                                <div class="philosophy-tags">
-                                    <span class="philosophy-tag">Macro</span>
-                                    <span class="philosophy-tag">Contextual</span>
-                                </div>
+                                <p>"Lee entre líneas" los informes de la FED y discursos políticos para predecir movimientos sectoriales.</p>
+                                <div class="philosophy-tags"><span class="philosophy-tag">Macro</span><span class="philosophy-tag">Contextual</span></div>
                             </div>
                             
-                            <!-- Grok 4 -->
                             <div class="philosophy-card feature-card">
                                 <div class="icon-logo-container" style="background-color: #8b5cf61A;">
                                      <img src="https://pngdownload.com/wp-content/uploads/2024/01/x-logo-twitter-white-icon-png.png" alt="Grok (X) logo" class="icon grok">
                                 </div>
                                 <h3 class="text-xl font-bold">Grok 4</h3>
                                 <p class="subtitle" style="color: #8b5cf6;">El Oportunista</p>
-                                <p>
-                                    Entrenado con el "zeitgeist" social, captura el momentum y las narrativas virales antes de que exploten.
-                                </p>
-                                <div class="philosophy-tags">
-                                    <span class="philosophy-tag">Momentum</span>
-                                    <span class="philosophy-tag">Social</span>
-                                </div>
+                                <p>Entrenado con el "zeitgeist" social, captura el momentum y las narrativas virales antes de que exploten.</p>
+                                <div class="philosophy-tags"><span class="philosophy-tag">Momentum</span><span class="philosophy-tag">Social</span></div>
                             </div>
 
-                            <!-- (NUEVO) Qwen 2.5 -->
                             <div class="philosophy-card feature-card">
-                                <div class="icon-logo-container" style="background-color: #FF6A001A;"> <!-- Alibaba Orange -->
+                                <div class="icon-logo-container" style="background-color: #FF6A001A;"> 
                                     <img src="https://crystalpng.com/wp-content/uploads/2024/05/Qwen-logo.png" alt="Qwen logo">
                                 </div>
                                 <h3 class="text-xl font-bold">Qwen 2.5</h3>
                                 <p class="subtitle" style="color: #FF6A00;">El Gigante Asiático</p>
                                 <p>Enfocado en mercados emergentes y comercio global, detecta tendencias de e-commerce y logística.</p>
-                                <div class="philosophy-tags">
-                                    <span class="philosophy-tag">E-Commerce</span>
-                                    <span class="philosophy-tag">Mercados Emergentes</span>
-                                </div>
+                                <div class="philosophy-tags"><span class="philosophy-tag">E-Commerce</span><span class="philosophy-tag">Mercados Emergentes</span></div>
                             </div>
 
                         </div>
@@ -848,8 +478,8 @@
                 </section>
 
                 
-                <!-- Sección "Constructor de Portafolios" (MEJORADA) -->
-                <section class="relative z-10 w-full pt-16 md:pt-24 pb-16 md:pb-24">
+                <!-- Portfolio Builder -->
+                <section class="relative z-10 w-full pt-16 md:pt-24 pb-16 md:pb-24 reveal">
                     <div class="container mx-auto max-w-screen-xl px-4">
                         <div class="text-center mb-16 max-w-3xl mx-auto">
                              <h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-2 mb-4">
@@ -861,12 +491,9 @@
                         </div>
                         
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                            <!-- Columna 1: Constructor -->
                             <div class="portfolio-builder-card feature-card">
-                                <!-- Paso 1: Modelo Base -->
                                 <div class="builder-step">
                                     <h4>Paso 1: Elige tus Asesores (Puedes elegir varios)</h4>
-                                    <!-- (NUEVO) Rejilla actualizada a 3/6 columnas -->
                                     <div class="builder-option-grid" style="grid-template-columns: repeat(3, 1fr); @media (min-width: 1024px) { grid-template-columns: repeat(6, 1fr); }">
                                         <button class="builder-option active" data-step="1" data-value="gemini">
                                             <img src="https://pnghdpro.com/wp-content/uploads/2024/04/Gemini-Ai-logo-png-1.png" alt="Gemini logo" class="icon mx-auto">
@@ -888,7 +515,6 @@
                                             <img src="https://pngdownload.com/wp-content/uploads/2024/01/x-logo-twitter-white-icon-png.png" alt="Grok (X) logo" class="icon mx-auto grok">
                                             Grok
                                         </button>
-                                        <!-- (NUEVO) Qwen añadido -->
                                         <button class="builder-option" data-step="1" data-value="qwen">
                                             <img src="https://crystalpng.com/wp-content/uploads/2024/05/Qwen-logo.png" alt="Qwen logo" class="icon mx-auto">
                                             Qwen
@@ -896,7 +522,6 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Paso 2: Perfil de Riesgo -->
                                 <div class="builder-step">
                                     <h4>Paso 2: Define tu Perfil de Riesgo</h4>
                                     <div class="risk-slider-container">
@@ -909,13 +534,11 @@
                                     </div>
                                 </div>
 
-                                <!-- Paso 3: Instrucción Personalizada -->
                                 <div class="builder-step">
                                     <h4>Paso 3: Define tu Tesis (Opcional)</h4>
                                     <textarea id="builder-custom-prompt" class="builder-textarea" placeholder="Ej: 'Enfocarse en empresas de IA de baja capitalización con alto potencial de crecimiento' o 'Buscar valor en el sector energético post-corrección'"></textarea>
                                 </div>
 
-                                <!-- Paso 4: Sectores -->
                                 <div class="builder-step">
                                     <h4>Paso 4: Selecciona Sectores de Enfoque</h4>
                                     <div class="builder-option-grid sectors">
@@ -947,15 +570,14 @@
                                 </div>
                             </div>
                             
-                            <!-- Columna 2: Resultado -->
                             <div class="lg:sticky lg:top-32">
-                                <div class="builder-result-card text-center" style="background-color: rgba(var(--accent-color-rgb), 0.05); border-color: rgba(var(--accent-color-rgb), 0.2);">
+                                <div class="builder-result-card text-center">
                                     <h3 class="text-xl" style="color: var(--accent-color);">Tu Portafolio IA Personalizado</h3>
                                     <p class="text-sm opacity-80 mb-4">(Estimación de Backtest)</p>
                                     
                                     <div class="metric-item my-6">
                                         <div class="label">Retorno Anualizado (YTD)</div>
-                                        <div class="value positive" id="builder-result-return">+28.5%</div>
+                                        <div class="value positive animate" id="builder-result-return">+28.5%</div>
                                     </div>
                                     
                                     <div class="grid grid-cols-2 gap-4">
@@ -979,8 +601,8 @@
                     </div>
                 </section>
                 
-                <!-- Sección "Transparencia Total" (MANTENIDA) -->
-                <section class="relative z-10 w-full pt-16 md:pt-24 pb-16 md:pb-24" style="background-color: rgba(var(--accent-color-rgb), 0.03);">
+                <!-- Transparency Section -->
+                <section class="relative z-10 w-full pt-16 md:pt-24 pb-16 md:pb-24 reveal" style="background-color: rgba(var(--accent-color-rgb), 0.03);">
                     <div class="container mx-auto max-w-screen-xl px-4">
                         <div class="text-center mb-16">
                              <h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-2 mb-4">
@@ -992,19 +614,16 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <!-- Característica 1 -->
                             <div class="sub-feature-card">
                                 <div class="icon"><i data-lucide="scroll-text" class="w-7 h-7"></i></div>
                                 <h3>Log de Operaciones en Vivo</h3>
                                 <p>Revisa cada decisión que toma tu IA. Cada COMPRA, VENTA o AJUSTE se registra en un log detallado con la justificación del modelo.</p>
                             </div>
-                            <!-- Característica 2 -->
                             <div class="sub-feature-card">
                                 <div class="icon"><i data-lucide="shield-check" class="w-7 h-7"></i></div>
                                 <h3>Backtesting Riguroso</h3>
                                 <p>Antes de invertir un peso, validamos cada estrategia de IA contra años de datos históricos del mercado para asegurar su robustez estadística.</p>
                             </div>
-                            <!-- Característica 3 -->
                             <div class="sub-feature-card">
                                 <div class="icon"><i data-lucide="sliders-horizontal" class="w-7 h-7"></i></div>
                                 <h3>Tu Control de Riesgo</h3>
@@ -1015,8 +634,8 @@
                 </section>
 
 
-                <!-- CTA Final -->
-                 <section id="final-cta" class="relative z-10 w-full pt-16 md:pt-24 pb-20 md:pb-32 text-center">
+                <!-- Final CTA -->
+                 <section id="final-cta" class="relative z-10 w-full pt-16 md:pt-24 pb-20 md:pb-32 text-center reveal">
                     <div class="container mx-auto max-w-3xl px-4">
                         <h2 class="text-4xl md:text-5xl font-bold tracking-tight">
                             Deja de Invertir con Emociones. Empieza a Invertir con IA.
@@ -1032,7 +651,7 @@
 
             </main>
 
-            <!-- Footer (MODIFICADO) -->
+            <!-- Footer -->
             <footer class="relative z-10 w-full border-t pt-12" style="border-color: var(--border-main); background-color: var(--bg-main);">
                 <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     
@@ -1044,7 +663,6 @@
                     </div>
 
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-12">
-                        <!-- Col 1: Navegación (MODIFICADA) -->
                         <div>
                             <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Navegación</h3>
                             <nav class="flex flex-col gap-3">
@@ -1054,7 +672,6 @@
                                 <a href="aprendelo.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Apréndelo</a>
                             </nav>
                         </div>
-                        <!-- Col 2: Plataforma (NUEVA) -->
                         <div>
                             <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Plataforma</h3>
                             <nav class="flex flex-col gap-3">
@@ -1064,7 +681,6 @@
                                 <a href="chats.html" class="text-sm opacity-70 hover:opacity-100 transition-all">Chats</a>
                             </nav>
                         </div>
-                        <!-- Col 3: Compañía (Sin cambios) -->
                         <div>
                             <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Compañía</h3>
                             <nav class="flex flex-col gap-3">
@@ -1073,7 +689,6 @@
                                 <a href="#" class="text-sm opacity-70 hover:opacity-100 transition-all">Contacto</a>
                             </nav>
                         </div>
-                        <!-- Col 4: Legal (Sin cambios) -->
                         <div>
                             <h3 class="font-semibold uppercase tracking-wider text-sm mb-4">Legal</h3>
                             <nav class="flex flex-col gap-3">
@@ -1189,6 +804,8 @@
             /* Iniciar los gráficos y simulaciones */
             initModelArena();
             initPortfolioBuilder();
+            initMobileMenu(); // (NUEVO)
+            initScrollReveal(); // (NUEVO)
             
             if (isAuthReady) { listenToWhitelistCount(); }
             else { console.warn("Auth no lista. Whitelist count no iniciará."); }
@@ -1226,15 +843,18 @@
             const themeMainBtn = document.getElementById('theme-main-btn');
             const themeDropdownMenu = document.getElementById('theme-dropdown-menu');
             const themeDropdownBtns = themeDropdownMenu ? themeDropdownMenu.querySelectorAll('.theme-dropdown-btn') : [];
-            if (!themeMainBtn || !themeDropdownMenu || themeDropdownBtns.length === 0) { console.warn("Elementos tema no encontrados."); return; }
+            if (!themeMainBtn || !themeDropdownMenu) return;
             const currentTheme = localStorage.getItem('maverlang_theme') || 'light';
             applyTheme(currentTheme, true); // True para carga inicial
             themeMainBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const isVisible = !themeDropdownMenu.classList.contains('invisible');
-                document.querySelectorAll('.nav-dropdown-menu').forEach(m => m?.classList.add('opacity-0', 'scale-95', 'invisible')); // Cerrar otros
                 if (isVisible) { themeDropdownMenu.classList.add('opacity-0', 'scale-95', 'invisible'); }
-                else { themeDropdownMenu.classList.remove('opacity-0', 'scale-95', 'invisible'); }
+                else { 
+                    document.getElementById('nav-funciones-menu')?.classList.add('opacity-0', 'scale-95', 'invisible');
+                    document.getElementById('mobile-menu-panel')?.classList.remove('open');
+                    themeDropdownMenu.classList.remove('opacity-0', 'scale-95', 'invisible'); 
+                }
             });
             themeDropdownBtns.forEach(btn => {
                 btn.addEventListener('click', () => { applyTheme(btn.dataset.theme); themeDropdownMenu.classList.add('opacity-0', 'scale-95', 'invisible'); });
@@ -1245,7 +865,7 @@
              const html = document.documentElement;
             const themeMainBtn = document.getElementById('theme-main-btn');
             let iconName = 'sun';
-            html.classList.remove('dark', 'stars-theme'); // (MODIFICADO)
+            html.classList.remove('dark');
             if (theme === 'dark') { html.classList.add('dark'); iconName = 'moon'; }
             /* (ELIMINADO) else if (theme === 'stars') { ... } */
             
@@ -1256,11 +876,9 @@
             if (themeMainBtn) { themeMainBtn.innerHTML = `<i data-lucide="${iconName}"></i>`; if (typeof lucide !== 'undefined') { lucide.createIcons(); } }
             document.querySelectorAll('.theme-dropdown-btn').forEach(b => b.classList.remove('active'));
             document.querySelector(`.theme-dropdown-btn[data-theme="${theme}"]`)?.classList.add('active');
-            
             initAnimations();
             updateHeaderBackground();
-
-             if (typeof Chart !== 'undefined' && !isInitialLoad) {
+            if (typeof Chart !== 'undefined' && !isInitialLoad) {
                 setTimeout(() => {
                     initModelArena(true); // true = reiniciar
                 }, 50);
@@ -1318,16 +936,15 @@
              const ids = ['modal']; const labels = ['days', 'hours', 'minutes', 'seconds']; const elements = {};
              ids.forEach(id => { elements[id] = {}; labels.forEach(l => elements[id][l] = document.getElementById(`${id}-${l}`)); });
              if (!elements['modal']['days']) return; // Salir si no hay elementos
-             const targetDate = new Date('2025-11-24T00:00:00').getTime();
+             const targetDate = new Date('2025-12-10T00:00:00').getTime();
              const interval = setInterval(() => {
                  const distance = targetDate - new Date().getTime(); if (distance < 0) { clearInterval(interval); ids.forEach(id => { const cont = document.getElementById(`${id}-countdown-container`); if(cont) cont.innerHTML = '<p class="text-xl font-bold text-blue-500">¡Lanzamiento iniciado!</p>'; }); return; }
                  const d=Math.floor(distance/864e5), h=Math.floor((distance%864e5)/36e5), m=Math.floor((distance%36e5)/6e4), s=Math.floor((distance%6e4)/1000);
                  const times = { days: d, hours: h, minutes: m, seconds: s };
-                 ids.forEach(id => { labels.forEach(l => { if(elements[id]?.[l]) elements[id][l].textContent = String(times[l]).padStart(2, '0'); }); });
+                 ids.forEach(id => { labels.forEach(l => { if(elements[id] && elements[id][l]) elements[id][l].textContent = String(times[l]).padStart(2, '0'); }); });
              }, 1000);
         }
 
-        let starfieldAnimationId = null;
         function initAnimations(){
              /* (ELIMINADO) Lógica de Starfield */
         }
@@ -1340,18 +957,16 @@
         function initNavigation() {
             const funcionesBtn = document.getElementById('nav-funciones-btn'); 
             const funcionesMenu = document.getElementById('nav-funciones-menu');
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenuPanel = document.getElementById('mobile-menu-panel');
-            
-            // Lógica Dropdown Escritorio
+
             if (funcionesBtn && funcionesMenu) {
                 const toggleFuncionesDropdown = (e) => { 
                     e.stopPropagation(); 
                     const isVisible = !funcionesMenu.classList.contains('invisible'); 
-                    document.getElementById('theme-dropdown-menu')?.classList.add('opacity-0', 'scale-95', 'invisible'); 
                     if (isVisible) { 
                         funcionesMenu.classList.add('opacity-0', 'scale-95', 'invisible'); 
                     } else { 
+                        document.getElementById('theme-dropdown-menu')?.classList.add('opacity-0', 'scale-95', 'invisible'); 
+                        document.getElementById('mobile-menu-panel')?.classList.remove('open');
                         funcionesMenu.classList.remove('opacity-0', 'scale-95', 'invisible'); 
                     } 
                 };
@@ -1359,45 +974,10 @@
                     funcionesBtn.addEventListener('click', toggleFuncionesDropdown); 
                     funcionesBtn.dataset.navListenerAttached = 'true'; 
                 }
-            } else { console.warn("Dropdown 'Funciones' no encontrado."); }
-
-            // Lógica Menú Móvil
-            if (mobileMenuBtn && mobileMenuPanel) {
-                const openMenu = (e) => {
-                    e.stopPropagation();
-                    mobileMenuPanel.classList.add('open');
-                    mobileMenuBtn.innerHTML = `<i data-lucide="x" class="w-6 h-6"></i>`;
-                    lucide.createIcons();
-                };
-
-                const closeMenu = () => {
-                    mobileMenuPanel.classList.remove('open');
-                    mobileMenuBtn.innerHTML = `<i data-lucide="menu" class="w-6 h-6"></i>`;
-                    lucide.createIcons();
-                };
-                
-                mobileMenuBtn.addEventListener('click', (e) => {
-                    if (mobileMenuPanel.classList.contains('open')) {
-                        closeMenu();
-                    } else {
-                        openMenu(e);
-                    }
-                });
-                
-                // Cerrar al hacer clic en un enlace
-                mobileMenuPanel.querySelectorAll('a, .modal-trigger-btn').forEach(link => {
-                    link.addEventListener('click', () => {
-                        // No cerrar si el enlace es modal (ya que openModal se encarga)
-                        if (!link.classList.contains('modal-trigger-btn')) {
-                            closeMenu();
-                        }
-                    });
-                });
             }
 
             if (!isClickOutsideListenerAdded) {
                 document.addEventListener('click', (e) => {
-                    // Cerrar ambos menús si se hace clic fuera
                     document.querySelectorAll('.nav-dropdown-menu, .theme-dropdown-menu').forEach(menu => {
                          const btnId = menu.id.replace('-menu', '-btn');
                          const btn = document.getElementById(btnId);
@@ -1405,18 +985,9 @@
                              menu.classList.add('opacity-0', 'scale-95', 'invisible');
                          }
                     });
-
-                    // Cerrar menú móvil si se hace clic fuera de él
-                    if (mobileMenuPanel && mobileMenuPanel.classList.contains('open') && !mobileMenuBtn.contains(e.target) && !mobileMenuPanel.contains(e.target)) {
-                         mobileMenuPanel.classList.remove('open');
-                         mobileMenuBtn.innerHTML = `<i data-lucide="menu" class="w-6 h-6"></i>`;
-                         lucide.createIcons();
-                    }
                 });
                 isClickOutsideListenerAdded = true;
             }
-
-            if (funcionesMenu) { funcionesMenu.querySelectorAll('a').forEach(item => { if (item.dataset.navItemListener !== 'true') { item.addEventListener('click', (e) => { if (!item.href || item.href.endsWith('#')) { funcionesMenu.classList.add('opacity-0', 'scale-95', 'invisible'); } }); item.dataset.navItemListener = 'true'; } }); }
         }
         
         function generateParticlesSlow() { const container = document.querySelector('#nav-portafolio-ai-link .particles-container'); if (!container) return; const particleCount = 6; const colors = ['var(--particle-color-1)', 'var(--particle-color-2)', 'var(--particle-color-3)']; const totalDuration = 5; const particleAnimationDuration = 2.5; container.innerHTML = ''; for (let i = 0; i < particleCount; i++) { const particle = document.createElement('div'); particle.classList.add('particle'); const baseStartPercentage = 0.45; const randomOffsetPercentage = Math.random() * 0.1; const startDelay = (baseStartPercentage + randomOffsetPercentage); particle.style.setProperty('--particle-delay', startDelay.toFixed(2)); particle.style.setProperty('--particle-x', `${Math.random() * 30 - 15}px`); particle.style.setProperty('--particle-y', `${Math.random() * -5 - 3}px`); particle.style.setProperty('--particle-color', colors[Math.floor(Math.random() * colors.length)]); particle.style.animationDuration = `${particleAnimationDuration}s`; particle.style.animationDelay = `${startDelay * totalDuration}s`; container.appendChild(particle); } }
@@ -1426,7 +997,7 @@
         let arenaChart = null;
         let compositionChart = null;
         let spDataCache = null; 
-        let activeModels = new Set(['gemini']); // (NUEVO) Estado para modelos activos
+        let activeModels = new Set(['gemini']); 
 
         /* (NUEVO) Datos simulados para los 6 portafolios de la IA */
         const modelData = {
@@ -1524,7 +1095,7 @@
             
             const basePrice = performance[0];
             const normalizedData = performance.map(price => ((price / basePrice) - 1) * 100);
-            const sparseLabels = labels.map((label, index) => (index % 2 === 0 ? label : '')); // Mostrar una de cada dos etiquetas
+            const sparseLabels = labels.map((label, index) => (index % 2 === 0 ? label : '')); 
 
             spDataCache = {
                 labels: sparseLabels,
@@ -1559,6 +1130,60 @@
             return newArray.map(val => ((val / baseValue) - 1) * 100);
         };
 
+        // (NUEVO) Function to create a gradient based on color
+        function createGradient(ctx, color) {
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, color.replace(')', ', 0.5)').replace('rgb', 'rgba')); // Start with opacity
+            gradient.addColorStop(1, color.replace(')', ', 0)').replace('rgb', 'rgba'));   // End transparent
+            return gradient;
+        }
+
+        // (NUEVO) Scroll Reveal function
+        function initScrollReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            // Add reveal class manually to sections
+            document.querySelector('.arena-container')?.parentNode.classList.add('reveal');
+            document.querySelectorAll('.philosophy-card').forEach(el => el.classList.add('reveal'));
+            document.querySelector('.portfolio-builder-card')?.parentNode.classList.add('reveal');
+            document.querySelector('#final-cta')?.classList.add('reveal');
+
+            reveals.forEach(r => observer.observe(r));
+            document.querySelectorAll('.reveal').forEach(r => observer.observe(r));
+        }
+        
+        // (NUEVO) Mobile Menu function
+        function initMobileMenu() {
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const panel = document.getElementById('mobile-menu-panel');
+            if (!menuBtn || !panel) return;
+            
+             if(!panel.querySelector('#mobile-menu-close-btn')) {
+                 const closeBtn = document.createElement('button');
+                 closeBtn.id = 'mobile-menu-close-btn';
+                 closeBtn.className = 'absolute top-7 right-7 p-2 rounded-full hover:bg-gray-500/10';
+                 closeBtn.innerHTML = '<i data-lucide="x" class="w-8 h-8"></i>';
+                 panel.prepend(closeBtn);
+                 closeBtn.addEventListener('click', () => toggleMenu(false));
+             }
+            const toggleMenu = (show) => {
+                if (show) {
+                    panel.classList.remove('hidden'); setTimeout(() => panel.classList.add('open'), 10); document.body.classList.add('no-scroll');
+                } else {
+                    panel.classList.remove('open'); setTimeout(() => panel.classList.add('hidden'), 300); document.body.classList.remove('no-scroll');
+                }
+            };
+            menuBtn.addEventListener('click', () => toggleMenu(true));
+            panel.querySelectorAll('a').forEach(el => el.addEventListener('click', () => toggleMenu(false)));
+        }
+
 
         async function initModelArena(isRestart = false) {
             if (typeof Chart === 'undefined') {
@@ -1568,7 +1193,7 @@
             if (isRestart) {
                 if (arenaChart) arenaChart.destroy();
                 if (compositionChart) compositionChart.destroy();
-                activeModels = new Set(['gemini']); // Reset al reiniciar
+                activeModels = new Set(['gemini']); 
             }
 
             const arenaCtx = document.getElementById('arena-chart')?.getContext('2d');
@@ -1587,13 +1212,14 @@
                     label: data.name,
                     data: resampleData(data.performance, targetLength), 
                     borderColor: data.color,
-                    backgroundColor: `rgba(${data.colorRgb}, 0.1)`,
+                    // (NUEVO) Use gradient fill
+                    backgroundColor: createGradient(arenaCtx, `rgb(${data.colorRgb})`),
                     borderWidth: 3,
                     fill: true,
-                    tension: 0.4, // (NUEVO) Más suave
-                    pointRadius: 0, // (NUEVO) Más limpio
-                    pointHoverRadius: 6, // (NUEVO) Interactivo
-                    hidden: !activeModels.has(modelId) // Usar el Set para la visibilidad inicial
+                    tension: 0.4, 
+                    pointRadius: 0, 
+                    pointHoverRadius: 6, 
+                    hidden: !activeModels.has(modelId) 
                 };
             });
             
@@ -1610,9 +1236,9 @@
                             borderColor: colors.benchmarkColor,
                             borderWidth: 2,
                             fill: false,
-                            tension: 0.4, // (NUEVO)
-                            pointRadius: 0, // (NUEVO)
-                            pointHoverRadius: 6, // (NUEVO)
+                            tension: 0.4, 
+                            pointRadius: 0, 
+                            pointHoverRadius: 6, 
                             borderDash: [5, 5]
                         }
                     ]
@@ -1628,7 +1254,6 @@
                                 autoSkip: true, 
                                 maxTicksLimit: 12,
                                 callback: function(value, index, ticks) {
-                                    // Mostrar solo etiquetas que no estén vacías
                                     return spData.labels[index] ? spData.labels[index] : '';
                                 }
                             } 
@@ -1640,7 +1265,11 @@
                                 color: colors.fontColor,
                                 font: { weight: '600' }
                             },
-                            grid: { color: colors.gridColor, drawBorder: false },
+                            grid: { 
+                                color: colors.gridColor, 
+                                drawBorder: false,
+                                borderDash: [5, 5] // (NUEVO) Dashed grid lines
+                            },
                             ticks: { 
                                 color: colors.fontColor, 
                                 callback: (value) => `${value.toFixed(0)}%` 
@@ -1649,17 +1278,18 @@
                     },
                     plugins: {
                         legend: { display: false }, 
-                        tooltip: { // (NUEVO) Tooltip profesional
+                        tooltip: { 
                             mode: 'index', 
                             intersect: false,
-                            backgroundColor: isDark ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.9)',
+                            backgroundColor: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.95)', // (NUEVO) Better colors
                             titleColor: colors.fontColor,
                             bodyColor: colors.fontColor,
                             borderColor: colors.gridColor,
                             borderWidth: 1,
-                            padding: 10,
+                            padding: 12, // (NUEVO) More padding
                             cornerRadius: 8,
                             displayColors: true,
+                            boxPadding: 4, // (NUEVO) Better spacing
                             callbacks: {
                                 label: function(context) {
                                     let label = context.dataset.label || '';
@@ -1673,6 +1303,11 @@
                                 }
                             }
                         }
+                    },
+                    interaction: { // (NUEVO) Better interaction
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
                     }
                 }
             });
@@ -1687,26 +1322,33 @@
                         data: initialData.composition.data,
                         backgroundColor: initialData.composition.colors,
                         borderWidth: 0,
+                        hoverOffset: 10 // (NUEVO) Better hover effect
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    cutout: '70%',
+                    cutout: '75%', // (NUEVO) Thinner ring
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'bottom', // (NUEVO) Movido abajo
+                            position: 'bottom', 
                             labels: {
                                 color: colors.fontColor,
                                 boxWidth: 12,
-                                padding: 20 // (NUEVO) Más padding
+                                padding: 20,
+                                font: { size: 11 } // (NUEVO) Smaller font
                             }
                         },
                         tooltip: {
+                            backgroundColor: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.95)',
+                            titleColor: colors.fontColor,
+                            bodyColor: colors.fontColor,
+                            borderColor: colors.gridColor,
+                            borderWidth: 1,
                             callbacks: {
                                 label: function(context) {
-                                    return `${context.label}: ${context.raw}%`;
+                                    return ` ${context.label}: ${context.raw}%`;
                                 }
                             }
                         }
@@ -1715,14 +1357,13 @@
             });
             updateStats(initialModel); 
 
-            // (MODIFICADO) Listeners para los botones selectores
             document.querySelectorAll('.llm-selector-btn').forEach(btn => {
                 // Sincronizar estado visual con estado de 'activeModels' al reiniciar
                 if (isRestart) {
                     btn.classList.toggle('active', activeModels.has(btn.dataset.modelId));
                 }
                 
-                btn.addEventListener('click', () => {
+                btn.onclick = () => { // (NUEVO) Ensure clean listeners
                     const modelId = btn.dataset.modelId;
                     btn.classList.toggle('active'); 
                     
@@ -1734,11 +1375,11 @@
                     }
                     
                     toggleModelVisibility(modelId, isActive);
-                });
+                };
                 
-                btn.addEventListener('mouseenter', () => {
+                btn.onmouseenter = () => { // (NUEVO)
                     updateStats(btn.dataset.modelId);
-                });
+                };
             });
         }
 
@@ -1770,22 +1411,21 @@
             const trdEl = document.getElementById('arena-stat-trades');
             const titleEl = document.getElementById('composition-title');
             
-            const statsContainer = document.getElementById('stats-container');
-            const compContainer = document.getElementById('arena-composition-chart-container');
-            [statsContainer, compContainer].forEach(el => el.style.opacity = 0);
+            // (NUEVO) Pulse effect on value change
+            [retEl, shpEl, ddEl, trdEl].forEach(el => {
+                el.classList.remove('pulse-text');
+                void el.offsetWidth; // Trigger reflow
+                el.classList.add('pulse-text');
+            });
             
-            setTimeout(() => {
-                retEl.textContent = data.stats.ret;
-                shpEl.textContent = data.stats.shp;
-                ddEl.textContent = data.stats.dd;
-                trdEl.textContent = data.stats.trd;
-                titleEl.textContent = `Composición (${data.name})`;
-                
-                retEl.className = `value ${data.stats.ret.startsWith('+') ? 'positive' : 'negative'}`;
-                ddEl.className = `value ${data.stats.dd.startsWith('+') ? 'positive' : 'negative'}`;
-                
-                [statsContainer, compContainer].forEach(el => el.style.opacity = 1);
-            }, 300);
+            retEl.textContent = data.stats.ret;
+            shpEl.textContent = data.stats.shp;
+            ddEl.textContent = data.stats.dd;
+            trdEl.textContent = data.stats.trd;
+            titleEl.textContent = `Composición (${data.name})`;
+            
+            retEl.className = `value ${data.stats.ret.startsWith('+') ? 'positive' : 'negative'} pulse-text`;
+            ddEl.className = `value ${data.stats.dd.startsWith('+') ? 'positive' : 'negative'} pulse-text`;
         }
         
         function initPortfolioBuilder() {
@@ -1798,21 +1438,20 @@
             
             if (!riskSlider || !resultReturn) return; 
 
-            let config = { 1: ['gemini'], 2: 3, 3: ['tech'] }; // Step 1 es un array
+            let config = { 1: ['gemini'], 2: 3, 3: ['tech'] }; 
 
             const updateResults = () => {
                 let baseReturn = 15;
                 let baseSharpe = 1.2;
                 let baseDrawdown = -15;
 
-                // Ajuste por modelo (permite múltiples)
                 if (config[1].includes('gemini')) { baseReturn += 5; baseSharpe += 0.3; }
                 if (config[1].includes('gpt')) { baseReturn += 4; baseSharpe += 0.1; }
                 if (config[1].includes('deepseek')) { baseReturn += 3; baseSharpe += 0.2; }
                 if (config[1].includes('claude')) { baseReturn += 2; baseSharpe += 0.15; }
-                if (config[1].includes('grok')) { baseReturn += 6; baseSharpe += 0.1; } // Grok es agresivo
-                if (config[1].includes('qwen')) { baseReturn += 5.5; baseSharpe += 0.15; baseDrawdown *= 1.2; } // (NUEVO) Qwen
-                if (config[1].length > 1) { baseSharpe += 0.2; baseDrawdown /= 1.2; } // Diversificación de modelos
+                if (config[1].includes('grok')) { baseReturn += 6; baseSharpe += 0.1; } 
+                if (config[1].includes('qwen')) { baseReturn += 5.5; baseSharpe += 0.15; baseDrawdown *= 1.2; } 
+                if (config[1].length > 1) { baseSharpe += 0.2; baseDrawdown /= 1.2; } 
 
                 const riskMultiplier = [0.5, 0.8, 1.0, 1.5, 2.2];
                 baseReturn *= riskMultiplier[config[2] - 1];
@@ -1826,23 +1465,24 @@
                 resultReturn.textContent = `+${baseReturn.toFixed(1)}%`;
                 resultSharpe.textContent = baseSharpe.toFixed(2);
                 resultDrawdown.textContent = `${baseDrawdown.toFixed(1)}%`;
+                
+                // (NUEVO) Pulse effect
+                [resultReturn, resultSharpe, resultDrawdown].forEach(el => {
+                     el.classList.remove('animate'); void el.offsetWidth; el.classList.add('animate');
+                });
             };
 
             builderOptions.forEach(btn => {
                 btn.addEventListener('click', () => {
                     const step = btn.dataset.step;
-                    
-                    // Lógica de Toggle para Step 1 y 3
                     if (step === '1' || step === '3') { 
                         btn.classList.toggle('active');
-                        // Re-construir el array de configuración
                         config[step] = [];
                         document.querySelectorAll(`.builder-option[data-step="${step}"].active`).forEach(b => {
                             config[step].push(b.dataset.value);
                         });
-                        // Asegurar que al menos uno esté activo (opcional, pero bueno para la demo)
                         if (config[step].length === 0) {
-                            btn.classList.add('active'); // Re-activar el que se acaba de clickear
+                            btn.classList.add('active'); 
                             config[step].push(btn.dataset.value);
                         }
                     }
